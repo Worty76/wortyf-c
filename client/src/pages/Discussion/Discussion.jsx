@@ -1,0 +1,538 @@
+import React, { useEffect, useState, useRef } from "react";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  Grid,
+  Box,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+  Typography,
+  Avatar,
+  Toolbar,
+  IconButton,
+  Divider,
+  TextField,
+  Button,
+  List,
+  ListItemAvatar,
+  Menu,
+  MenuItem,
+} from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { makeStyles } from "@mui/styles";
+import axios from "axios";
+import {
+  createComment,
+  createLike,
+  deleteLike,
+  deletePost,
+  updatePost,
+} from "./discussionApi";
+import { VariantType, useSnackbar } from "notistack";
+import SingleComment from "./Section/SingleComment";
+import Topic from "./Section/Topic";
+import auth from "../../helpers/auth";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
+const useStyles = makeStyles({
+  root: {
+    width: "100%",
+    padding: "5%",
+  },
+  responsiveTexts: {
+    fontSize: "clamp(1.5rem, 5vw, 2rem)",
+  },
+  paper: {
+    width: "100%",
+    margin: "0 auto",
+  },
+  sidebarContainer: {
+    width: "20%",
+  },
+  postDetails: {
+    marginTop: "30px",
+  },
+});
+
+export default function Discussion() {
+  const classes = useStyles();
+  // Initializations
+  const params = useParams();
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const [post, setPost] = useState({});
+  const [user, setUser] = useState({});
+  const [comments, setComments] = useState([]);
+  const [likes, setLikes] = useState(0);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const timeoutRef = useRef(null);
+
+  // Handle multiple clicks on Like/Unlike button
+  const debouncedOnCreateLike = (event) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      onCreateLike();
+    }, 300);
+  };
+
+  const debouncedOnDeleteLike = (event) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      onDeleteLike();
+    }, 300);
+  };
+
+  // Handle open options
+  const handleOpenOptions = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseOptions = () => {
+    setAnchorEl(null);
+  };
+
+  // Handle comments
+  const [text, setText] = useState("");
+
+  // Handle editing post's information
+  const [openEditing, setOpenEditing] = useState(false);
+
+  const [valuesEditing, setValuesEditing] = useState({
+    title: "",
+    description: "",
+    content: "",
+  });
+
+  const handleOpenEditing = () => {
+    setOpenEditing(!openEditing);
+  };
+
+  // Fetching posts information from database
+  const getPost = async (signal) => {
+    try {
+      await axios
+        .get(`http://localhost:8000/api/post/${params.id}`, {
+          cancelToken: signal,
+        })
+        .then((response) => {
+          setPost(response.data.data[0]);
+          setUser(response.data.author);
+          setLikes(response.data.data[0].likes);
+          console.log(response.data.data[0].comments);
+          const sortComments = []
+            .concat(response.data.data[0].comments)
+            .sort((a, b) => (a.correctAns > b.correctAns ? false : true));
+          setComments(sortComments);
+          setValuesEditing({
+            title: response.data.data[0].title,
+            description: response.data.data[0].description,
+            content: response.data.data[0].content,
+          });
+        })
+        .catch(function (thrown) {
+          if (axios.isCancel(thrown)) {
+            console.log("Request canceled", thrown.message);
+          }
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Calling API after saving editing
+  const onSaveEditing = () => {
+    let post = new FormData();
+    valuesEditing.title && post.append("title", valuesEditing.title);
+    valuesEditing.description &&
+      post.append("description", valuesEditing.description);
+    valuesEditing.content && post.append("content", valuesEditing.content);
+
+    updatePost(
+      { id: params.id },
+      {
+        t: JSON.parse(auth.isAuthenticated().token),
+      },
+      post
+    ).then((data) => {
+      if (data.stack) {
+        console.log(data);
+      } else {
+        navigate(0);
+        handleVariant("success");
+      }
+    });
+  };
+  // Fetch post
+  useEffect(() => {
+    const CancelToken = axios.CancelToken;
+    const source = CancelToken.source();
+    getPost(source.token);
+
+    return () => {
+      source.cancel("Operation canceled by the user.");
+    };
+    // eslint-disable-next-line
+  }, []);
+
+  // Check if users liked post or not
+  const checkLiked = (likesProp) => {
+    return (
+      likesProp
+        .map((e) => e.user_id)
+        .indexOf(auth.isAuthenticated().user._id) !== -1
+    );
+  };
+
+  // Handle changing data while editing post
+  const handleChangeEditing = (name) => (event) => {
+    setValuesEditing({ ...valuesEditing, [name]: event.target.value });
+  };
+
+  // Send notifications when users did an action
+  const handleVariant = (variant: VariantType) => {
+    enqueueSnackbar("Successfully did an action", { variant });
+  };
+
+  // Update comments
+  const updateComments = (comments) => {
+    setComments(comments);
+  };
+
+  // Calling API
+  const onCreateLike = () => {
+    let like = new FormData();
+    createLike(
+      { id: params.id },
+      {
+        t: JSON.parse(auth.isAuthenticated().token),
+      },
+      like
+    ).then((data) => {
+      if (data.stack) {
+        // console.log(data);
+      } else {
+        setLikes(JSON.parse(data));
+        // console.log(data);
+      }
+    });
+  };
+
+  const onDeleteLike = () => {
+    deleteLike(
+      { id: params.id },
+      {
+        t: JSON.parse(auth.isAuthenticated().token),
+      }
+    ).then((data) => {
+      if (data.stack) {
+        console.log(data);
+      } else {
+        console.log(data);
+      }
+    });
+  };
+
+  const onCreateComment = () => {
+    let comment = new FormData();
+    text && comment.append("text", text);
+
+    createComment(
+      { id: params.id },
+      {
+        t: JSON.parse(auth.isAuthenticated().token),
+      },
+      comment
+    ).then((data) => {
+      if (data.stack) {
+        console.log(data);
+      } else {
+        const comment = JSON.parse(data);
+        setComments([comment, ...comments]);
+        setText("");
+        handleVariant("success");
+      }
+    });
+  };
+
+  const onDeletePost = () => {
+    let deletePostEmit = new FormData();
+    deletePost(
+      { id: params.id },
+      { t: JSON.parse(auth.isAuthenticated().token) },
+      deletePostEmit
+    ).then((data) => {
+      if (data.stack) {
+        console.log(data);
+      } else {
+        handleVariant("success");
+        navigate("/home");
+      }
+    });
+  };
+
+  const _arrayBufferToBase64 = (buffer) => {
+    var binary = "";
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+  };
+
+  return (
+    <div className={classes.root}>
+      <CssBaseline />
+      <Paper className={classes.paper} elevation={3}>
+        <Grid display="flex">
+          {/* Left container */}
+          <Box sx={{ width: "20%" }}>
+            <ListItem disablePadding>
+              <Box sx={{ borderRadius: "50px" }}>
+                <ListItem
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <ListItemIcon>
+                    {post.solved ? (
+                      <CheckCircleIcon sx={{ color: "red" }} />
+                    ) : (
+                      <CheckCircleIcon />
+                    )}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={<Typography noWrap>Sold</Typography>}
+                  />
+                </ListItem>
+              </Box>
+            </ListItem>
+          </Box>
+          {/* {console.log(likes)} */}
+          {/* Right container */}
+          <Box sx={{ width: "100%" }}>
+            <div
+              sx={{
+                minWidth: "100%",
+                height: "100%",
+              }}
+              className={classes.postDetails}
+            >
+              {/* Post's content */}
+              {openEditing ? (
+                <TextField
+                  value={valuesEditing.title}
+                  sx={{ width: "100%" }}
+                  placeholder="Content"
+                  variant="outlined"
+                  multiline={true}
+                  onChange={handleChangeEditing("title")}
+                />
+              ) : (
+                <Typography variant="h5">{post.title}</Typography>
+              )}
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar
+                    src={
+                      "data:image/jpeg;base64," +
+                      _arrayBufferToBase64(user?.avatar_url?.data?.data)
+                    }
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    <Typography
+                      sx={{ textDecoration: "none", color: "inherit" }}
+                      component={Link}
+                      to={`/profile/${user._id}`}
+                    >
+                      {user.username}
+                    </Typography>
+                  }
+                  secondary={post.createdAt}
+                />
+                {auth.isAuthenticated().user &&
+                auth.isAuthenticated().user._id === user._id ? (
+                  <>
+                    <IconButton onClick={handleOpenOptions}>
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleCloseOptions}
+                    >
+                      <MenuItem
+                        onClick={(e) => {
+                          handleOpenEditing();
+                          handleCloseOptions();
+                        }}
+                      >
+                        Edit
+                      </MenuItem>
+                      <MenuItem
+                        onClick={(e) => {
+                          onDeletePost();
+                          handleCloseOptions();
+                        }}
+                      >
+                        Delete
+                      </MenuItem>
+                    </Menu>
+                  </>
+                ) : (
+                  ""
+                )}
+              </ListItem>
+
+              {openEditing ? (
+                <TextField
+                  value={valuesEditing.content}
+                  sx={{ width: "100%" }}
+                  placeholder="Content"
+                  variant="outlined"
+                  multiline={true}
+                  onChange={handleChangeEditing("content")}
+                />
+              ) : (
+                <ListItem>
+                  <ListItemText
+                    primary={<Typography>{post.content}</Typography>}
+                  />
+                </ListItem>
+              )}
+
+              <ListItem>
+                {post.topic &&
+                  post.topic.map((topic, id) => (
+                    <Topic topicId={topic} key={id} />
+                  ))}
+              </ListItem>
+              <Toolbar disableGutters>
+                <Box sx={{ flexGrow: 1 }}>
+                  <ListItem>
+                    {auth.isAuthenticated() &&
+                    (likes !== null) &
+                      (likes !== undefined) &
+                      (Object.keys(likes).length > 0) ? (
+                      checkLiked(likes) ? (
+                        <IconButton onClick={debouncedOnDeleteLike}>
+                          <FavoriteIcon sx={{ color: "red" }} />
+                        </IconButton>
+                      ) : (
+                        <IconButton onClick={debouncedOnCreateLike}>
+                          <FavoriteIcon />
+                        </IconButton>
+                      )
+                    ) : (
+                      ""
+                    )}
+                    {auth.isAuthenticated() &&
+                    Object.keys(likes).length === 0 ? (
+                      <IconButton onClick={debouncedOnCreateLike}>
+                        <FavoriteIcon />
+                      </IconButton>
+                    ) : (
+                      ""
+                    )}
+                    {!auth.isAuthenticated() ? (
+                      <IconButton href="/signin">
+                        <FavoriteIcon />
+                      </IconButton>
+                    ) : (
+                      ""
+                    )}
+
+                    <ListItemText
+                      primary={
+                        Object.keys(likes).length +
+                        `${Object.keys(likes).length > 1 ? " likes" : " like"}`
+                      }
+                    />
+                    {openEditing ? (
+                      <Button variant="contained" onClick={onSaveEditing}>
+                        Save
+                      </Button>
+                    ) : null}
+                  </ListItem>
+                </Box>
+                <Box sx={{ flexGrow: 0 }}>
+                  <ListItem>
+                    <IconButton>
+                      <ErrorOutlineIcon />
+                    </IconButton>
+                    <ListItemText primary="Report this topic" />
+                  </ListItem>
+                </Box>
+              </Toolbar>
+
+              <Typography>
+                {Object.keys(comments).length}
+                {Object.keys(comments).length <= 1 ? " Answer" : " Answers"}
+              </Typography>
+              <br />
+              <Divider />
+
+              {/* Comment section */}
+              <ListItem>
+                <TextField
+                  sx={{ width: "100%" }}
+                  label={"Your answer"}
+                  onChange={(event) => setText(event.target.value)}
+                />
+                <List>
+                  <ListItem>
+                    {auth.isAuthenticated().user ? (
+                      <Button
+                        disabled={text ? false : true}
+                        variant="contained"
+                        onClick={onCreateComment}
+                      >
+                        Comment
+                      </Button>
+                    ) : (
+                      <Button
+                        disabled={text ? false : true}
+                        variant="contained"
+                        LinkComponent={Link}
+                        to="/signin"
+                        sx={{ textAlign: "center" }}
+                      >
+                        Sign in to comment
+                      </Button>
+                    )}
+                  </ListItem>
+                </List>
+              </ListItem>
+              {comments &&
+                comments.map((comment) => (
+                  <SingleComment
+                    key={comment._id}
+                    updateComments={updateComments}
+                    comment={comment}
+                    postId={params.id}
+                    solved={post.solved}
+                    authorId={user._id}
+                  />
+                ))}
+            </div>
+          </Box>
+        </Grid>
+      </Paper>
+    </div>
+  );
+}
