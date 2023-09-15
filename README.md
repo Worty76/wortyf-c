@@ -39,5 +39,5 @@ $ npm start
 
 ### 6. Create Posts
 
-- Run http://localhost:3000/products
+- Run http://localhost:3000/home
 - Click Create Post and enter post info
