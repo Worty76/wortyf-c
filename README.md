@@ -41,3 +41,17 @@ $ npm start
 
 - Run http://localhost:3000/home
 - Click Create Post and enter post info
+
+## DEMO
+
+1. Discussion
+https://github.com/Worty76/WortyF-C/blob/master/client/src/images/discussionDetails.png
+
+2. Home
+https://github.com/Worty76/WortyF-C/blob/master/client/src/images/discussions.png
+
+3. Profile
+https://github.com/Worty76/WortyF-C/blob/master/client/src/images/profile.png
+
+## Documentation
+COPYRIGHT BY WORTY (Le Thanh Dat).
