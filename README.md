@@ -45,13 +45,13 @@ $ npm start
 ## DEMO
 
 1. Discussion
-https://github.com/Worty76/WortyF-C/blob/master/client/src/images/discussionDetails.png
+<img src="https://github.com/Worty76/WortyF-C/blob/master/client/src/images/discussionDetails.png"/>
 
 2. Home
-https://github.com/Worty76/WortyF-C/blob/master/client/src/images/discussions.png
+<img src="https://github.com/Worty76/WortyF-C/blob/master/client/src/images/discussions.png">
 
 3. Profile
-https://github.com/Worty76/WortyF-C/blob/master/client/src/images/profile.png
+<img src="https://github.com/Worty76/WortyF-C/blob/master/client/src/images/profile.png">
 
 ## Documentation
 COPYRIGHT BY WORTY (Le Thanh Dat).
