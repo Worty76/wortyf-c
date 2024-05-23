@@ -54,12 +54,15 @@ const useStyles = makeStyles((theme) => ({
 
 const images = [
   {
+    name: "Discussion details page",
     image: discussionDetails,
   },
   {
+    name: "Discussion page",
     image: discussions,
   },
   {
+    name: "Profile page",
     image: profile,
   },
 ];
