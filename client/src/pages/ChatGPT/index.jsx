@@ -83,16 +83,16 @@ function ChatGPT() {
 
   return (
     <div>
-      <div style={{position:"relative"}}>
+      <div style={{ height: "100vh", width: "70vw", margin: "0 auto" }}>
         <MainContainer>
           <ChatContainer>       
             <MessageList
               scrollBehavior="smooth" 
               typingIndicator={isTyping ? <TypingIndicator content="ChatGPT is typing" /> : null}
             >
-              {messages.map((message, i) => {
+              {messages.map((message, index) => {
                 console.log(message)
-                return <Message key={i} model={message} />
+                return <Message key={index} model={message} />
               })}
             </MessageList>
             <MessageInput placeholder="Type message here" onSend={handleSend} />        

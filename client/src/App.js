@@ -35,7 +35,7 @@ function App() {
       </Routes>
       
       {/* Footer */}
-      <ChatBotHelper/>
+      {/* <ChatBotHelper/> */}
       {/* <Footer /> */}
     </div>
   );

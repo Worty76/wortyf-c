@@ -12,6 +12,9 @@ require("dotenv").config();
 const userRouter = require("./routes/userRouter");
 const postRouter = require("./routes/postRouter");
 const topicRouter = require("./routes/topicRouter");
+const chatRouter = require("./routes/chatRouter");
+const messageRouter = require("./routes/messageRouter");
+
 // PORT
 const PORT = process.env.PORT;
 
@@ -46,6 +49,8 @@ app.use(express.static(`${__dirname}/public`));
 app.use("/api/user", userRouter);
 app.use("/api/post", postRouter);
 app.use("/api/topic", topicRouter);
+app.use("/api/message", messageRouter);
+app.use("/api/chat", chatRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http:localhost:${PORT}`);

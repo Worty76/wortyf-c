@@ -1,2 +1,4 @@
 # Environment Variables
 .env.local
+
+.env
