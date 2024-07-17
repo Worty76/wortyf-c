@@ -17,7 +17,7 @@ const systemMessage = {
     "Explain things like you're talking to a software professional with 2 years of experience.",
 };
 
-const apiKey = "sk-proj-QfYa9nG0ScO571RYAyEoT3BlbkFJ4XeXOud2UwQcvNT4uDZS";
+const apiKey = "";
 
 function ChatGPT() {
   const [messages, setMessages] = useState([
