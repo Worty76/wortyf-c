@@ -17,8 +17,6 @@ const systemMessage = {
     "Explain things like you're talking to a software professional with 2 years of experience.",
 };
 
-const apiKey = "";
-
 function ChatGPT() {
   const [messages, setMessages] = useState([
     {
@@ -76,7 +74,7 @@ function ChatGPT() {
     await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: "Bearer " + apiKey,
+        Authorization: "Bearer ",
         "Content-Type": "application/json",
       },
       body: JSON.stringify(apiRequestBody),
