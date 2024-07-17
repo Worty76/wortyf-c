@@ -11,9 +11,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import auth from "../../../helpers/auth";
+import auth from "../../../helpers/Auth";
 import React, { useState } from "react";
-import { deleteReply, updateReply } from "../discussionApi";
+import { deleteReply, updateReply } from "../DiscussionApi";
 import { Link } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
@@ -91,7 +91,7 @@ export default function SingleReply({
         <ListItem>
           <ListItemAvatar>
             <Avatar
-               src={`http://localhost:8000/${comment.author.avatar_url}`}
+              src={`http://localhost:8000/${comment.author.avatar_url}`}
             />
           </ListItemAvatar>
           <ListItemText

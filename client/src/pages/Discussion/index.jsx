@@ -29,11 +29,11 @@ import { Link } from "react-router-dom";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import axios from "axios";
 import CircleIcon from "@mui/icons-material/Circle";
-import { create } from "./discussionsApi";
+import { create } from "./DiscussionsApi";
 import { VariantType, useSnackbar } from "notistack";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import Topic from "./components/Topic";
-import auth from "../../helpers/auth";
+import auth from "../../helpers/Auth";
 // eslint-disable-next-line
 import Crop169Icon from "@mui/icons-material/Crop169";
 import { useNavigate } from "react-router-dom";
@@ -200,7 +200,7 @@ export default function Discussions({ posts, setPosts }) {
         .then((response) => {
           setTopics(response.data.data);
         })
-        .catch(function (thrown) {
+        .catch(function(thrown) {
           if (axios.isCancel(thrown)) {
             console.log("Request canceled", thrown.message);
           }
@@ -313,9 +313,7 @@ export default function Discussions({ posts, setPosts }) {
                     <ListItemAvatar>
                       <Avatar
                         alt={post.author.username}
-                        src={
-                          `http://localhost:8000/${post?.author?.avatar_url}`
-                        }
+                        src={`http://localhost:8000/${post?.author?.avatar_url}`}
                         sx={{ height: "70px", width: "70px" }}
                       />
                     </ListItemAvatar>

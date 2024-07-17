@@ -5,19 +5,22 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
-import theme from "./theme";
+import theme from "./Theme";
 import { SnackbarProvider } from "notistack";
+import ChatProvider from "./context/ChatProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <SnackbarProvider maxSnack={3}>
+  <ThemeProvider theme={theme}>
+    <SnackbarProvider maxSnack={3}>
+      <ChatProvider>
         <BrowserRouter>
           <App />
         </BrowserRouter>
-      </SnackbarProvider>
-    </ThemeProvider>
+      </ChatProvider>
+    </SnackbarProvider>
+  </ThemeProvider>
   // </React.StrictMode>
 );
 

@@ -11,13 +11,13 @@ import Profile from "./pages/Profile/index";
 import "./App.css";
 import MidMans from "./pages/MidMans/index";
 import Events from "./pages/Events/index";
-import ChatGPT from "./pages/ChatGPT/index"
-import ChatBotHelper from "./components/ChatBotHelper";
+import Chat from "./pages/Chat/index";
+// import ChatGPT from "./pages/ChatGPT/index";
+// import ChatBotHelper from "./components/ChatBotHelper";
 
 function App() {
   return (
     <div className="App">
-
       {/* Header */}
       <Appbar />
 
@@ -31,11 +31,12 @@ function App() {
         <Route path="/events" element={<Events />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/discussions/:id" element={<Discussion />} />
-        <Route path="/chatgpt" element={<ChatGPT/>}/>
+        <Route path="/chat" element={<Chat />} />
+        {/* <Route path="/chatgpt" element={<ChatGPT />} /> */}
       </Routes>
-      
+
       {/* Footer */}
-      <ChatBotHelper/>
+      {/* <ChatBotHelper/> */}
       {/* <Footer /> */}
     </div>
   );

@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const formidable = require("formidable");
 const fs = require("fs");
 const path = require("path");
-const sharp = require('sharp');
+const sharp = require("sharp");
 require("dotenv").config();
 
 // Login
@@ -93,11 +93,10 @@ const getUsers = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  
   const user = await User.findById({ _id: req.params.id });
 
   if (!user) return res.status(400).json({ message: "Could not get any user" });
-  
+
   const posts = await Post.find({ "author._id": req.params.id });
 
   res.status(200).json({
@@ -124,7 +123,7 @@ const deleteUser = async (req, res) => {
 const changeAvatar = async (req, res) => {
   const user = await User.findById({ _id: req.params.id });
   if (!user) return res.status(400).send({ message: "Could not get any user" });
-  
+
   fs.access("./uploads", (error) => {
     if (error) {
       fs.mkdirSync("./uploads");
@@ -144,12 +143,12 @@ const changeAvatar = async (req, res) => {
   const ref = `${timestamp}-${body.newFilename}.webp`;
   const buffer = fs.readFileSync(body.image._writeStream.path);
   await sharp(buffer)
-  .webp({ quality: 20 })
-  .toFile("./uploads/" + ref);
+    .webp({ quality: 20 })
+    .toFile("./uploads/" + ref);
 
   // Storing data into database
   user.avatar_url = ref;
-  
+
   // user.avatar_url.data = fs.readFileSync(body.image._writeStream.path);
   // user.avatar_url.contentType = body.image._writeStream.type;
   await user.save();
@@ -179,6 +178,20 @@ function doSomethingWithNodeRequest(req) {
   });
 }
 
+const allUsers = async (req, res) => {
+  const keyword = req.query.search
+    ? {
+        $or: [
+          { username: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
+
+  const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+  res.send(users);
+};
+
 const userController = {
   login,
   register,
@@ -187,6 +200,7 @@ const userController = {
   getUser,
   changeAvatar,
   photo,
+  allUsers,
 };
 
 module.exports = userController;

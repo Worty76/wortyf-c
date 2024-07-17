@@ -22,8 +22,8 @@ import {
   deleteComment,
   markAsAnswer,
   updateComment,
-} from "../discussionApi";
-import auth from "../../../helpers/auth";
+} from "../DiscussionApi";
+import auth from "../../../helpers/Auth";
 import { Link, useNavigate } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Markup } from "interweave";
@@ -148,7 +148,7 @@ export default function SingleComment({
         console.log(data);
       } else {
         const comments = JSON.parse(data);
-        console.log(comments)
+        console.log(comments);
         updateComments(comments);
         handleOpenEditing();
         handleVariant("success");
@@ -168,7 +168,7 @@ export default function SingleComment({
         .then((response) => {
           setReplies(response.data.data);
         })
-        .catch(function (thrown) {
+        .catch(function(thrown) {
           if (axios.isCancel(thrown)) {
             console.log("Request canceled", thrown.message);
           }
@@ -202,9 +202,7 @@ export default function SingleComment({
       <br />
       <ListItem>
         <ListItemAvatar>
-          <Avatar
-            src={`http://localhost:8000/${comment.author.avatar_url}`}
-          />
+          <Avatar src={`http://localhost:8000/${comment.author.avatar_url}`} />
         </ListItemAvatar>
         <ListItemText
           primary={
@@ -334,7 +332,7 @@ export default function SingleComment({
         comments={replies}
         commentFatherId={comment._id}
         updateReplies={updateReplies}
-      /> 
+      />
       <br />
       <Divider />
     </div>

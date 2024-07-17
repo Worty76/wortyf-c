@@ -23,7 +23,7 @@ import Topic from "../Discussion/components/Topic";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ChatIcon from "@mui/icons-material/Chat";
-import auth from "../../helpers/auth";
+import auth from "../../helpers/Auth";
 import { changeAvatar } from "../Auth/authApi";
 
 const useStyles = makeStyles({
@@ -50,13 +50,13 @@ export default function Profile() {
           cancelToken: signal,
         })
         .then((response) => {
-          console.log(response)
+          console.log(response);
           const data = response.data;
 
           setUser(data.user);
           setUsersPosts(data.usersPosts);
         })
-        .catch(function (thrown) {
+        .catch(function(thrown) {
           if (axios.isCancel(thrown)) {
             console.log("Request canceled", thrown.message);
           }
@@ -88,7 +88,7 @@ export default function Profile() {
     ).then((data) => {
       if (data.error) {
         console.log(data.error);
-      } 
+      }
     });
   };
 
@@ -112,7 +112,9 @@ export default function Profile() {
               <ListItem sx={{ display: "flex", justifyContent: "center" }}>
                 <ListItemAvatar>
                   <Avatar
-                    src={image ? image : `http://localhost:8000/${user.avatar_url}`}
+                    src={
+                      image ? image : `http://localhost:8000/${user.avatar_url}`
+                    }
                   />
                 </ListItemAvatar>
               </ListItem>
@@ -200,96 +202,100 @@ export default function Profile() {
                 }
               />
             </ListItem>
-            {usersPosts && usersPosts.map((post) => (
-              <div key={post._id} style={{ paddingBottom: "30px" }}>
-                <Link
-                  to={"/discussions/" + post._id}
-                  style={{ textDecoration: "none" }}
-                >
-                  <Paper
-                    className={classes.post}
-                    sx={{ border: post.solved ? "1px #38E54D solid" : "none" }}
+            {usersPosts &&
+              usersPosts.map((post) => (
+                <div key={post._id} style={{ paddingBottom: "30px" }}>
+                  <Link
+                    to={"/discussions/" + post._id}
+                    style={{ textDecoration: "none" }}
                   >
-                    <Box sx={{ flexGrow: 1 }}>
-                      <ListItem>
-                        <ListItemText
-                          primary={
-                            <Typography variant="h6">{post.title}</Typography>
-                          }
-                          secondary={post.createdAt}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText
-                          primary={
-                            <Typography
-                              variant="h8"
-                              className={classes.multiLineEllipsis}
-                            >
-                              {post.content}
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                      <ListItem>
-                        {post.topic &&
-                          post.topic.map((topic, id) => (
-                            <Topic topicId={topic} key={id} />
-                          ))}
-                      </ListItem>
-                    </Box>
-
-                    <Box
+                    <Paper
+                      className={classes.post}
                       sx={{
-                        flexGrow: 0,
-                        alignItems: "center",
-                        minWidth: "210px",
-                        display: {
-                          xs: "none",
-                          md: "flex",
-                        },
+                        border: post.solved ? "1px #38E54D solid" : "none",
                       }}
                     >
-                      <Container maxWidth="large">
-                        <Toolbar disableGutters>
-                          <Box sx={{ display: "flex", flexGrow: 1 }}>
-                            <ListItem>
-                              <Badge>
-                                <FavoriteBorderIcon />
-                              </Badge>
-                              <ListItemText
-                                primary={
-                                  <Typography
-                                    sx={{ paddingLeft: "5px" }}
-                                    variant="h8"
-                                  >
-                                    {Object.keys(post.likes).length} Likes
-                                  </Typography>
-                                }
-                              />
-                              <Badge>
-                                <ChatBubbleOutlineIcon />
-                              </Badge>
-                              <ListItemText
-                                primary={
-                                  <Typography
-                                    sx={{ paddingLeft: "5px" }}
-                                    variant="h8"
-                                  >
-                                    {Object.keys(post.comments).length} Comments
-                                  </Typography>
-                                }
-                              />
-                            </ListItem>
-                            <ListItem></ListItem>
-                          </Box>
-                        </Toolbar>
-                      </Container>
-                    </Box>
-                  </Paper>
-                </Link>
-              </div>
-            ))}
+                      <Box sx={{ flexGrow: 1 }}>
+                        <ListItem>
+                          <ListItemText
+                            primary={
+                              <Typography variant="h6">{post.title}</Typography>
+                            }
+                            secondary={post.createdAt}
+                          />
+                        </ListItem>
+                        <ListItem>
+                          <ListItemText
+                            primary={
+                              <Typography
+                                variant="h8"
+                                className={classes.multiLineEllipsis}
+                              >
+                                {post.content}
+                              </Typography>
+                            }
+                          />
+                        </ListItem>
+                        <ListItem>
+                          {post.topic &&
+                            post.topic.map((topic, id) => (
+                              <Topic topicId={topic} key={id} />
+                            ))}
+                        </ListItem>
+                      </Box>
+
+                      <Box
+                        sx={{
+                          flexGrow: 0,
+                          alignItems: "center",
+                          minWidth: "210px",
+                          display: {
+                            xs: "none",
+                            md: "flex",
+                          },
+                        }}
+                      >
+                        <Container maxWidth="large">
+                          <Toolbar disableGutters>
+                            <Box sx={{ display: "flex", flexGrow: 1 }}>
+                              <ListItem>
+                                <Badge>
+                                  <FavoriteBorderIcon />
+                                </Badge>
+                                <ListItemText
+                                  primary={
+                                    <Typography
+                                      sx={{ paddingLeft: "5px" }}
+                                      variant="h8"
+                                    >
+                                      {Object.keys(post.likes).length} Likes
+                                    </Typography>
+                                  }
+                                />
+                                <Badge>
+                                  <ChatBubbleOutlineIcon />
+                                </Badge>
+                                <ListItemText
+                                  primary={
+                                    <Typography
+                                      sx={{ paddingLeft: "5px" }}
+                                      variant="h8"
+                                    >
+                                      {Object.keys(post.comments).length}{" "}
+                                      Comments
+                                    </Typography>
+                                  }
+                                />
+                              </ListItem>
+                              <ListItem></ListItem>
+                            </Box>
+                          </Toolbar>
+                        </Container>
+                      </Box>
+                    </Paper>
+                  </Link>
+                </div>
+              ))}
           </div>
         </Box>
         {/* Right */}
@@ -309,9 +315,7 @@ export default function Profile() {
                 />
               </ListItem>
               <Divider />
-              <List>
-      
-              </List>
+              <List></List>
             </CardContent>
           </Card>
         </Box>

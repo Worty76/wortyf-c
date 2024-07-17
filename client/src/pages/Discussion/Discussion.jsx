@@ -1,8 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
@@ -17,7 +13,7 @@ import {
   Toolbar,
   IconButton,
   Divider,
-  TextField, 
+  TextField,
   Button,
   List,
   ListItemAvatar,
@@ -35,11 +31,11 @@ import {
   deleteLike,
   deletePost,
   updatePost,
-} from "./discussionApi";
+} from "./DiscussionApi";
 import { VariantType, useSnackbar } from "notistack";
 import SingleComment from "./components/SingleComment";
 import Topic from "./components/Topic";
-import auth from "../../helpers/auth";
+import auth from "../../helpers/Auth";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const useStyles = makeStyles({
@@ -145,7 +141,7 @@ export default function Discussion() {
             content: data.post.content,
           });
         })
-        .catch(function (thrown) {
+        .catch(function(thrown) {
           if (axios.isCancel(thrown)) {
             console.log("Request canceled", thrown.message);
           }
@@ -179,7 +175,7 @@ export default function Discussion() {
     });
   };
   // Fetch post
-    useEffect(() => {
+  useEffect(() => {
     const CancelToken = axios.CancelToken;
     const source = CancelToken.source();
     getPost(source.token);
@@ -300,7 +296,14 @@ export default function Discussion() {
       <Paper className={classes.paper} elevation={3}>
         <Grid display="flex">
           {/* Left container */}
-          <Box sx={{justifyContent: "center", alignItems: "center", width: "240px", padding: "30px"}}>
+          <Box
+            sx={{
+              justifyContent: "center",
+              alignItems: "center",
+              width: "240px",
+              padding: "30px",
+            }}
+          >
             <ListItem disablePadding>
               <ListItemIcon>
                 {post.solved ? (
@@ -309,9 +312,7 @@ export default function Discussion() {
                   <CheckCircleIcon />
                 )}
               </ListItemIcon>
-              <ListItemText
-                primary={<Typography noWrap>Sold</Typography>}
-              />
+              <ListItemText primary={<Typography noWrap>Sold</Typography>} />
             </ListItem>
           </Box>
           {/* {console.log(likes)} */}
@@ -340,7 +341,11 @@ export default function Discussion() {
               <ListItem>
                 <ListItemAvatar>
                   <Avatar
-                    src={user?.avatar_url ? `http://localhost:8000/${user?.avatar_url}` : ""}
+                    src={
+                      user?.avatar_url
+                        ? `http://localhost:8000/${user?.avatar_url}`
+                        : ""
+                    }
                   />
                 </ListItemAvatar>
                 <ListItemText
@@ -388,7 +393,6 @@ export default function Discussion() {
                   ""
                 )}
               </ListItem>
-
               {openEditing ? (
                 <TextField
                   value={valuesEditing.content}
@@ -451,7 +455,9 @@ export default function Discussion() {
                       <ListItemText
                         primary={
                           Object.keys(likes).length +
-                          `${Object.keys(likes).length > 1 ? " likes" : " like"}`
+                          `${
+                            Object.keys(likes).length > 1 ? " likes" : " like"
+                          }`
                         }
                       />
                       {openEditing ? (
@@ -482,26 +488,32 @@ export default function Discussion() {
               {/* Comment section */}
               <List>
                 <ListItem>
-                <TextField sx={{ width: "100%" }} label={"Your answer"} onChange={(event) => {setText(event.target.value)}} />
-                    {auth.isAuthenticated().user ? (
-                      <Button
-                        disabled={text ? false : true}
-                        variant="contained"
-                        onClick={onCreateComment}
-                      >
-                        Comment
-                      </Button>
-                    ) : (
-                      <Button
-                        disabled={text ? false : true}
-                        variant="contained"
-                        LinkComponent={Link}
-                        to="/signin"
-                        sx={{ textAlign: "center" }}
-                      >
-                        Sign in to comment
-                      </Button>
-                    )}
+                  <TextField
+                    sx={{ width: "100%" }}
+                    label={"Your answer"}
+                    onChange={(event) => {
+                      setText(event.target.value);
+                    }}
+                  />
+                  {auth.isAuthenticated().user ? (
+                    <Button
+                      disabled={text ? false : true}
+                      variant="contained"
+                      onClick={onCreateComment}
+                    >
+                      Comment
+                    </Button>
+                  ) : (
+                    <Button
+                      disabled={text ? false : true}
+                      variant="contained"
+                      LinkComponent={Link}
+                      to="/signin"
+                      sx={{ textAlign: "center" }}
+                    >
+                      Sign in to comment
+                    </Button>
+                  )}
                 </ListItem>
               </List>
               {comments &&
