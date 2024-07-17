@@ -1,13 +1,12 @@
 import React from "react";
-import { makeStyles } from "@mui/styles";
 import {
+  Avatar,
+  Box,
   Button,
-  Card,
+  Container,
+  CssBaseline,
   FormControl,
-  InputLabel,
-  List,
-  ListItem,
-  ListItemText,
+  Grid,
   MenuItem,
   Select,
   TextField,
@@ -18,23 +17,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { signUp } from "./authApi";
 import { VariantType, useSnackbar } from "notistack";
 
-const useStyles = makeStyles({
-  root: {
-    padding: "5%",
-  },
-  Container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    maxWidth: 900,
-    height: 600,
-    margin: "0 auto",
-  },
-});
-
 export default function SignUp() {
-  const classes = useStyles();
-
   const navigate = useNavigate();
   const [values, setValues] = useState({
     username: "",
@@ -64,11 +47,11 @@ export default function SignUp() {
     return navigate("/signin");
   }
 
-  const renderError = () => {
-    return (
-      <div style={{ width: "100%", textAlign: "center" }}>{values.error}</div>
-    );
-  };
+  // const renderError = () => {
+  //   return (
+  //     <div style={{ width: "100%", textAlign: "center" }}>{values.error}</div>
+  //   );
+  // };
 
   const onSignUp = () => {
     let user = new FormData();
@@ -78,6 +61,14 @@ export default function SignUp() {
     values.email && user.append("email", values.email);
     values.from && user.append("from", values.from);
     values.password && user.append("password", values.password);
+
+    if (values.password !== values.passwordConfirmed) {
+      setValues({
+        ...values,
+        error: "Password and PasswordConfirmed is not match!",
+        redirect: false,
+      });
+    }
 
     signUp(user).then((data) => {
       if (data.stack) {
@@ -90,88 +81,113 @@ export default function SignUp() {
   };
 
   return (
-    <div className={classes.root}>
-      <Card className={classes.Container}>
-        <List sx={{ width: "400px" }}>
-          <ListItem>
-            <ListItemText
-              primary={<Typography variant="h5">Register 👌✌️</Typography>}
-              secondary={"How do i get started ?"}
-            />
-          </ListItem>
-          <ListItem>
-            <TextField label="Username" onChange={handleChange("username")} />
-            <TextField
-              label="Email"
-              onChange={handleChange("email")}
-              sx={{ marginLeft: "10px" }}
-            />
-          </ListItem>
-
-          <ListItem>
-            <TextField
-              label="Age"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={handleChange("age")}
-              variant="filled"
-            />
-            <FormControl sx={{ marginLeft: "10px" }}>
-              <InputLabel>Gender</InputLabel>
-              <Select value={values.gender} onChange={handleChange("gender")}>
-                <MenuItem value="true">Male</MenuItem>
-                <MenuItem value="false">Female</MenuItem>
-              </Select>
-            </FormControl>
-          </ListItem>
-          <ListItem>
-            <TextField fullWidth label="From" onChange={handleChange("from")} />
-          </ListItem>
-          <ListItem>
-            <TextField
-              label="Password"
-              onChange={handleChange("password")}
-              type="password"
-            />
-            <TextField
-              label="PasswordConfirmed"
-              onChange={handleChange("passwordConfirmed")}
-              style={{ marginLeft: "10px" }}
-              type="password"
-            />
-          </ListItem>
-          <ListItem></ListItem>
-          <ListItem sx={{ display: "flex", justifyContent: "center" }}>
-            <Button variant="contained" onClick={onSignUp}>
-              Register
-            </Button>
-          </ListItem>
-          <br />
-          <Typography
-            sx={{
-              textDecoration: "none",
-              color: "inherit",
-              paddingLeft: "200px",
-            }}
-            component={Link}
-            to="/signin"
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          {/* <LockOutlinedIcon /> */}
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign up
+        </Typography>
+        <Box component="form" noValidate sx={{ mt: 3 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                id="username"
+                label="Username"
+                name="username"
+                onChange={handleChange("username")}
+                autoFocus
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Age"
+                type="number"
+                required
+                fullWidth
+                id="age"
+                onChange={handleChange("age")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl>
+                <Select value={values.gender} onChange={handleChange("gender")}>
+                  <MenuItem value="true">Male</MenuItem>
+                  <MenuItem value="false">Female</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                onChange={handleChange("email")}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                name="from"
+                label="From"
+                id="from"
+                onChange={handleChange("from")}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                onChange={handleChange("password")}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                name="passwordConfirmed"
+                label="passwordConfirmed"
+                type="password"
+                id="passwordConfirmed"
+                onChange={handleChange("passwordConfirmed")}
+              />
+            </Grid>
+          </Grid>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={onSignUp}
           >
-            Already have an account ?
-          </Typography>
-          <br />
-          <Typography
-            variant="h8"
-            sx={{
-              color: "red",
-              position: "absolute",
-            }}
-          >
-            {values.error ? renderError() : null}
-          </Typography>
-        </List>
-      </Card>
-    </div>
+            Sign Up
+          </Button>
+          <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Typography component={Link} to="/signin">
+                Already have an account? Sign in
+              </Typography>
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
+    </Container>
   );
 }

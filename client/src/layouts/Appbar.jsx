@@ -16,7 +16,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useNavigate } from "react-router-dom";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import auth from "../helpers/auth";
+import auth from "../helpers/Auth";
 
 export default function Appbar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -44,6 +44,7 @@ export default function Appbar() {
     { name: "Midmans", URL: "midmans" },
     { name: "Events", URL: "events" },
     { name: "ChatGPT", URL: "chatgpt" },
+    { name: "Chat", URL: "chat" },
   ];
 
   return (
@@ -145,7 +146,8 @@ export default function Appbar() {
                     <Avatar
                       alt={auth.isAuthenticated().user.username}
                       src={
-                        `http://localhost:8000/` + auth.isAuthenticated()?.user?.avatar_url
+                        `http://localhost:8000/` +
+                        auth.isAuthenticated()?.user?.avatar_url
                       }
                     />
                   ) : (

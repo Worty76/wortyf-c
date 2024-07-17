@@ -3,6 +3,8 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const verifyToken = require("../middlewares/verifyToken");
 
+router.get("/", verifyToken, userController.allUsers);
+
 router.post("/login", userController.login);
 
 router.post("/register", userController.register);

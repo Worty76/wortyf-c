@@ -1,24 +1,32 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
-require("dotenv").config();
+const User = require("../models/user.js");
 
-module.exports = async function (req, res, next) {
-  const token = req.header("auth-header");
+const verifyToken = async (req, res, next) => {
+  let token;
 
-  if (!token) return res.status(401).send("Access Denied!");
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    try {
+      token = req.headers.authorization.split(" ")[1];
+      console.log(token);
+      //decodes token id
+      const decoded = jwt.verify(token, process.env.TOKEN);
 
-  try {
-    const verified = jwt.verify(token, process.env.TOKEN);
-    req.user = verified;
-    const user = await User.findById({ _id: req.user.id });
+      req.user = await User.findById(decoded.id).select("-password");
 
-    if (!user) return res.status(401).send("Access Denied!");
+      next();
+    } catch (error) {
+      res.status(401);
+      throw new Error("Not authorized, token failed");
+    }
+  }
 
-    console.log(req.user);
-    console.log(new Date().toUTCString());
-
-    return next();
-  } catch (error) {
-    res.status(400).send("Invalid Token!");
+  if (!token) {
+    res.status(401);
+    throw new Error("Not authorized, no token");
   }
 };
+
+module.exports = verifyToken;
