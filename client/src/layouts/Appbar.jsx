@@ -43,7 +43,7 @@ export default function Appbar() {
     { name: "Home", URL: "home" },
     { name: "Midmans", URL: "midmans" },
     { name: "Events", URL: "events" },
-    { name: "ChatGPT", URL: "chatgpt" },
+    // { name: "ChatGPT", URL: "chatgpt" },
     { name: "Chat", URL: "chat" },
   ];
 

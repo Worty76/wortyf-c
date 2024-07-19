@@ -48,7 +48,6 @@ const accessChats = async (req, res) => {
 };
 
 const fetchChats = async (req, res) => {
-  console.log(req.user);
   try {
     Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
       .populate("users", "-password")
@@ -75,8 +74,8 @@ const createGroupChat = async (req, res) => {
     return res.status(400).send({ message: "Please Fill all the fields" });
   }
 
-  // var users = JSON.parse(req.body.users);
-  var users = req.body.users;
+  var users = JSON.parse(req.body.users);
+  // var users = req.body.users;
 
   if (users.length < 2) {
     return res

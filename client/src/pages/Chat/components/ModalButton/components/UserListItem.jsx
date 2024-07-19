@@ -1,7 +1,4 @@
-import {
-  Avatar,
-  Box,
-} from "../../../../../../node_modules/@material-ui/core/index";
+import { Avatar, Box } from "@mui/material";
 import { ListItemText } from "@mui/material";
 
 const UserListItem = ({ handleFunction, user }) => {
@@ -19,7 +16,11 @@ const UserListItem = ({ handleFunction, user }) => {
         borderRadius: "10",
       }}
     >
-      <Avatar src={user.avatar_url} sx={{ cursor: "pointer" }} size={"sm"} />
+      <Avatar
+        src={`http://localhost:8000/${user.avatar_url}`}
+        sx={{ cursor: "pointer" }}
+        size={"sm"}
+      />
       <Box>
         <ListItemText primary={user.username} />
         <ListItemText primary={user.email} />

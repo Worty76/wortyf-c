@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // import { makeStyles } from "@mui/styles";
 import {
   Avatar,
@@ -43,10 +43,6 @@ export default function SignIn() {
 
   const { redirect } = values;
 
-  if (redirect) {
-    return navigate("/home");
-  }
-
   const handleChange = (name) => (event) => {
     setValues({ ...values, [name]: event.target.value });
   };
@@ -75,6 +71,13 @@ export default function SignIn() {
       </div>
     );
   };
+
+  useEffect(() => {
+    if (redirect) {
+      navigate("/home");
+    }
+    // eslint-disable-next-line
+  }, [redirect]);
 
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>

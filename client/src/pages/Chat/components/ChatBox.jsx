@@ -1,16 +1,16 @@
-import { Box, Button } from "../../../../node_modules/@material-ui/core/index";
+import { Box, Button } from "@mui/material";
 import SingleChat from "./SingleChat";
 import { ChatState } from "../../../context/ChatProvider";
 
 function ChatBox() {
-  const { selectedChat, setSelectedChat } = ChatState();
+  const { setSelectedChat } = ChatState();
 
   return (
     <Box
       sx={{
         alignItems: "center",
-        backgroundColor: "lightgreen",
         width: "100%",
+        height: "100%",
       }}
     >
       <Box
@@ -18,7 +18,7 @@ function ChatBox() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: 10,
+          padding: 2,
         }}
       >
         <Button onClick={() => setSelectedChat("")}>Leave Chat</Button>

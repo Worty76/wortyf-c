@@ -1,23 +1,19 @@
 import { useEffect, useState } from "react";
-import { Box } from "../../../../node_modules/@material-ui/core/index";
+import { Box } from "@mui/material";
 import { ChatState } from "../../../context/ChatProvider";
+import InputBase from "@material-ui/core/InputBase";
 import auth from "../../../helpers/Auth";
-import axios from "../../../../node_modules/axios/index";
+import axios from "axios";
+import ScrollableChat from "./ModalButton/components/ScrollableChat";
 
 var socket, selectedChatCompare;
 
 function SingleChat() {
-  const user = auth.isAuthenticated();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
 
-  const {
-    selectedChat,
-    setSelectedChat,
-    notification,
-    setNotification,
-  } = ChatState();
-  console.log(selectedChat);
+  const { selectedChat } = ChatState();
+
   // Fetch messages
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -44,24 +40,25 @@ function SingleChat() {
   // Handle sending message
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
-      socket.emit("stop typing", selectedChat._id);
       try {
+        console.log(newMessage, selectedChat);
         const config = {
           headers: {
-            "Content-type": "application/json",
-            Authorization: `Bearer ${user.token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
           },
         };
         setNewMessage("");
         const { data } = await axios.post(
-          "/api/message",
+          "http://localhost:8000/api/message",
           {
             content: newMessage,
             chatId: selectedChat,
           },
           config
         );
-        socket.emit("new message", data);
+        // socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
         console.log(error);
@@ -73,33 +70,55 @@ function SingleChat() {
     fetchMessages();
 
     selectedChatCompare = selectedChat;
-    console.log(messages);
 
     // eslint-disable-next-line
   }, [selectedChat]);
 
   return (
     <>
-      {selectedChat && selectedChat === selectedChatCompare ? (
-        <>
-          {" "}
-          {messages ? (
-            messages.map((message, id) => (
-              <Box sx={{ padding: 10 }} key={id}>
-                {message.content} from {message.sender.email}
-              </Box>
-            ))
-          ) : (
-            <></>
-          )}{" "}
-        </>
-      ) : selectedChat === "" ? (
-        <Box sx={{ padding: 10 }}>Select a group chat to chat</Box>
-      ) : (
-        <>
-          <Box sx={{ padding: 10 }}>loading...</Box>
-        </>
-      )}
+      <Box sx={{ width: "100%", height: "100%" }}>
+        {selectedChat && selectedChat === selectedChatCompare ? (
+          <>
+            <Box
+              sx={{
+                justifyContent: "flex-end",
+                display: "flex",
+                width: "100%",
+                height: "100%",
+                flexDirection: "column",
+                overflowY: "hidden",
+              }}
+            >
+              <div
+                className="messages"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  overflowY: "scroll",
+                  scrollbarWidth: "none",
+                }}
+              >
+                <ScrollableChat messages={messages} />
+              </div>
+              <InputBase
+                sx={{ backgroundColor: "lightblue" }}
+                placeholder="Enter a message.."
+                id="my-input"
+                aria-describedby="my-helper-text"
+                onChange={(e) => setNewMessage(e.target.value)}
+                value={newMessage}
+                onKeyDown={sendMessage}
+              />
+            </Box>
+          </>
+        ) : selectedChat === "" ? (
+          <Box sx={{ padding: 2 }}>Select a group chat to chat</Box>
+        ) : (
+          <>
+            <Box sx={{ padding: 2 }}>loading...</Box>
+          </>
+        )}
+      </Box>
     </>
   );
 }

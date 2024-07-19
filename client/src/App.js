@@ -29,9 +29,9 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/midmans" element={<MidMans />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/chat" element={<Chat />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/discussions/:id" element={<Discussion />} />
-        <Route path="/chat" element={<Chat />} />
         {/* <Route path="/chatgpt" element={<ChatGPT />} /> */}
       </Routes>
 

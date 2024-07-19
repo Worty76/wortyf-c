@@ -1,28 +1,23 @@
-import {
-  Avatar,
-  Box,
-} from "../../../../../../node_modules/@material-ui/core/index";
+import { Box } from "@mui/material";
 import { ListItemText } from "@mui/material";
 
 const UserBadgeItem = ({ handleFunction, user }) => {
   return (
     <Box
-      onClick={handleFunction}
       sx={{
-        cursor: "pointer",
-        width: "100%",
+        padding: 1,
         display: "flex",
         alignItems: "center",
         color: "black",
-        paddingHorizontal: 3,
-        paddingVertical: 2,
         borderRadius: "10",
       }}
     >
-      <Avatar src={user.avatar_url} sx={{ cursor: "pointer" }} size={"sm"} />
       <Box>
-        <ListItemText primary={user.username} />
-        <ListItemText primary={user.email} />
+        <ListItemText
+          sx={{ cursor: "pointer" }}
+          onClick={handleFunction}
+          primary={user.username + " X"}
+        />
       </Box>
     </Box>
   );

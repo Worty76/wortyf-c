@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MyChats from "./components/MyChats";
-import { Box } from "../../../node_modules/@material-ui/core/index";
+import { Box } from "@mui/material";
 import ChatBox from "./components/ChatBox";
 import auth from "../../helpers/Auth";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,6 @@ function Chat() {
   const user = auth.isAuthenticated();
 
   const [fetchAgain, setFetchAgain] = useState(false);
-  console.log(user);
 
   useEffect(() => {
     if (!user) return navigate("/signin");
@@ -22,6 +21,7 @@ function Chat() {
         display: "flex",
         justifyContent: "space-between",
         width: "100%",
+        height: "100%",
       }}
     >
       {user && <MyChats fetchAgain={fetchAgain} />}

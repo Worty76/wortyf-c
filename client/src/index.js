@@ -14,14 +14,14 @@ root.render(
   // <React.StrictMode>
   <ThemeProvider theme={theme}>
     <SnackbarProvider maxSnack={3}>
-      <ChatProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <ChatProvider>
           <App />
-        </BrowserRouter>
-      </ChatProvider>
+        </ChatProvider>
+      </BrowserRouter>
     </SnackbarProvider>
   </ThemeProvider>
-  // </React.StrictMode>
+  /* </React.StrictMode> */
 );
 
 // If you want to start measuring performance in your app, pass a function
