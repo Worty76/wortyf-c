@@ -23,7 +23,7 @@ export default function Home() {
         .then((response) => {
           setPosts(response.data.data);
         })
-        .catch(function (thrown) {
+        .catch(function(thrown) {
           if (axios.isCancel(thrown)) {
             console.log("Request canceled", thrown.message);
           }

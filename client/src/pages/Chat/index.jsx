@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MyChats from "./components/MyChats";
-import { Box } from "@mui/material";
 import ChatBox from "./components/ChatBox";
-import auth from "../../helpers/Auth";
+import auth from "../../helpers/auth.js";
 import { useNavigate } from "react-router-dom";
 
 function Chat() {
@@ -16,8 +15,8 @@ function Chat() {
   });
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         display: "flex",
         justifyContent: "space-between",
         width: "100%",
@@ -29,7 +28,7 @@ function Chat() {
       {user && (
         <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
       )}
-    </Box>
+    </div>
   );
 }
 

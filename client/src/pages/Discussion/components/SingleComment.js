@@ -22,8 +22,8 @@ import {
   deleteComment,
   markAsAnswer,
   updateComment,
-} from "../DiscussionApi";
-import auth from "../../../helpers/Auth";
+} from "../discussionApi.js";
+import auth from "../../../helpers/auth.js";
 import { Link, useNavigate } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Markup } from "interweave";

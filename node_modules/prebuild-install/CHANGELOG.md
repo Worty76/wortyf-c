@@ -1,5 +1,11 @@
 # Changelog
 
+## [7.1.2] - 2024-02-29
+
+### Changed
+
+- Support environments where MD5 is prohibited ([#191](https://github.com/prebuild/prebuild-install/issues/191)) ([`9140468`](https://github.com/prebuild/prebuild-install/commit/9140468)) (Tomasz Szuba)
+
 ## [7.1.1] - 2022-06-07
 
 ### Changed
@@ -90,6 +96,8 @@
 ### Changed
 
 - Replace `mkdirp` dependency with `mkdirp-classic` ([**@ralphtheninja**](https://github.com/ralphtheninja))
+
+[7.1.2]: https://github.com/prebuild/prebuild-install/releases/tag/v7.1.2
 
 [7.1.1]: https://github.com/prebuild/prebuild-install/releases/tag/v7.1.1
 

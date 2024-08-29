@@ -11,9 +11,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import auth from "../../../helpers/Auth";
+import auth from "../../../helpers/auth.js";
 import React, { useState } from "react";
-import { deleteReply, updateReply } from "../DiscussionApi";
+import { deleteReply, updateReply } from "../discussionApi.js";
 import { Link } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
@@ -111,7 +111,7 @@ export default function SingleReply({
             <>
               <IconButton onClick={handleOpenOptions}>
                 <MoreVertIcon />
-              </IconButton>
+              </IconButton> 
               <Menu
                 anchorEl={anchorEl}
                 open={open}

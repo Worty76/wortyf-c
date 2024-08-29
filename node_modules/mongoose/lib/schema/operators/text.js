@@ -11,11 +11,11 @@ const castString = require('../../cast/string');
  * @param {Any} val value to cast
  * @param {String} [path] path to associate with any errors that occured
  * @return {Object} casted object
- * @see https://docs.mongodb.com/manual/reference/operator/query/text/
+ * @see https://www.mongodb.com/docs/manual/reference/operator/query/text/
  * @api private
  */
 
-module.exports = function(val, path) {
+module.exports = function castTextSearch(val, path) {
   if (val == null || typeof val !== 'object') {
     throw new CastError('$text', val, path);
   }

@@ -7,10 +7,11 @@ function ChatBox() {
 
   return (
     <Box
-      sx={{
-        alignItems: "center",
+      style={{
         width: "100%",
         height: "100%",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <Box
@@ -23,7 +24,7 @@ function ChatBox() {
       >
         <Button onClick={() => setSelectedChat("")}>Leave Chat</Button>
       </Box>
-      <Box>
+      <Box style={{ flex: 1, overflow: "hidden" }}>
         <SingleChat />
       </Box>
     </Box>

@@ -15,7 +15,7 @@ import {
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signIn } from "./authApi";
-import auth from "../../helpers/Auth";
+import auth from "../../helpers/auth.js";
 import ecommerceImg from "../../images/ecommerce.png";
 
 // const useStyles = makeStyles({

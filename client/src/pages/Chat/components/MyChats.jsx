@@ -3,7 +3,7 @@ import { Box, ListItemText } from "@mui/material";
 import { ChatState } from "../../../context/ChatProvider";
 import ListItemButton from "@mui/material/ListItemButton";
 import axios from "axios";
-import auth from "../../../helpers/Auth";
+import auth from "../../../helpers/auth.js";
 import GroupChatModal from "./ModalButton/GroupChatModal";
 
 function MyChats({ fetchAgain }) {
@@ -33,7 +33,7 @@ function MyChats({ fetchAgain }) {
   }, [fetchAgain]);
 
   return (
-    <Box sx={{ alignItems: "center", width: "50%", height: "100%" }}>
+    <Box sx={{ alignItems: "center", width: "30%", border: "1px solid black"}}>
       <Box
         sx={{
           padding: 2,
@@ -45,7 +45,7 @@ function MyChats({ fetchAgain }) {
         My Chats
         <GroupChatModal />
       </Box>
-      <Box sx={{ width: "100%", height: "100%" }}>
+      <Box sx={{ width: "100%" }}>
         {chats ? (
           <div style={{ padding: 2 }}>
             {chats.map((chat, id) => (

@@ -31,11 +31,11 @@ import {
   deleteLike,
   deletePost,
   updatePost,
-} from "./DiscussionApi";
+} from "./discussionApi.js";
 import { VariantType, useSnackbar } from "notistack";
 import SingleComment from "./components/SingleComment";
 import Topic from "./components/Topic";
-import auth from "../../helpers/Auth";
+import auth from "../../helpers/auth.js";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const useStyles = makeStyles({

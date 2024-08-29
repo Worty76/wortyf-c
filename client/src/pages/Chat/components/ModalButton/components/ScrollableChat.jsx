@@ -4,8 +4,8 @@ import {
   isSameSender,
   isSameSenderMargin,
   isSameUser,
-} from "../../../../../Logic/ChatLogics";
-import auth from "../../../../../helpers/Auth";
+} from "../../../../../Logic/ChatLogics.js";
+import auth from "../../../../../helpers/auth.js";
 import { Avatar, Tooltip } from "@mui/material";
 
 function ScrollableChat({ messages }) {
