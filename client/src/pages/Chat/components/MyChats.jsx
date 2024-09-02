@@ -33,7 +33,7 @@ function MyChats({ fetchAgain }) {
   }, [fetchAgain]);
 
   return (
-    <Box sx={{ alignItems: "center", width: "30%", border: "1px solid black"}}>
+    <Box sx={{ alignItems: "center", width: "30%", border: "1px solid black", borderRadius: "0px 5px 5px 0px"}}>
       <Box
         sx={{
           padding: 2,

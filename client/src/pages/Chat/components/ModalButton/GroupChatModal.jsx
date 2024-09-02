@@ -2,37 +2,44 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
-import { TextField } from "@mui/material";
+import { TextField, Typography, CircularProgress } from "@mui/material";
 import axios from "axios";
 import auth from "../../../../helpers/auth.js";
 import UserListItem from "./components/UserListItem";
 import UserBadgeItem from "./components/UserBadgeItem";
 import { ChatState } from "../../../../context/ChatProvider";
 
-const style = {
+const modalStyle = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 800,
-  height: 400,
+  width: 600,
   bgcolor: "background.paper",
-  border: "2px solid #000",
+  borderRadius: 2,
   boxShadow: 24,
-  padding: 4,
+  p: 4,
+};
+
+const buttonStyle = {
+  marginTop: 2,
+  backgroundColor: "#007bff",
+  color: "#fff",
+  '&:hover': {
+    backgroundColor: "#0056b3",
+  },
 };
 
 function GroupChatModal() {
-  // Handle Group Modal
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // Variables
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
-  const [groupChatName, setGroupChatName] = useState();
+  const [groupChatName, setGroupChatName] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { chats, setChats } = ChatState();
 
@@ -41,7 +48,6 @@ function GroupChatModal() {
       console.log("User already added");
       return;
     }
-
     setSelectedUsers([...selectedUsers, userToAdd]);
   };
 
@@ -51,11 +57,10 @@ function GroupChatModal() {
 
   const handleSearch = async (query) => {
     setSearch(query);
-    if (!query) {
-      return;
-    }
+    if (!query) return;
 
     try {
+      setLoading(true);
       const config = {
         headers: {
           Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
@@ -65,15 +70,16 @@ function GroupChatModal() {
         `http://localhost:8000/api/user?search=${search}`,
         config
       );
-      console.log(data);
       setSearchResult(data);
     } catch (error) {
       console.log(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSubmit = async () => {
-    if (!groupChatName || !selectedUsers) {
+    if (!groupChatName || selectedUsers.length === 0) {
       console.log("Fill all the required fields!");
       return;
     }
@@ -102,82 +108,68 @@ function GroupChatModal() {
 
   return (
     <div>
-      <Button onClick={handleOpen}>New Group Chat</Button>
+      <Button onClick={handleOpen} variant="contained" color="primary">
+        New Group Chat
+      </Button>
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
       >
-        <Box sx={style}>
-          <Box sx={{ width: "100%", height: "100%", display: "flex" }}>
-            <Box
-              sx={{
-                width: "100%",
-              }}
-            >
-              <Box>
-                <div
-                  style={{
-                    paddingBottom: 10,
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <TextField
-                    id="outlined-basic"
-                    label="Group Name"
-                    variant="outlined"
-                    fullWidth
-                    onChange={(e) => setGroupChatName(e.target.value)}
-                  />
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <TextField
-                    id="outlined-basic"
-                    label="Find Username or Email"
-                    variant="outlined"
-                    onChange={(e) => handleSearch(e.target.value)}
-                    fullWidth
-                  />
-                </div>
-                <div style={{ display: "flex", flexWrap: "wrap", padding: 2 }}>
-                  {selectedUsers.map((u) => (
-                    <UserBadgeItem
-                      key={u._id}
-                      user={u}
-                      handleFunction={() => handleDelete(u)}
-                    />
-                  ))}
-                </div>
-              </Box>
-              <Box>
-                <Button
-                  onClick={handleSubmit}
-                  sx={{ backgroundColor: "lightblue" }}
-                >
-                  Create
-                </Button>
-              </Box>
+        <Box sx={modalStyle}>
+          <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
+            Create Group Chat
+          </Typography>
+          <TextField
+            id="group-name"
+            label="Group Name"
+            variant="standard"
+            fullWidth
+            margin="normal"
+            onChange={(e) => setGroupChatName(e.target.value)}
+            value={groupChatName}
+          />
+          <TextField
+            id="search"
+            label="Find Username or Email"
+            variant="standard"
+            fullWidth
+            margin="normal"
+            onChange={(e) => handleSearch(e.target.value)}
+            value={search}
+          />
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+              <CircularProgress />
             </Box>
-            <Box sx={{ width: "100%" }}>
-              <div style={{ padding: 10 }}>
-                {searchResult?.slice(0, 4).map((user) => (
-                  <UserListItem
-                    key={user._id}
-                    user={user}
-                    handleFunction={() => handleGroup(user)}
-                  />
-                ))}
-              </div>
+          ) : (
+            <Box sx={{ mb: 2 }}>
+              {searchResult?.slice(0, 4).map((user) => (
+                <UserListItem
+                  key={user._id}
+                  user={user}
+                  handleFunction={() => handleGroup(user)}
+                />
+              ))}
             </Box>
+          )}
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 2 }}>
+            {selectedUsers.map((u) => (
+              <UserBadgeItem
+                key={u._id}
+                user={u}
+                handleFunction={() => handleDelete(u)}
+              />
+            ))}
           </Box>
+          <Button
+            onClick={handleSubmit}
+            sx={buttonStyle}
+            variant="contained"
+          >
+            Create
+          </Button>
         </Box>
       </Modal>
     </div>
