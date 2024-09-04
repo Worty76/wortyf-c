@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { ChatState } from "../../../context/ChatProvider";
 import InputBase from "@material-ui/core/InputBase";
-import auth from "../../../helpers/auth.js";
+import auth from "../../../helpers/Auth";
 import axios from "axios";
 import ScrollableChat from "./ModalButton/components/ScrollableChat";
 

@@ -31,12 +31,13 @@ import {
   deleteLike,
   deletePost,
   updatePost,
-} from "./discussionApi.js";
+} from "./DiscussionApi";
 import { VariantType, useSnackbar } from "notistack";
 import SingleComment from "./components/SingleComment";
 import Topic from "./components/Topic";
-import auth from "../../helpers/auth.js";
+import auth from "../../helpers/Auth";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import TextEditor from "./components/TextEditor";
 
 const useStyles = makeStyles({
   root: {
@@ -488,32 +489,14 @@ export default function Discussion() {
               {/* Comment section */}
               <List>
                 <ListItem>
-                  <TextField
+                  {/* <TextField
                     sx={{ width: "100%" }}
                     label={"Your answer"}
                     onChange={(event) => {
                       setText(event.target.value);
                     }}
-                  />
-                  {auth.isAuthenticated().user ? (
-                    <Button
-                      disabled={text ? false : true}
-                      variant="contained"
-                      onClick={onCreateComment}
-                    >
-                      Comment
-                    </Button>
-                  ) : (
-                    <Button
-                      disabled={text ? false : true}
-                      variant="contained"
-                      LinkComponent={Link}
-                      to="/signin"
-                      sx={{ textAlign: "center" }}
-                    >
-                      Sign in to comment
-                    </Button>
-                  )}
+                  /> */}
+                  <TextEditor setText={setText} onCreateComment={onCreateComment} />
                 </ListItem>
               </List>
               {comments &&

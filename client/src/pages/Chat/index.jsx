@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MyChats from "./components/MyChats";
 import ChatBox from "./components/ChatBox";
-import auth from "../../helpers/auth.js";
+import auth from "../../helpers/Auth";
 import { useNavigate } from "react-router-dom";
 
 function Chat() {

@@ -9,7 +9,7 @@ const create = async (credentials, post) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "auth-header": credentials.t,
+          "Authorization": "Bearer " + credentials.t,
         },
       }
     );

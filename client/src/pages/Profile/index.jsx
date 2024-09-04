@@ -23,7 +23,7 @@ import Topic from "../Discussion/components/Topic";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ChatIcon from "@mui/icons-material/Chat";
-import auth from "../../helpers/auth.js";
+import auth from "../../helpers/Auth";
 import { changeAvatar } from "../Auth/authApi";
 
 const useStyles = makeStyles({

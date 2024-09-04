@@ -11,9 +11,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import auth from "../../../helpers/auth.js";
+import auth from "../../../helpers/Auth";
 import React, { useState } from "react";
-import { deleteReply, updateReply } from "../discussionApi.js";
+import { deleteReply, updateReply } from "../DiscussionApi";
 import { Link } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 

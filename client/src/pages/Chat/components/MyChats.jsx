@@ -3,7 +3,7 @@ import { Box, ListItemText } from "@mui/material";
 import { ChatState } from "../../../context/ChatProvider";
 import ListItemButton from "@mui/material/ListItemButton";
 import axios from "axios";
-import auth from "../../../helpers/auth.js";
+import auth from "../../../helpers/Auth";
 import GroupChatModal from "./ModalButton/GroupChatModal";
 
 function MyChats({ fetchAgain }) {

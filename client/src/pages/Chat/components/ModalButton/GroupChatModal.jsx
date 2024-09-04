@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import { TextField, Typography, CircularProgress } from "@mui/material";
 import axios from "axios";
-import auth from "../../../../helpers/auth.js";
+import auth from "../../../../helpers/Auth";
 import UserListItem from "./components/UserListItem";
 import UserBadgeItem from "./components/UserBadgeItem";
 import { ChatState } from "../../../../context/ChatProvider";

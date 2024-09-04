@@ -1,5 +1,7 @@
 const stream = require('streamx')
 
+const getStreamError = stream.getStreamError
+
 const defaultEncoding = 'utf8'
 
 exports.pipeline = stream.pipeline
@@ -255,6 +257,39 @@ exports.Transform = class Transform extends stream.Transform {
 
 exports.PassThrough = class PassThrough extends exports.Transform {}
 
+exports.finished = function finished (stream, opts, cb) {
+  if (typeof opts === 'function') {
+    cb = opts
+    opts = {}
+  }
+
+  if (!opts) opts = {}
+
+  const {
+    cleanup = false
+  } = opts
+
+  const done = () => {
+    cb(getStreamError(stream, { all: true }))
+
+    if (cleanup) detach()
+  }
+
+  const detach = () => {
+    stream.off('close', done)
+    stream.off('error', noop)
+  }
+
+  if (stream.destroyed) {
+    done()
+  } else {
+    stream.on('close', done)
+    stream.on('error', noop)
+  }
+
+  return detach
+}
+
 function read (read, cb) {
   read.call(this, 65536)
 
@@ -280,3 +315,5 @@ function passthrough (data, cb) {
 function byteLengthWritable (data) {
   return data.chunk.byteLength
 }
+
+function noop () {}

@@ -5,7 +5,7 @@ import {
   isSameSenderMargin,
   isSameUser,
 } from "../../../../../Logic/ChatLogics.js";
-import auth from "../../../../../helpers/auth.js";
+import auth from "../../../../../helpers/Auth";
 import { Avatar, Tooltip } from "@mui/material";
 
 function ScrollableChat({ messages }) {

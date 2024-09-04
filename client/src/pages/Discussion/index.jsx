@@ -29,11 +29,11 @@ import { Link } from "react-router-dom";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import axios from "axios";
 import CircleIcon from "@mui/icons-material/Circle";
-import { create } from "./discussionsApi.js";
+import { create } from "./DiscussionsApi";
 import { VariantType, useSnackbar } from "notistack";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import Topic from "./components/Topic";
-import auth from "../../helpers/auth.js";
+import auth from "../../helpers/Auth";
 // eslint-disable-next-line
 import Crop169Icon from "@mui/icons-material/Crop169";
 import { useNavigate } from "react-router-dom";

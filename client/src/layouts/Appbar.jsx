@@ -16,7 +16,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useNavigate } from "react-router-dom";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import auth from "../helpers/auth.js";
+import auth from "../helpers/Auth";
 
 export default function Appbar() {
   const [anchorElNav, setAnchorElNav] = useState(null);

@@ -5,7 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
-import theme from "./theme.js";
+import theme from "./Theme";
 import { SnackbarProvider } from "notistack";
 import ChatProvider from "./context/ChatProvider";
 
