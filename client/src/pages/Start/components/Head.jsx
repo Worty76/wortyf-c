@@ -24,6 +24,15 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
   },
+  button: {
+    backgroundColor: theme.palette.primary.main,
+    color: "#fff",
+    padding: theme.spacing(1.5, 3),
+    fontSize: "1rem",
+    "&:hover": {
+      backgroundColor: theme.palette.primary.dark,
+    },
+  },
 }));
 
 export default function Head() {
@@ -71,7 +80,7 @@ export default function Head() {
               A place where people can share their ideas, opinions to help each
               other.
             </p>
-            <Button variant="contained" onClick={handleNavigation}>
+            <Button className={classes.button} variant="contained" onClick={handleNavigation}>
               Join now
             </Button>
           </div>

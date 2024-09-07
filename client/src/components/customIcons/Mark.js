@@ -3,7 +3,7 @@ export default function BestAnswer() {
     <div
       style={{
         borderRadius: "50px",
-        backgroundColor: "#dbffdc",
+        backgroundColor: "#fd900133",
         width: "100px",
         height: "25px",
         display: "flex",
@@ -14,11 +14,11 @@ export default function BestAnswer() {
         style={{
           margin: "0 auto",
           fontSize: "clamp(0.7rem, 5vw, 0.3rem)",
-          color: "#38E54D",
+          color: "#d43f03",
           fontWeight: "700",
         }}
       >
-        Best answer
+        Sold
       </div>
     </div>
   );

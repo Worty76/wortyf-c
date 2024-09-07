@@ -406,7 +406,26 @@ export default function Discussion() {
               ) : (
                 <ListItem>
                   <ListItemText
-                    primary={<Typography>{post.content}</Typography>}
+                    primary={
+                      <>
+                        <Typography>{post.content}</Typography>
+                        <div style={{alignItems: "center", flexFlow: "row wrap", display: "flex"}}>
+                          {post.images &&
+                            post.images.map((image) => (
+                              <img
+                                alt="images"
+                                style={{
+                                  width: "300px",
+                                  minHeight: "100%",
+                                  objectFit: "contain",
+                                  padding: 2,
+                                }}
+                                src={`http://localhost:8000/${image}`}
+                              />
+                            ))}
+                        </div>
+                      </>
+                    }
                   />
                 </ListItem>
               )}
@@ -496,7 +515,12 @@ export default function Discussion() {
                       setText(event.target.value);
                     }}
                   /> */}
-                  <TextEditor setText={setText} onCreateComment={onCreateComment} />
+                  <div style={{width: "100%"}}>
+                    <TextEditor
+                      setText={setText}
+                      onCreateComment={onCreateComment}
+                    />
+                  </div>
                 </ListItem>
               </List>
               {comments &&

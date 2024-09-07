@@ -166,7 +166,7 @@ const updatePost = async (params, credentials, post) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "auth-header": credentials.t,
+          "Authorization": "Bearer " + credentials.t,
         },
       }
     );
@@ -185,7 +185,7 @@ const updateComment = async (params, credentials, commentData) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "auth-header": credentials.t,
+          "Authorization": "Bearer " + credentials.t,
         },
       }
     );
@@ -205,7 +205,7 @@ const updateReply = async (params, credentials, commentData) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "auth-header": credentials.t,
+          "Authorization": "Bearer " + credentials.t,
         },
       }
     );

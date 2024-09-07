@@ -4,20 +4,16 @@ import {
   Button,
   Divider,
   FormControl,
-  InputLabel,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   MenuItem,
-  OutlinedInput,
   Paper,
   Select,
   Toolbar,
   Typography,
-  Modal,
   TextField,
-  Input,
 } from "@mui/material";
 // eslint-disable-next-line
 import { SelectChangeEvent } from "@mui/material/Select";
@@ -38,6 +34,7 @@ import auth from "../../helpers/Auth";
 import Crop169Icon from "@mui/icons-material/Crop169";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
+import MyModal from "./MyModal";
 
 const useStyles = makeStyles({
   leftContainer: {
@@ -108,12 +105,15 @@ export default function Discussions({ posts, setPosts }) {
     content: "",
     error: "",
   });
+  const [images, setImages] = useState([]);
   const [selectTopics, setSelectTopics] = useState([]);
   const [search, setSearch] = useState("");
 
   const handleChange = (name) => (event) => {
     setValues({ ...values, [name]: event.target.value });
   };
+
+  console.log(posts);
 
   const handleOpen = () => {
     setOpen(!open);
@@ -166,6 +166,7 @@ export default function Discussions({ posts, setPosts }) {
     values.title && postData.append("title", values.title);
     values.description && postData.append("description", values.description);
     values.content && postData.append("content", values.content);
+    images && images.forEach((image) => postData.append("images", image));
     selectTopics && postData.append("topic", selectTopics);
 
     create(
@@ -272,11 +273,13 @@ export default function Discussions({ posts, setPosts }) {
               </Select>
             </FormControl>
             <SearchIcon sx={{ marginLeft: "10px" }} />
-            <Input
-              type={"search"}
-              style={{ marginLeft: "10px" }}
+            <TextField
+              type="search"
+              label="Search posts"
+              variant="outlined"
+              size="small"
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Name of the problem"
+              sx={{ marginLeft: "10px", width: "80%" }}
             />
           </Box>
           {/* Right component */}
@@ -458,78 +461,19 @@ export default function Discussions({ posts, setPosts }) {
         </div>
       </Box>
 
-      {/* Modals */}
-      <Modal open={open} onClose={handleOpen}>
-        <Box className={classes.modal}>
-          <div style={{ width: "100%" }}>
-            <List>
-              <ListItem>
-                <h3
-                  style={{
-                    textAlign: "center",
-                    width: "100%",
-                    fontWeight: "300",
-                  }}
-                >
-                  There are many people are waiting for your new question
-                </h3>
-              </ListItem>
-              <ListItem>
-                <TextField
-                  label="Title"
-                  variant="outlined"
-                  id="title"
-                  onChange={handleChange("title")}
-                  fullWidth
-                />
-              </ListItem>
-              <ListItem>
-                <TextField
-                  fullWidth
-                  label="Description"
-                  variant="outlined"
-                  id="description"
-                  onChange={handleChange("description")}
-                />
-              </ListItem>
-              <ListItem>
-                <TextField
-                  fullWidth
-                  label="Content"
-                  variant="outlined"
-                  id="content"
-                  onChange={handleChange("content")}
-                />
-              </ListItem>
-              <ListItem>
-                <FormControl fullWidth>
-                  <InputLabel>Topics</InputLabel>
-                  <Select
-                    multiple
-                    value={selectTopics}
-                    onChange={handleSelectingOptions}
-                    input={<OutlinedInput label="Topics" />}
-                  >
-                    {topics.map((topic, id) => (
-                      <MenuItem key={id} value={topic.name}>
-                        {topic.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </ListItem>
-            </List>
-            <Button
-              variant="contained"
-              onClick={onSubmit}
-              sx={{ display: "flex", margin: "0 auto" }}
-            >
-              Submit
-            </Button>
-            {values.error ? renderError() : null}
-          </div>
-        </Box>
-      </Modal>
+      {/* Modal */}
+      <MyModal
+        open={open}
+        handleChange={handleChange}
+        handleOpen={handleOpen}
+        selectTopics={selectTopics}
+        handleSelectingOptions={handleSelectingOptions}
+        topics={topics}
+        onSubmit={onSubmit}
+        renderError={renderError}
+        values={values}
+        setImages={setImages}
+      />
     </Paper>
   );
 }

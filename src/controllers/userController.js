@@ -138,6 +138,7 @@ const changeAvatar = async (req, res) => {
   form.maxFileSize = 50 * 1024 * 1024; // 5MB
   form.uploadDir = uploadFolder;
   const body = await doSomethingWithNodeRequest(req);
+  console.log(body)
 
   const timestamp = Date.now();
   const ref = `${timestamp}-${body.newFilename}.webp`;
@@ -173,6 +174,8 @@ function doSomethingWithNodeRequest(req) {
         reject(error);
         return;
       }
+      console.log("Parsed Fields: ", fields);
+      console.log("Parsed Files: ", files);
       resolve({ ...fields, ...files });
     });
   });

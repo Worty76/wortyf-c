@@ -48,7 +48,7 @@ const changeAvatar = async (params, credentials, imageData) => {
       {
         headers: {
           "Content-Type": "multipart/form-data",
-          "auth-header": credentials.t,
+          "Authorization": "Bearer " + credentials.t,
         },
       }
     );

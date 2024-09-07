@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import BestAnswer from "../../../components/customIcons/BestAnswer";
+import BestAnswer from "../../../components/customIcons/Mark";
 import ReplyComment from "./ReplyComment";
 import { VariantType, useSnackbar } from "notistack";
 import {
