@@ -138,7 +138,7 @@ const changeAvatar = async (req, res) => {
   form.maxFileSize = 50 * 1024 * 1024; // 5MB
   form.uploadDir = uploadFolder;
   const body = await doSomethingWithNodeRequest(req);
-  console.log(body)
+  console.log(body);
 
   const timestamp = Date.now();
   const ref = `${timestamp}-${body.newFilename}.webp`;
@@ -153,6 +153,17 @@ const changeAvatar = async (req, res) => {
   // user.avatar_url.data = fs.readFileSync(body.image._writeStream.path);
   // user.avatar_url.contentType = body.image._writeStream.type;
   await user.save();
+
+  await Post.updateMany(
+    { "author._id": req.params.id },
+    { $set: { "author.avatar_url": ref } }
+  );
+
+  await Comment.updateMany(
+    { "author._id": req.params.id },
+    { $set: { "author.avatar_url": ref } }
+  );
+
   console.log("Successfully changed avatar");
   res.status(200).send({ message: "Successfully changed avatar" });
 };

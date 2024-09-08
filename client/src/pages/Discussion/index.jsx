@@ -201,7 +201,7 @@ export default function Discussions({ posts, setPosts }) {
         .then((response) => {
           setTopics(response.data.data);
         })
-        .catch(function(thrown) {
+        .catch(function (thrown) {
           if (axios.isCancel(thrown)) {
             console.log("Request canceled", thrown.message);
           }
@@ -309,8 +309,31 @@ export default function Discussions({ posts, setPosts }) {
             >
               <Paper
                 className={classes.post}
-                sx={{ border: post.solved ? "1px #38E54D solid" : "none" }}
+                sx={{
+                  position: "relative",
+                  // border: post.solved ? "1px #38E54D solid" : "none",
+                  transition: "all 0.3s",
+                  "&:hover": {
+                    boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+                    transform: "scale(1.02)",
+                  },
+                }}
               >
+                {post.solved && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "10px",
+                      right: "10px",
+                      backgroundColor: "#31d631",
+                      color: "white",
+                      padding: "2px 6px",
+                      borderRadius: "4px",
+                    }}
+                  >
+                    Sold
+                  </Box>
+                )}
                 <Box sx={{ flexGrow: 0, display: "flex" }}>
                   <ListItem>
                     <ListItemAvatar>

@@ -59,7 +59,7 @@ const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
     origin: "http://localhost:3000",
-    // credentials: true,
+    credentials: true,
   },
 });
 
@@ -76,6 +76,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new message", (newMessageReceived) => {
+    console.log(newMessageReceived);
+    console.log("newmess");
     var chat = newMessageReceived.chat;
 
     if (!chat.users) return console.log("chat.users not defined");

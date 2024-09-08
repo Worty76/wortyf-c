@@ -1,7 +1,6 @@
 import {
   Avatar,
   Button,
-  Divider,
   IconButton,
   List,
   ListItem,
@@ -27,6 +26,7 @@ import auth from "../../../helpers/Auth";
 import { Link, useNavigate } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Markup } from "interweave";
+import TextEditor from "./TextEditor";
 
 export default function SingleComment({
   updateComments,
@@ -50,10 +50,7 @@ export default function SingleComment({
   const handleCloseOptions = () => {
     setAnchorEl(null);
   };
-  const [values, setValues] = useState({
-    text: "",
-    error: "",
-  });
+  const [text, setText] = useState("");
 
   const [commentEditing, setCommentEditing] = useState({
     text: comment.text,
@@ -73,7 +70,7 @@ export default function SingleComment({
 
   const onCreateReply = () => {
     let reply = new FormData();
-    values.text && reply.append("text", values.text);
+    text && reply.append("text", text);
 
     createReply(
       { postId: postId, commentId: comment._id },
@@ -83,11 +80,11 @@ export default function SingleComment({
       reply
     ).then((data) => {
       if (data.stack) {
-        setValues({ ...values, error: data.response.data.error.message });
+        console.log(data.stack);
       } else {
         const reply = JSON.parse(data);
         setReplies([...replies, reply]);
-        setValues({ values: "", error: "" });
+        setText("");
         handleReply();
         handleVariant("success");
       }
@@ -168,7 +165,7 @@ export default function SingleComment({
         .then((response) => {
           setReplies(response.data.data);
         })
-        .catch(function(thrown) {
+        .catch(function (thrown) {
           if (axios.isCancel(thrown)) {
             console.log("Request canceled", thrown.message);
           }
@@ -188,10 +185,6 @@ export default function SingleComment({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleChange = (name) => (event) => {
-    setValues({ ...values, [name]: event.target.value });
-  };
 
   const handleReply = () => {
     setOpenReply(!openReply);
@@ -296,16 +289,14 @@ export default function SingleComment({
       {openReply && (
         <List style={{ paddingLeft: "100px" }}>
           <ListItem>
-            <TextField
-              style={{ width: "100%" }}
-              label={"Your answer"}
-              onChange={handleChange("text")}
-            />
+            <div style={{ width: "100%" }}>
+              <TextEditor setText={setText} onCreateComment={onSaveEditing} />
+            </div>
             <List>
               <ListItem>
                 {auth.isAuthenticated().user ? (
                   <Button
-                    disabled={values.text ? false : true}
+                    disabled={text ? false : true}
                     variant="contained"
                     onClick={onCreateReply}
                   >
@@ -313,7 +304,7 @@ export default function SingleComment({
                   </Button>
                 ) : (
                   <Button
-                    disabled={values.text ? false : true}
+                    disabled={text ? false : true}
                     variant="contained"
                     LinkComponent={Link}
                     to="/signin"
@@ -334,7 +325,6 @@ export default function SingleComment({
         updateReplies={updateReplies}
       />
       <br />
-      <Divider />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import CssBaseline from "@material-ui/core/CssBaseline";
+// import CssBaseline from "@material-ui/core/CssBaseline";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Grid,
@@ -41,15 +41,10 @@ import TextEditor from "./components/TextEditor";
 
 const useStyles = makeStyles({
   root: {
-    width: "100%",
     padding: "5%",
   },
   responsiveTexts: {
     fontSize: "clamp(1.5rem, 5vw, 2rem)",
-  },
-  paper: {
-    width: "100%",
-    margin: "0 auto",
   },
   sidebarContainer: {
     width: "20%",
@@ -142,7 +137,7 @@ export default function Discussion() {
             content: data.post.content,
           });
         })
-        .catch(function(thrown) {
+        .catch(function (thrown) {
           if (axios.isCancel(thrown)) {
             console.log("Request canceled", thrown.message);
           }
@@ -175,6 +170,7 @@ export default function Discussion() {
       }
     });
   };
+
   // Fetch post
   useEffect(() => {
     const CancelToken = axios.CancelToken;
@@ -222,10 +218,9 @@ export default function Discussion() {
       like
     ).then((data) => {
       if (data.stack) {
-        // console.log(data);
+        console.log(data);
       } else {
         setLikes(JSON.parse(data));
-        // console.log(data);
       }
     });
   };
@@ -293,30 +288,36 @@ export default function Discussion() {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
+      {/* <CssBaseline /> */}
       <Paper className={classes.paper} elevation={3}>
         <Grid display="flex">
           {/* Left container */}
           <Box
             sx={{
-              justifyContent: "center",
+              display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               width: "240px",
-              padding: "30px",
+              padding: "20px",
+              borderRadius: "8px",
             }}
           >
             <ListItem disablePadding>
               <ListItemIcon>
-                {post.solved ? (
-                  <CheckCircleIcon sx={{ color: "red" }} />
-                ) : (
-                  <CheckCircleIcon />
-                )}
+                <CheckCircleIcon
+                  sx={{ color: post.solved ? "green" : "gray" }}
+                />
               </ListItemIcon>
-              <ListItemText primary={<Typography noWrap>Sold</Typography>} />
+              <ListItemText
+                primary={
+                  <Typography variant="h6" sx={{}}>
+                    Sold
+                  </Typography>
+                }
+              />
             </ListItem>
           </Box>
-          {/* {console.log(likes)} */}
+
           {/* Right container */}
           <Box sx={{ width: "100%" }}>
             <div
@@ -409,7 +410,13 @@ export default function Discussion() {
                     primary={
                       <>
                         <Typography>{post.content}</Typography>
-                        <div style={{alignItems: "center", flexFlow: "row wrap", display: "flex"}}>
+                        <div
+                          style={{
+                            alignItems: "center",
+                            flexFlow: "row wrap",
+                            display: "flex",
+                          }}
+                        >
                           {post.images &&
                             post.images.map((image) => (
                               <img
@@ -515,7 +522,7 @@ export default function Discussion() {
                       setText(event.target.value);
                     }}
                   /> */}
-                  <div style={{width: "100%"}}>
+                  <div style={{ width: "100%" }}>
                     <TextEditor
                       setText={setText}
                       onCreateComment={onCreateComment}
@@ -525,14 +532,23 @@ export default function Discussion() {
               </List>
               {comments &&
                 comments.map((comment) => (
-                  <SingleComment
+                  <Box
                     key={comment._id}
-                    updateComments={updateComments}
-                    comment={comment}
-                    postId={params.id}
-                    solved={post.solved}
-                    authorId={user._id}
-                  />
+                    sx={{
+                      padding: "10px",
+                      backgroundColor: "#f9f9f9",
+                      borderRadius: "8px",
+                      margin: "15px",
+                    }}
+                  >
+                    <SingleComment
+                      updateComments={updateComments}
+                      comment={comment}
+                      postId={params.id}
+                      solved={post.solved}
+                      authorId={user._id}
+                    />
+                  </Box>
                 ))}
             </div>
           </Box>

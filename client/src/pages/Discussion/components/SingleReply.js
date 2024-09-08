@@ -16,6 +16,7 @@ import React, { useState } from "react";
 import { deleteReply, updateReply } from "../DiscussionApi";
 import { Link } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Markup } from "interweave";
 
 export default function SingleReply({
   comment,
@@ -111,7 +112,7 @@ export default function SingleReply({
             <>
               <IconButton onClick={handleOpenOptions}>
                 <MoreVertIcon />
-              </IconButton> 
+              </IconButton>
               <Menu
                 anchorEl={anchorEl}
                 open={open}
@@ -150,7 +151,13 @@ export default function SingleReply({
               onChange={handleCommentEditing("text")}
             />
           ) : (
-            <ListItemText primary={<Typography>{comment.text}</Typography>} />
+            <ListItemText
+              primary={
+                <Typography>
+                  <Markup content={comment.text} />
+                </Typography>
+              }
+            />
           )}
           {openEditing ? (
             <Button

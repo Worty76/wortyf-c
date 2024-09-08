@@ -12,6 +12,7 @@ import "./App.css";
 import MidMans from "./pages/MidMans/index";
 import Events from "./pages/Events/index";
 import Chat from "./pages/Chat/index";
+import CreatePost from "./pages/Discussion/CreatePost";
 // import ChatGPT from "./pages/ChatGPT/index";
 // import ChatBotHelper from "./components/ChatBotHelper";
 
@@ -27,6 +28,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/home/create" element={<CreatePost />} />
         <Route path="/midmans" element={<MidMans />} />
         <Route path="/events" element={<Events />} />
         <Route path="/chat" element={<Chat />} />

@@ -25,6 +25,14 @@ const auth = {
     }
     callback();
   },
+
+  updateAvatarUrl(newAvatarUrl) {
+    if (typeof window !== "undefined") {
+      let data = JSON.parse(sessionStorage.getItem("jwt"));
+      data.avatar_url = newAvatarUrl;
+      sessionStorage.setItem("jwt", JSON.stringify(data));
+    }
+  },
 };
 
 export default auth;

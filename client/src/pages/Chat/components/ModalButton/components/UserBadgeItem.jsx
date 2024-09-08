@@ -1,5 +1,5 @@
-import { Box } from "@mui/material";
-import { List, Avatar, ListItemText, ListItem } from "@mui/material";
+import { Box, Avatar, Typography } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 const UserBadgeItem = ({ handleFunction, user }) => {
   return (
@@ -8,25 +8,25 @@ const UserBadgeItem = ({ handleFunction, user }) => {
         padding: 1,
         display: "flex",
         alignItems: "center",
-        color: "black",
-        borderRadius: "10",
+        borderRadius: 1,
+        backgroundColor: "#f5f5f5",
+        transition: "background-color 0.3s",
+        cursor: "pointer",
+        "&:hover": {
+          backgroundColor: "#e0e0e0",
+        },
       }}
+      onClick={handleFunction}
     >
-      <Box>
-        <div style={{display: "flex", alignItems: "center"}}>
-          <Avatar
-            src={`http://localhost:8000/${user.avatar_url}`}
-            sx={{ cursor: "pointer" }}
-            onClick={handleFunction}
-            size={"sm"}
-          />
-          <ListItemText
-            sx={{ paddingLeft: "10px", cursor: "pointer" }}
-            onClick={handleFunction}
-            primary={user.username}
-          />
-        </div>
-      </Box>
+      <Avatar
+        src={`http://localhost:8000/${user.avatar_url}`}
+        alt={`${user.username}'s avatar`} // Added alt text for accessibility
+        sx={{ width: 40, height: 40, marginRight: 2 }} // Adjusted size and margin
+      />
+      <Typography variant="body1" component="span">
+        {user.username}
+      </Typography>
+      <CloseIcon />
     </Box>
   );
 };

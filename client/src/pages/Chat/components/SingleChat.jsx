@@ -1,18 +1,30 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { ChatState } from "../../../context/ChatProvider";
-import InputBase from "@material-ui/core/InputBase";
+import { InputBase } from "@mui/material";
 import auth from "../../../helpers/Auth";
 import axios from "axios";
+import io from "socket.io-client";
 import ScrollableChat from "./ModalButton/components/ScrollableChat";
 
 var socket, selectedChatCompare;
+const ENDPOINT = "http://localhost:8000";
 
-function SingleChat() {
+function SingleChat({ fetchAgain, setFetchAgain }) {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  // eslint-disable-next-line
+  const [socketConnected, setSocketConnected] = useState(false);
 
-  const { selectedChat } = ChatState();
+  const { selectedChat, notification, setNotification } = ChatState();
+
+  console.log(auth.isAuthenticated());
+  useEffect(() => {
+    const x = auth.isAuthenticated().user;
+    socket = io(ENDPOINT);
+    socket.emit("setup", x);
+    socket.on("connected", () => setSocketConnected(true));
+  }, []);
 
   // Fetch messages
   const fetchMessages = async () => {
@@ -58,7 +70,9 @@ function SingleChat() {
           },
           config
         );
-        // socket.emit("new message", data);
+
+        socket.emit("new message", data);
+        setNewMessage("");
         setMessages([...messages, data]);
       } catch (error) {
         console.log(error);
@@ -73,6 +87,22 @@ function SingleChat() {
 
     // eslint-disable-next-line
   }, [selectedChat]);
+
+  useEffect(() => {
+    socket.on("message received", (newMessageReceived) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageReceived.chat._id
+      ) {
+        if (!notification.includes(newMessageReceived)) {
+          setNotification([newMessageReceived, ...notification]);
+          setFetchAgain(!fetchAgain);
+        }
+      } else {
+        setMessages([...messages, newMessageReceived]);
+      }
+    });
+  });
 
   return (
     <Box
@@ -108,12 +138,12 @@ function SingleChat() {
           <InputBase
             style={{
               padding: "10px",
-              border: "2px solid #007bff", 
-              borderRadius: "4px", 
+              border: "2px solid #007bff",
+              borderRadius: "4px",
               margin: "10px",
               fontSize: "16px",
               "&:focus": {
-                borderColor: "#0056b3", 
+                borderColor: "#0056b3",
                 outline: "none",
               },
             }}

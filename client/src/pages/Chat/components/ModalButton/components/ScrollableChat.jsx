@@ -1,3 +1,4 @@
+import React from "react";
 import ScrollableFeed from "react-scrollable-feed";
 import {
   isLastMessage,
@@ -6,33 +7,34 @@ import {
   isSameUser,
 } from "../../../../../Logic/ChatLogics.js";
 import auth from "../../../../../helpers/Auth";
-import { Avatar, Tooltip } from "@mui/material";
+import { Avatar, Tooltip, Typography, Box } from "@mui/material";
 
 function ScrollableChat({ messages }) {
   return (
     <ScrollableFeed>
-      {" "}
-      {messages &&
+      {messages && messages.length > 0 ? (
         messages.map((m, i) => (
-          <div style={{ display: "flex" }} key={m._id}>
+          <Box
+            key={m._id}
+            sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}
+          >
             {(isSameSender(messages, m, i, auth.isAuthenticated().user._id) ||
               isLastMessage(messages, i, auth.isAuthenticated().user._id)) && (
               <Tooltip
                 placement="bottom-start"
-                arrow={true}
+                arrow
                 title={m.sender.username}
+                sx={{ marginRight: 1 }}
               >
                 <Avatar
-                  mt="7px"
-                  mr={1}
-                  size="sm"
-                  cursor="pointer"
                   src={`http://localhost:8000/${m.sender.avatar_url}`}
+                  alt={m.sender.username}
+                  sx={{ width: 40, height: 40 }}
                 />
               </Tooltip>
             )}
-            <span
-              style={{
+            <Box
+              sx={{
                 backgroundColor: `${
                   m.sender._id === auth.isAuthenticated().user._id
                     ? "#BEE3F8"
@@ -50,17 +52,29 @@ function ScrollableChat({ messages }) {
                   i,
                   auth.isAuthenticated().user._id
                 )
-                  ? 3
-                  : 10,
+                  ? 0
+                  : 1,
                 borderRadius: "20px",
-                padding: "5px 15px",
+                padding: "10px 15px",
                 maxWidth: "75%",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                position: "relative",
+                wordBreak: "break-word",
               }}
             >
-              {m.content}
-            </span>
-          </div>
-        ))}
+              <Typography variant="body2" component="span">
+                {m.content}
+              </Typography>
+            </Box>
+          </Box>
+        ))
+      ) : (
+        <Box sx={{ textAlign: "center", padding: 2 }}>
+          <Typography variant="body2" color="textSecondary">
+            No messages yet
+          </Typography>
+        </Box>
+      )}
     </ScrollableFeed>
   );
 }

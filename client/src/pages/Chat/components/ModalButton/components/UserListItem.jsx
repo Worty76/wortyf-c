@@ -1,5 +1,4 @@
-import { Avatar, Box } from "@mui/material";
-import { ListItemText } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 
 const UserListItem = ({ handleFunction, user }) => {
   return (
@@ -10,20 +9,31 @@ const UserListItem = ({ handleFunction, user }) => {
         width: "100%",
         display: "flex",
         alignItems: "center",
-        color: "black",
-        paddingHorizontal: 3,
-        paddingVertical: 2,
-        borderRadius: "10",
+        padding: 2,
+        borderRadius: 2,
+        backgroundColor: "#f5f5f5",
+        transition: "background-color 0.3s",
+        "&:hover": {
+          backgroundColor: "#e0e0e0",
+        },
       }}
     >
       <Avatar
         src={`http://localhost:8000/${user.avatar_url}`}
-        sx={{ cursor: "pointer" }}
-        size={"sm"}
+        alt={`${user.username}'s avatar`} // Added alt text for accessibility
+        sx={{ width: 48, height: 48, marginRight: 2 }} // Adjusted size and margin
       />
-      <Box>
-        <ListItemText primary={user.username} />
-        <ListItemText primary={user.email} />
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Typography
+          variant="body1"
+          component="span"
+          sx={{ fontWeight: "bold" }}
+        >
+          {user.username}
+        </Typography>
+        <Typography variant="body2" color="textSecondary" component="span">
+          {user.email}
+        </Typography>
       </Box>
     </Box>
   );

@@ -94,7 +94,6 @@ const createPost = async (req, res) => {
 
     const body = await doSomethingWithNodeRequest(req);
 
-
     let imagesArray = [];
 
     if (body.images) {
@@ -102,13 +101,13 @@ const createPost = async (req, res) => {
       for (let image of images) {
         const timestamp = Date.now();
         const ref = `${timestamp}-${image.newFilename}.webp`;
-        
+
         const buffer = fs.readFileSync(image._writeStream.path);
-        
+
         await sharp(buffer)
-        .webp({ quality: 20 })
-        .toFile("./uploads/" + ref);
-        
+          .webp({ quality: 20 })
+          .toFile("./uploads/" + ref);
+
         imagesArray.push(ref);
       }
     }

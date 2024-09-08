@@ -11,11 +11,11 @@ import {
   Button,
   Tooltip,
   Avatar,
-  Badge,
+  // Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useNavigate } from "react-router-dom";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+// import NotificationsIcon from "@mui/icons-material/Notifications";
 import auth from "../helpers/Auth";
 
 export default function Appbar() {
@@ -116,10 +116,16 @@ export default function Appbar() {
                   key={page.name}
                   onClick={handleCloseNavMenu}
                   sx={{
-                    color: "white",
+                    color: window.location.pathname.includes(page.URL)
+                      ? "grey"
+                      : "white",
                     display: "block",
                     "&:hover": {
-                      backgroundColor: "grey",
+                      backgroundColor: window.location.pathname.includes(
+                        page.URL
+                      )
+                        ? "#24292F"
+                        : "grey",
                     },
                     textAlign: "center",
                   }}
@@ -132,24 +138,29 @@ export default function Appbar() {
             </Box>
 
             {/* Notification Icon */}
-            <MenuItem>
+            {/* <MenuItem>
               <IconButton size="small" color="inherit">
                 <Badge badgeContent={14} color="error">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
-            </MenuItem>
+            </MenuItem> */}
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open options">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   {auth.isAuthenticated().user ? (
-                    <Avatar
-                      alt={auth.isAuthenticated().user.username}
-                      src={
-                        `http://localhost:8000/` +
-                        auth.isAuthenticated()?.user?.avatar_url
-                      }
-                    />
+                    auth.isAuthenticated().user.avatar_url.includes("blob") ? (
+                      <Avatar
+                        src={auth.isAuthenticated().user.avatar_url}
+                        alt={"author"}
+                      />
+                    ) : (
+                      <Avatar
+                        src={`http://localhost:8000/${
+                          auth.isAuthenticated().user.avatar_url
+                        }`}
+                      />
+                    )
                   ) : (
                     <Avatar />
                   )}

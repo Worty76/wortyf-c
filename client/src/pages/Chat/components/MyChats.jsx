@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Box, ListItemText } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, ListItemText, CircularProgress } from "@mui/material";
 import { ChatState } from "../../../context/ChatProvider";
 import ListItemButton from "@mui/material/ListItemButton";
 import axios from "axios";
@@ -8,9 +8,11 @@ import GroupChatModal from "./ModalButton/GroupChatModal";
 
 function MyChats({ fetchAgain }) {
   const { selectedChat, setSelectedChat, chats, setChats } = ChatState();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchChats = async () => {
+      setLoading(true);
       const config = {
         headers: {
           Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
@@ -21,10 +23,11 @@ function MyChats({ fetchAgain }) {
           "http://localhost:8000/api/chat",
           config
         );
-        // console.log(data);
         setChats(data);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -33,40 +36,59 @@ function MyChats({ fetchAgain }) {
   }, [fetchAgain]);
 
   return (
-    <Box sx={{ alignItems: "center", width: "30%", border: "1px solid black", borderRadius: "0px 5px 5px 0px"}}>
+    <Box
+      sx={{
+        width: "30%",
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        backgroundColor: "#f9f9f9",
+        overflow: "auto",
+      }}
+    >
       <Box
         sx={{
           padding: 2,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          borderBottom: "1px solid #ddd",
+          backgroundColor: "#fff",
         }}
       >
         My Chats
         <GroupChatModal />
       </Box>
       <Box sx={{ width: "100%" }}>
-        {chats ? (
-          <div style={{ padding: 2 }}>
-            {chats.map((chat, id) => (
-              <Box
-                key={id}
-                onClick={() => setSelectedChat(chat)}
-                sx={{
-                  backgroundColor: `${
-                    selectedChat === chat ? "lightblue" : "lightgrey"
-                  }`,
-                  color: `${selectedChat === chat ? "while" : "black"}`,
-                }}
-              >
-                <ListItemButton>
-                  <ListItemText primary={chat.chatName} />
-                </ListItemButton>
-              </Box>
-            ))}
-          </div>
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
+            <CircularProgress />
+          </Box>
+        ) : chats.length > 0 ? (
+          chats.map((chat, id) => (
+            <Box
+              key={id}
+              onClick={() => setSelectedChat(chat)}
+              sx={{
+                backgroundColor: `${
+                  selectedChat === chat ? "#e0f7fa" : "#ffffff"
+                }`,
+                color: `${selectedChat === chat ? "#00796b" : "#000000"}`,
+                borderRadius: "4px",
+                marginBottom: "1px",
+                cursor: "pointer",
+                transition: "background-color 0.3s",
+                "&:hover": {
+                  backgroundColor: "#f1f8e9",
+                },
+              }}
+            >
+              <ListItemButton>
+                <ListItemText primary={chat.chatName} />
+              </ListItemButton>
+            </Box>
+          ))
         ) : (
-          <div></div>
+          <Box sx={{ textAlign: "center", padding: 2 }}>No Chats Available</Box>
         )}
       </Box>
     </Box>

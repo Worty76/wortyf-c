@@ -80,7 +80,11 @@ export default function Head() {
               A place where people can share their ideas, opinions to help each
               other.
             </p>
-            <Button className={classes.button} variant="contained" onClick={handleNavigation}>
+            <Button
+              className={classes.button}
+              variant="contained"
+              onClick={handleNavigation}
+            >
               Join now
             </Button>
           </div>
