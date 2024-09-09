@@ -180,7 +180,6 @@ export default function CreatePost() {
       }
     });
   };
-
   return (
     <div className={classes.root}>
       {/* Stepper at the top to guide user */}

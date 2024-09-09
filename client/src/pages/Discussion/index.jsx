@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 // eslint-disable-next-line
 import { SelectChangeEvent } from "@mui/material/Select";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
 import OutlinedFlagOutlinedIcon from "@mui/icons-material/OutlinedFlagOutlined";
@@ -32,6 +32,7 @@ import auth from "../../helpers/Auth";
 import Crop169Icon from "@mui/icons-material/Crop169";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
+import { debounce } from "lodash";
 
 const useStyles = makeStyles({
   leftContainer: {
@@ -95,8 +96,6 @@ export default function Discussions({ posts, setPosts }) {
   const [option, setOption] = useState("");
   const [topics, setTopics] = useState([]);
 
-  const [search, setSearch] = useState("");
-
   console.log(posts);
 
   const handleOpen = () => {
@@ -158,6 +157,23 @@ export default function Discussions({ posts, setPosts }) {
     }
   };
 
+  const searchPosts = async (key) => {
+    await axios
+      .get(`http://localhost:8000/api/post/search?text=${key}`)
+      .then((res) => setPosts(res.data.data));
+  };
+
+  const debounceSearchPosts = useCallback(
+    debounce((nextValue) => searchPosts(nextValue), 1000),
+    []
+  );
+
+  const handleSearchPosts = (event) => {
+    const { value } = event.target;
+    console.log(value, 123);
+    debounceSearchPosts(value);
+  };
+
   useEffect(() => {
     const CancelToken = axios.CancelToken;
     const source = CancelToken.source();
@@ -169,9 +185,9 @@ export default function Discussions({ posts, setPosts }) {
     // eslint-disable-next-line
   }, []);
 
-  const sortPosts = (posts) => {
-    return posts.filter((post) => post.title.toLowerCase().includes(search));
-  };
+  // const sortPosts = (posts) => {
+  //   return posts.filter((post) => post.title.toLowerCase().includes(search));
+  // };
 
   return (
     <Paper sx={{ display: "flex" }} elevation={0}>
@@ -201,7 +217,7 @@ export default function Discussions({ posts, setPosts }) {
               label="Search posts"
               variant="outlined"
               size="small"
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={handleSearchPosts}
               sx={{ marginLeft: "10px", width: "80%" }}
             />
           </Box>
@@ -224,131 +240,138 @@ export default function Discussions({ posts, setPosts }) {
         <Divider />
 
         {/* Posts */}
-        {sortPosts(posts).map((post) => (
-          <div key={post._id} style={{ paddingBottom: "20px" }}>
-            <Link
-              to={"/discussions/" + post._id}
-              style={{ textDecoration: "none" }}
-            >
-              <Paper
-                className={classes.post}
-                sx={{
-                  position: "relative",
-                  // border: post.solved ? "1px #38E54D solid" : "none",
-                  transition: "all 0.3s",
-                  "&:hover": {
-                    boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
-                    transform: "scale(1.02)",
-                  },
-                }}
+        {posts &&
+          posts.map((post) => (
+            <div key={post._id} style={{ paddingBottom: "20px" }}>
+              <Link
+                to={"/discussions/" + post._id}
+                style={{ textDecoration: "none" }}
               >
-                {post.solved && (
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: "10px",
-                      right: "10px",
-                      backgroundColor: "#31d631",
-                      color: "white",
-                      padding: "2px 6px",
-                      borderRadius: "4px",
-                    }}
-                  >
-                    Sold
-                  </Box>
-                )}
-                <Box sx={{ flexGrow: 0, display: "flex" }}>
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt={post.author.username}
-                        src={`http://localhost:8000/${post?.author?.avatar_url}`}
-                        sx={{ height: "70px", width: "70px" }}
-                      />
-                    </ListItemAvatar>
-                  </ListItem>
-                </Box>
-                <Box sx={{ flexGrow: 1 }}>
-                  <ListItem>
-                    <ListItemText
-                      primary={
-                        <Typography
-                          variant="h6"
-                          className={classes.TitleMultiLineEllipsis}
-                        >
-                          {post.title}
-                        </Typography>
-                      }
-                      secondary={post.createdAt}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary={
-                        <Typography
-                          variant="h8"
-                          className={classes.ContentMultiLineEllipsis}
-                        >
-                          {post.content}
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem>
-                    {post.topic.map((topic, id) => (
-                      <Topic topicId={topic} key={id} />
-                    ))}
-                  </ListItem>
-                </Box>
-
-                <Box
+                <Paper
+                  className={classes.post}
                   sx={{
-                    flexGrow: 0,
-                    alignItems: "center",
-                    minWidth: "210px",
-                    display: {
-                      xs: "none",
-                      md: "flex",
+                    position: "relative",
+                    // border: post.solved ? "1px #38E54D solid" : "none",
+                    transition: "all 0.3s",
+                    "&:hover": {
+                      boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+                      transform: "scale(1.02)",
                     },
                   }}
                 >
-                  <div>
+                  {post.solved && (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                        backgroundColor: "#31d631",
+                        color: "white",
+                        padding: "2px 6px",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      Sold
+                    </Box>
+                  )}
+                  <Box sx={{ flexGrow: 0, display: "flex" }}>
                     <ListItem>
-                      {/* Show how many people are there in the comments */}
-                      {/* <ListItemAvatar>
+                      <ListItemAvatar>
+                        <Avatar
+                          alt={post.author.username}
+                          src={`http://localhost:8000/${post?.author?.avatar_url}`}
+                          sx={{ height: "70px", width: "70px" }}
+                        />
+                      </ListItemAvatar>
+                    </ListItem>
+                  </Box>
+                  <Box sx={{ flexGrow: 1 }}>
+                    <ListItem>
+                      <ListItemText
+                        primary={
+                          <Typography
+                            variant="h6"
+                            className={classes.TitleMultiLineEllipsis}
+                          >
+                            {post.title}
+                          </Typography>
+                        }
+                        secondary={post.createdAt}
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText
+                        primary={
+                          <Typography
+                            variant="h8"
+                            className={classes.ContentMultiLineEllipsis}
+                          >
+                            {post.content}
+                          </Typography>
+                        }
+                      />
+                    </ListItem>
+                    <ListItem>
+                      {post.topic.map((topic, id) => (
+                        <Topic topicId={topic} key={id} />
+                      ))}
+                    </ListItem>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      flexGrow: 0,
+                      alignItems: "center",
+                      minWidth: "210px",
+                      display: {
+                        xs: "none",
+                        md: "flex",
+                      },
+                    }}
+                  >
+                    <div>
+                      <ListItem>
+                        {/* Show how many people are there in the comments */}
+                        {/* <ListItemAvatar>
                         <TotalAvatars props={comments} />
                       </ListItemAvatar> */}
-                    </ListItem>
-                    <ListItem>
-                      <Badge>
-                        <ChatBubbleOutlineIcon />
-                      </Badge>
-                      <ListItemText
-                        primary={
-                          <Typography sx={{ paddingLeft: "5px" }} variant="h8">
-                            {Object.keys(post.comments).length} Comments
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <Badge>
-                        <FavoriteBorderIcon />
-                      </Badge>
-                      <ListItemText
-                        primary={
-                          <Typography sx={{ paddingLeft: "5px" }} variant="h8">
-                            {Object.keys(post.likes).length} Likes
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                  </div>
-                </Box>
-              </Paper>
-            </Link>
-          </div>
-        ))}
+                      </ListItem>
+                      <ListItem>
+                        <Badge>
+                          <ChatBubbleOutlineIcon />
+                        </Badge>
+                        <ListItemText
+                          primary={
+                            <Typography
+                              sx={{ paddingLeft: "5px" }}
+                              variant="h8"
+                            >
+                              {Object.keys(post.comments).length} Comments
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <Badge>
+                          <FavoriteBorderIcon />
+                        </Badge>
+                        <ListItemText
+                          primary={
+                            <Typography
+                              sx={{ paddingLeft: "5px" }}
+                              variant="h8"
+                            >
+                              {Object.keys(post.likes).length} Likes
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    </div>
+                  </Box>
+                </Paper>
+              </Link>
+            </div>
+          ))}
       </Box>
 
       {/* Right Container */}

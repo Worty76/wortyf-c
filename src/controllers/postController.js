@@ -58,25 +58,6 @@ const createPost = async (req, res) => {
     if (!user)
       return res.status(400).send({ message: "Could not find the user!" });
 
-    // Prepare topics array from request
-    let topicArray = [];
-    if (req.body.topic) {
-      const topics = req.body.topic.split(",");
-      for (const topicName of topics) {
-        let topic = await Topic.findOne({ name: topicName.trim() });
-        if (topic) {
-          topicArray.push(topic);
-        } else {
-          const newTopic = new Topic({
-            name: topicName.trim(),
-            color: req.body.topicColors?.[topicName] || "#FFFFFF", // Optional color assignment
-          });
-          await newTopic.save();
-          topicArray.push(newTopic);
-        }
-      }
-    }
-
     // Ensure upload directory exists
     fs.access("./uploads", (error) => {
       if (error) {
@@ -109,6 +90,24 @@ const createPost = async (req, res) => {
           .toFile("./uploads/" + ref);
 
         imagesArray.push(ref);
+      }
+    }
+
+    let topicArray = [];
+    if (body.topic) {
+      const topics = body.topic.split(",");
+      for (const topicName of topics) {
+        let topic = await Topic.findOne({ name: topicName.trim() });
+        if (topic) {
+          topicArray.push(topic);
+        } else {
+          const newTopic = new Topic({
+            name: topicName.trim(),
+            color: req.body.topicColors?.[topicName] || "#FFFFFF", // Optional color assignment
+          });
+          await newTopic.save();
+          topicArray.push(newTopic);
+        }
       }
     }
 
@@ -191,12 +190,62 @@ const deletePost = async (req, res) => {
   }
 };
 
+// Search
+// data example: will be a string, there will be [tags] to search tags, and title to search the most relevant title
+const searchPost = async (req, res) => {
+  try {
+    const searchQuery = req.query.text;
+    console.log(searchQuery);
+
+    let searchCondition = {};
+
+    const tagPattern = /\[([^\]]*)\]/g;
+    let tags = [];
+    let match;
+    while ((match = tagPattern.exec(searchQuery)) !== null) {
+      tags.push(match[1]);
+    }
+
+    const cleanSearchQuery = searchQuery.replace(tagPattern, "").trim();
+
+    let topics = [];
+    if (tags.length > 0) {
+      topics = await Topic.find({
+        name: { $in: tags },
+      }).distinct("_id", {});
+
+      searchCondition.topic = { $in: topics };
+    }
+
+    if (cleanSearchQuery) {
+      searchCondition.title = { $regex: cleanSearchQuery, $options: "i" };
+    }
+    const posts = await Post.find(searchCondition);
+
+    if (posts.length > 0) {
+      return res
+        .status(200)
+        .send({ message: "Successfully found posts", data: posts });
+    } else {
+      return res.status(200).send({ message: "No posts found", data: posts });
+    }
+
+    return res.status(404).send({ message: "Error" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .send({ message: "Internal server error", error: error.message });
+  }
+};
+
 const postController = {
   readPost,
   createPost,
   updatePost,
   deletePost,
   readSpecificPost,
+  searchPost,
 };
 
 module.exports = postController;

@@ -2,6 +2,7 @@ const Chat = require("../models/chat.js");
 const User = require("../models/user.js");
 
 const accessChats = async (req, res) => {
+  console.log(req.body);
   const { userId } = req.body;
 
   if (!userId) {

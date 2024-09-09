@@ -10,6 +10,8 @@ const verifyToken = require("../middlewares/verifyToken");
 
 router.get("/", postController.readPost);
 
+router.get("/search", postController.searchPost);
+
 router.get("/:id", postController.readSpecificPost);
 
 router.post("/create", verifyToken, postController.createPost);

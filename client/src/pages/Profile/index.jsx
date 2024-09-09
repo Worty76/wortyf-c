@@ -29,6 +29,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import auth from "../../helpers/Auth";
 import { changeAvatar } from "../Auth/authApi";
 import Topic from "../Discussion/components/Topic";
+import { ChatState } from "../../context/ChatProvider";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -80,6 +82,8 @@ export default function Profile() {
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState(null);
+  const { setSelectedChat, chats, setChats } = ChatState();
+  const navigate = useNavigate();
   const params = useParams();
 
   const getUser = async (signal) => {
@@ -128,6 +132,30 @@ export default function Profile() {
     } finally {
       setUploading(false);
     }
+  };
+
+  const accessChat = async () => {
+    const userId = user._id;
+    console.log(userId);
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
+        },
+      };
+
+      const { data } = await axios.post(
+        `http://localhost:8000/api/chat`,
+        { userId },
+        config
+      );
+
+      navigate("/chat");
+      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      setSelectedChat(data);
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -215,7 +243,11 @@ export default function Profile() {
                 )}
               {auth.isAuthenticated().user._id !== user._id && (
                 <div className={classes.buttonWrapper}>
-                  <Button variant="contained" component="span">
+                  <Button
+                    variant="contained"
+                    component="span"
+                    onClick={accessChat}
+                  >
                     Send Message
                   </Button>
                 </div>
