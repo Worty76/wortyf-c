@@ -25,6 +25,9 @@ export default function MidMans() {
                   List of Midman
                 </Typography>
               }
+              secondary={
+                "If you wan't to be a Mid Man, contact lethanhdat762003@gmail.com and i'll give you permissions"
+              }
             />
           </ListItem>
         </Box>

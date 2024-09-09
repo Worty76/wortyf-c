@@ -25,8 +25,6 @@ import { Link } from "react-router-dom";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import axios from "axios";
 import CircleIcon from "@mui/icons-material/Circle";
-import { create } from "./DiscussionsApi";
-import { VariantType, useSnackbar } from "notistack";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import Topic from "./components/Topic";
 import auth from "../../helpers/Auth";
@@ -34,7 +32,6 @@ import auth from "../../helpers/Auth";
 import Crop169Icon from "@mui/icons-material/Crop169";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import MyModal from "./MyModal";
 
 const useStyles = makeStyles({
   leftContainer: {
@@ -94,36 +91,16 @@ const useStyles = makeStyles({
 
 export default function Discussions({ posts, setPosts }) {
   const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [option, setOption] = useState("");
-  const [open, setOpen] = useState(false);
   const [topics, setTopics] = useState([]);
-  const [values, setValues] = useState({
-    title: "",
-    description: "",
-    content: "",
-    error: "",
-  });
-  const [images, setImages] = useState([]);
-  const [selectTopics, setSelectTopics] = useState([]);
-  const [search, setSearch] = useState("");
 
-  const handleChange = (name) => (event) => {
-    setValues({ ...values, [name]: event.target.value });
-  };
+  const [search, setSearch] = useState("");
 
   console.log(posts);
 
   const handleOpen = () => {
-    setOpen(!open);
-    setValues({
-      title: "",
-      description: "",
-      content: "",
-      topic: [],
-      error: "",
-    });
+    navigate("/home/create");
   };
 
   const sortBy = (option) => {
@@ -155,36 +132,6 @@ export default function Discussions({ posts, setPosts }) {
       default:
         break;
     }
-  };
-
-  const handleVariant = (variant: VariantType) => {
-    enqueueSnackbar("Successfully created a post", { variant });
-  };
-
-  const onSubmit = () => {
-    let postData = new FormData();
-    values.title && postData.append("title", values.title);
-    values.description && postData.append("description", values.description);
-    values.content && postData.append("content", values.content);
-    images && images.forEach((image) => postData.append("images", image));
-    selectTopics && postData.append("topic", selectTopics);
-
-    create(
-      {
-        t: JSON.parse(auth.isAuthenticated().token),
-      },
-      postData
-    ).then((data) => {
-      if (data.stack) {
-        setValues({ ...values, error: data.response.data.error.message });
-      } else {
-        // setPosts([...posts, JSON.parse(data)]);
-        const postId = JSON.parse(data)._id;
-        navigate(`/discussions/${postId}`);
-        handleOpen();
-        handleVariant("success");
-      }
-    });
   };
 
   const handleOption = (event: SelectChangeEvent) => {
@@ -221,30 +168,6 @@ export default function Discussions({ posts, setPosts }) {
     };
     // eslint-disable-next-line
   }, []);
-
-  const renderError = () => {
-    return (
-      <div
-        style={{
-          color: "red",
-          fontSize: "15px",
-          paddingTop: "10px",
-          position: "absolute",
-          width: "100%",
-          textAlign: "center",
-        }}
-      >
-        {values.error}
-      </div>
-    );
-  };
-
-  const handleSelectingOptions = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setSelectTopics(typeof value === "string" ? value.split(",") : value);
-  };
 
   const sortPosts = (posts) => {
     return posts.filter((post) => post.title.toLowerCase().includes(search));
@@ -483,20 +406,6 @@ export default function Discussions({ posts, setPosts }) {
           </List>
         </div>
       </Box>
-
-      {/* Modal */}
-      <MyModal
-        open={open}
-        handleChange={handleChange}
-        handleOpen={handleOpen}
-        selectTopics={selectTopics}
-        handleSelectingOptions={handleSelectingOptions}
-        topics={topics}
-        onSubmit={onSubmit}
-        renderError={renderError}
-        values={values}
-        setImages={setImages}
-      />
     </Paper>
   );
 }

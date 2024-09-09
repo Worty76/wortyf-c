@@ -213,6 +213,13 @@ export default function Profile() {
                     )}
                   </div>
                 )}
+              {auth.isAuthenticated().user._id !== user._id && (
+                <div className={classes.buttonWrapper}>
+                  <Button variant="contained" component="span">
+                    Send Message
+                  </Button>
+                </div>
+              )}
               <List>
                 <ListItemText
                   primary={

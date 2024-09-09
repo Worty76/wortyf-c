@@ -38,6 +38,7 @@ import Topic from "./components/Topic";
 import auth from "../../helpers/Auth";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import TextEditor from "./components/TextEditor";
+import { Markup } from "interweave";
 
 const useStyles = makeStyles({
   root: {
@@ -409,7 +410,9 @@ export default function Discussion() {
                   <ListItemText
                     primary={
                       <>
-                        <Typography>{post.content}</Typography>
+                        <Typography>
+                          <Markup content={post.content} />
+                        </Typography>
                         <div
                           style={{
                             alignItems: "center",
@@ -418,8 +421,9 @@ export default function Discussion() {
                           }}
                         >
                           {post.images &&
-                            post.images.map((image) => (
+                            post.images.map((image, id) => (
                               <img
+                                key={id}
                                 alt="images"
                                 style={{
                                   width: "300px",

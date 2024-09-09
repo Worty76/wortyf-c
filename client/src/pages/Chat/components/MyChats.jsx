@@ -15,7 +15,11 @@ import auth from "../../../helpers/Auth";
 import GroupChatModal from "./ModalButton/GroupChatModal";
 import SearchIcon from "@mui/icons-material/Search";
 import UserListItem from "./ModalButton/components/UserListItem";
-import { getSender } from "../../../Logic/ChatLogics";
+import { getSender, getSenderAvatar } from "../../../Logic/ChatLogics";
+import {
+  Avatar,
+  ListItemAvatar,
+} from "../../../../node_modules/@material-ui/core/index";
 
 function MyChats({ fetchAgain }) {
   const { selectedChat, setSelectedChat, chats, setChats } = ChatState();
@@ -154,7 +158,18 @@ function MyChats({ fetchAgain }) {
                 }}
               >
                 <ListItemButton>
-                  {console.log(auth.isAuthenticated().user)}
+                  <ListItemAvatar>
+                    <Avatar
+                      src={
+                        !chat.isGroupChat
+                          ? `http://localhost:8000/${getSenderAvatar(
+                              auth.isAuthenticated().user,
+                              chat.users
+                            )}`
+                          : chat.chatName
+                      }
+                    />
+                  </ListItemAvatar>
                   <ListItemText
                     primary={
                       !chat.isGroupChat
