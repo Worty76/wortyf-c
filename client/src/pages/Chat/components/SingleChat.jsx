@@ -18,7 +18,6 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
 
   const { selectedChat, notification, setNotification } = ChatState();
 
-  console.log(auth.isAuthenticated());
   useEffect(() => {
     const x = auth.isAuthenticated().user;
     socket = io(ENDPOINT);

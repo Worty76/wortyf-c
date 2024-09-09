@@ -150,8 +150,6 @@ const changeAvatar = async (req, res) => {
   // Storing data into database
   user.avatar_url = ref;
 
-  // user.avatar_url.data = fs.readFileSync(body.image._writeStream.path);
-  // user.avatar_url.contentType = body.image._writeStream.type;
   await user.save();
 
   await Post.updateMany(

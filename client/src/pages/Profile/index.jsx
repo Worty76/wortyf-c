@@ -52,7 +52,7 @@ const useStyles = makeStyles({
     marginTop: "10px",
   },
   post: {
-    padding: "15px",
+    margin: "15px",
     boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
     transition: "box-shadow 0.3s ease",
     "&:hover": {

@@ -70,7 +70,7 @@ function ChatBox({ fetchAgain, setFetchAgain }) {
                   {noti.chat.isGroupChat
                     ? `New Message in ${noti.chat.chatName}`
                     : `New Message from ${getSender(
-                        auth.authenticated().user,
+                        auth.isAuthenticated().user,
                         noti.chat.users
                       )}`}
                 </MenuItem>

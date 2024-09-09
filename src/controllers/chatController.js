@@ -21,7 +21,7 @@ const accessChats = async (req, res) => {
 
   isChat = await User.populate(isChat, {
     path: "latestMessage.sender",
-    select: "name pic email",
+    select: "username avatar_url email",
   });
 
   if (isChat.length > 0) {
@@ -57,7 +57,7 @@ const fetchChats = async (req, res) => {
       .then(async (results) => {
         results = await User.populate(results, {
           path: "latestMessage.sender",
-          select: "name pic email",
+          select: "username avatar_url email",
         });
         res.status(200).send(results);
       });
@@ -75,7 +75,6 @@ const createGroupChat = async (req, res) => {
   }
 
   var users = JSON.parse(req.body.users);
-  // var users = req.body.users;
 
   if (users.length < 2) {
     return res
@@ -156,7 +155,6 @@ const addToGroup = async (req, res) => {
   const { chatId, userId } = req.body;
 
   // check if the requester is admin
-
   const added = await Chat.findByIdAndUpdate(
     chatId,
     {
