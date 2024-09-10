@@ -192,34 +192,98 @@ const deletePost = async (req, res) => {
 
 // Search
 // data example: will be a string, there will be [tags] to search tags, and title to search the most relevant title
+// const searchPost = async (req, res) => {
+//   try {
+//     const searchQuery = req.query.text;
+//     console.log(searchQuery);
+
+//     let searchCondition = {};
+
+//     const tagPattern = /\[([^\]]*)\]/g;
+
+//     let tags = [];
+//     let match;
+
+//     while ((match = tagPattern.exec(searchQuery)) !== null) {
+//       if (match[1].trim()) {
+//         tags.push(match[1].trim());
+//       }
+//     }
+
+//     const cleanSearchQuery = searchQuery.replace(tagPattern, "").trim();
+
+//     let topics = [];
+//     if (tags.length > 0) {
+//       topics = await Topic.find({
+//         name: { $in: tags },
+//       }).distinct("_id", {});
+
+//       searchCondition.topic = { $in: topics };
+//     }
+
+//     if (cleanSearchQuery) {
+//       searchCondition.title = { $regex: cleanSearchQuery, $options: "i" };
+//     }
+//     const posts = await Post.find(searchCondition);
+
+//     if (posts.length > 0) {
+//       return res
+//         .status(200)
+//         .send({ message: "Successfully found posts", data: posts });
+//     } else {
+//       return res.status(200).send({ message: "No posts found", data: posts });
+//     }
+
+//     return res.status(404).send({ message: "Error" });
+//   } catch (error) {
+//     console.error(error);
+//     res
+//       .status(500)
+//       .send({ message: "Internal server error", error: error.message });
+//   }
+// };
+
 const searchPost = async (req, res) => {
   try {
     const searchQuery = req.query.text;
-    console.log(searchQuery);
 
     let searchCondition = {};
 
     const tagPattern = /\[([^\]]*)\]/g;
     let tags = [];
     let match;
-    while ((match = tagPattern.exec(searchQuery)) !== null) {
-      tags.push(match[1]);
-    }
 
-    const cleanSearchQuery = searchQuery.replace(tagPattern, "").trim();
+    if (searchQuery.includes("[")) {
+      if (!searchQuery.includes("]")) {
+        const cleanSearchQuery = searchQuery.replace("[", "").trim();
+        searchCondition.title = { $regex: cleanSearchQuery, $options: "i" };
+      } else {
+        while ((match = tagPattern.exec(searchQuery)) !== null) {
+          if (match[1].trim()) {
+            tags.push(match[1].trim());
+          }
+        }
 
-    let topics = [];
-    if (tags.length > 0) {
-      topics = await Topic.find({
-        name: { $in: tags },
-      }).distinct("_id", {});
+        const cleanSearchQuery = searchQuery.replace(tagPattern, "").trim();
 
-      searchCondition.topic = { $in: topics };
-    }
+        let topics = [];
+        if (tags.length > 0) {
+          topics = await Topic.find({
+            name: { $in: tags },
+          }).distinct("_id", {});
 
-    if (cleanSearchQuery) {
+          searchCondition.topic = { $in: topics };
+        }
+
+        if (cleanSearchQuery) {
+          searchCondition.title = { $regex: cleanSearchQuery, $options: "i" };
+        }
+      }
+    } else {
+      const cleanSearchQuery = searchQuery.trim();
       searchCondition.title = { $regex: cleanSearchQuery, $options: "i" };
     }
+
     const posts = await Post.find(searchCondition);
 
     if (posts.length > 0) {
@@ -229,8 +293,6 @@ const searchPost = async (req, res) => {
     } else {
       return res.status(200).send({ message: "No posts found", data: posts });
     }
-
-    return res.status(404).send({ message: "Error" });
   } catch (error) {
     console.error(error);
     res

@@ -163,14 +163,20 @@ export default function Discussions({ posts, setPosts }) {
       .then((res) => setPosts(res.data.data));
   };
 
+  // eslint-disable-next-line
   const debounceSearchPosts = useCallback(
     debounce((nextValue) => searchPosts(nextValue), 1000),
     []
   );
 
   const handleSearchPosts = (event) => {
-    const { value } = event.target;
-    console.log(value, 123);
+    let { value } = event.target;
+
+    // Handle encoding special characters
+    if (value.includes("&")) {
+      value = value.replace("&", "%26");
+    }
+
     debounceSearchPosts(value);
   };
 
@@ -184,10 +190,6 @@ export default function Discussions({ posts, setPosts }) {
     };
     // eslint-disable-next-line
   }, []);
-
-  // const sortPosts = (posts) => {
-  //   return posts.filter((post) => post.title.toLowerCase().includes(search));
-  // };
 
   return (
     <Paper sx={{ display: "flex" }} elevation={0}>
