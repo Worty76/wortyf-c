@@ -34,11 +34,9 @@ function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/discussions/:id" element={<Discussion />} />
-        {/* <Route path="/chatgpt" element={<ChatGPT />} /> */}
       </Routes>
 
       {/* Footer */}
-      {/* <ChatBotHelper/> */}
       {/* <Footer /> */}
     </div>
   );

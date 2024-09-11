@@ -374,6 +374,7 @@ export default function Discussions({ posts, setPosts }) {
               </Link>
             </div>
           ))}
+        {posts.length === 0 && <div>No posts found</div>}
       </Box>
 
       {/* Right Container */}
