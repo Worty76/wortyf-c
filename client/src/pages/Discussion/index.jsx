@@ -90,11 +90,26 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Discussions({ posts, setPosts }) {
+export default function Discussions({
+  posts,
+  setPosts,
+  nPages,
+  currentPage,
+  setCurrentPage,
+}) {
   const classes = useStyles();
   const navigate = useNavigate();
   const [option, setOption] = useState("");
   const [topics, setTopics] = useState([]);
+
+  const pageNumbers = [...Array(nPages + 1).keys()].slice(1);
+
+  const goToNextPage = () => {
+    if (currentPage !== nPages) setCurrentPage(currentPage + 1);
+  };
+  const goToPrevPage = () => {
+    if (currentPage !== 1) setCurrentPage(currentPage - 1);
+  };
 
   console.log(posts);
 
@@ -375,6 +390,31 @@ export default function Discussions({ posts, setPosts }) {
             </div>
           ))}
         {posts.length === 0 && <div>No posts found</div>}
+        <div style={{ display: "flex" }}>
+          <Button variant="contained" onClick={goToPrevPage}>
+            Previous
+          </Button>
+          {pageNumbers.map((pgNumber) => (
+            <div
+              key={pgNumber}
+              style={{ paddingLeft: "2px", paddingRight: "2px" }}
+            >
+              <Button
+                style={{
+                  backgroundColor:
+                    currentPage === pgNumber ? "#24292F" : "lightgrey",
+                  color: currentPage === pgNumber ? "white" : "",
+                }}
+                onClick={() => setCurrentPage(pgNumber)}
+              >
+                {pgNumber}
+              </Button>
+            </div>
+          ))}
+          <Button variant="contained" onClick={goToNextPage}>
+            Next
+          </Button>
+        </div>
       </Box>
 
       {/* Right Container */}

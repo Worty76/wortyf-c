@@ -13,6 +13,13 @@ export default function Home() {
   const classes = useStyles();
 
   const [posts, setPosts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [recordsPerPage] = useState(5);
+
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const paginatedPosts = posts.slice(indexOfFirstRecord, indexOfLastRecord);
+  const nPages = Math.ceil(posts.length / recordsPerPage);
 
   const getPosts = async (signal) => {
     try {
@@ -23,7 +30,7 @@ export default function Home() {
         .then((response) => {
           setPosts(response.data.data);
         })
-        .catch(function(thrown) {
+        .catch(function (thrown) {
           if (axios.isCancel(thrown)) {
             console.log("Request canceled", thrown.message);
           }
@@ -45,7 +52,13 @@ export default function Home() {
 
   return (
     <div className={classes.root}>
-      <Discussions posts={posts} setPosts={setPosts} />
+      <Discussions
+        posts={paginatedPosts}
+        setPosts={setPosts}
+        nPages={nPages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </div>
   );
 }
