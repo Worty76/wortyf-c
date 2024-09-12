@@ -51,6 +51,10 @@ app.use("/api/topic", topicRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/chat", chatRouter);
 
+app.get("/", (req, res) => {
+  res.send("Hello World! It's Worty, founder of WortyF-C.");
+});
+
 const server = app.listen(PORT, () => {
   console.log(`Server is running on http:localhost:${PORT}`);
 });
