@@ -9,11 +9,11 @@ const multer = require("multer");
 require("dotenv").config();
 
 // Routers
-const userRouter = require("./routes/userRouter");
-const postRouter = require("./routes/postRouter");
-const topicRouter = require("./routes/topicRouter");
-const chatRouter = require("./routes/chatRouter");
-const messageRouter = require("./routes/messageRouter");
+const userRouter = require("./src/routes/userRouter");
+const postRouter = require("./src/routes/postRouter");
+const topicRouter = require("./src/routes/topicRouter");
+const chatRouter = require("./src/routes/chatRouter");
+const messageRouter = require("./src/routes/messageRouter");
 
 // PORT
 const PORT = process.env.PORT;
