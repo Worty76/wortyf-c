@@ -46,16 +46,16 @@ $ npm start
 ## DEMO
 
 1. Discussion
-   <img src="./fe/src/images/discussion.png"/>
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/images/discussion.png"/>
 
 2. Home
-   <img src="./fe/src/images/home.png">
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/images/home.png">
 
 3. Profile
-   <img src="./fe/src/images/profile.png">
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/images/profile.png">
 
 4. Chat
-   <img src="./fe/src/images/chat.png">
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/images/chat.png">
 
 ## Documentation
 
