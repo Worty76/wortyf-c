@@ -1,4 +1,5 @@
 # WortyF-C
+
 A commerce website for everybody to buy, sell, and trade accounts.
 
 ## Run Locally
@@ -35,7 +36,7 @@ $ npm start
 ### 5. Login
 
 - Run http://localhost:3000/signin (if you don't have any accounts, create one in http://localhost:3000/signup)
-- Enter your email and password and click signin 
+- Enter your email and password and click signin
 
 ### 6. Create Posts
 
@@ -45,13 +46,17 @@ $ npm start
 ## DEMO
 
 1. Discussion
-<img src="https://github.com/Worty76/WortyF-C/blob/master/client/src/images/discussionDetails.png"/>
+   <img src="./fe/src/images/discussion.png"/>
 
 2. Home
-<img src="https://github.com/Worty76/WortyF-C/blob/master/client/src/images/discussions.png">
+   <img src="./fe/src/images/home.png">
 
 3. Profile
-<img src="https://github.com/Worty76/WortyF-C/blob/master/client/src/images/profile.png">
+   <img src="./fe/src/images/profile.png">
+
+4. Chat
+   <img src="./fe/src/images/chat.png">
 
 ## Documentation
+
 COPYRIGHT BY WORTY (Le Thanh Dat).

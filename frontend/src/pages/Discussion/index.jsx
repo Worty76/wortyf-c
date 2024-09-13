@@ -120,7 +120,7 @@ export default function Discussions({
   const sortBy = (option) => {
     switch (option) {
       case "Trending":
-        console.log("console option trending");
+        console.log("console option popular");
         setPosts(
           [...posts].sort(
             (a, b) => Object.keys(b.likes).length - Object.keys(a.likes).length

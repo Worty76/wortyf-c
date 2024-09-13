@@ -9,11 +9,11 @@ const multer = require("multer");
 require("dotenv").config();
 
 // Routers
-const userRouter = require("./src/routes/userRouter");
-const postRouter = require("./src/routes/postRouter");
-const topicRouter = require("./src/routes/topicRouter");
-const chatRouter = require("./src/routes/chatRouter");
-const messageRouter = require("./src/routes/messageRouter");
+const userRouter = require("./routes/userRouter");
+const postRouter = require("./routes/postRouter");
+const topicRouter = require("./routes/topicRouter");
+const chatRouter = require("./routes/chatRouter");
+const messageRouter = require("./routes/messageRouter");
 
 // PORT
 const PORT = process.env.PORT;
@@ -50,10 +50,6 @@ app.use("/api/post", postRouter);
 app.use("/api/topic", topicRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/chat", chatRouter);
-
-app.get("/", (req, res) => {
-  res.send("Hello World! It's Worty, founder of WortyF-C.");
-});
 
 const server = app.listen(PORT, () => {
   console.log(`Server is running on http:localhost:${PORT}`);

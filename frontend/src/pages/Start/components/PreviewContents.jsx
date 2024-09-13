@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { Paper, Typography } from "@mui/material";
-import discussions from "../../../images/discussions.png";
-import discussionDetails from "../../../images/discussionDetails.png";
+import home from "../../../images/home.png";
+import discussion from "../../../images/discussion.png";
 import profile from "../../../images/profile.png";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -54,12 +54,12 @@ const useStyles = makeStyles((theme) => ({
 
 const images = [
   {
-    name: "Discussion details page",
-    image: discussionDetails,
+    name: "Discussion",
+    image: discussion,
   },
   {
-    name: "Discussion page",
-    image: discussions,
+    name: "Home",
+    image: home,
   },
   {
     name: "Profile page",

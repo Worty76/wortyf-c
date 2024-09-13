@@ -244,7 +244,7 @@ export default function SingleComment({
           (auth.isAuthenticated().user._id === authorId ? (
             solved ? null : (
               <Button variant="contained" onClick={onMarkAnswer}>
-                Correct Answer
+                Mark as sold
               </Button>
             )
           ) : null)}
