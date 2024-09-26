@@ -90,6 +90,10 @@ const SignInPage = () => {
     });
   };
 
+  const redirectToSignUp = () => {
+    navigate("/signup");
+  };
+
   useEffect(() => {
     if (redirect) {
       navigate("/home");
@@ -171,7 +175,24 @@ const SignInPage = () => {
               }
               label="Remember me"
             />
-            <div style={{ color: "red" }}>{values.error}</div>
+            <div>
+              <Typography
+                onClick={redirectToSignUp}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    color: "gray",
+                  },
+                  transition: "ease 0.2s",
+                }}
+              >
+                Don't have an account?
+              </Typography>
+            </div>
+            <div style={{ color: "red", textAlign: "center" }}>
+              {values.error}
+            </div>
+
             <Button
               onClick={onSignIn}
               type="submit"
@@ -182,7 +203,7 @@ const SignInPage = () => {
               sx={{
                 mt: 3,
                 mb: 2,
-                background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
+                background: "#24292F",
                 boxShadow: "0 3px 5px 2px rgba(33, 203, 243, .3)",
               }}
             >

@@ -34,7 +34,12 @@ const signUp = async (user) => {
         },
       }
     );
-    return JSON.stringify(response.data.data);
+
+    let data = {
+      user: JSON.stringify(response.data.data),
+      token: response.data.token,
+    };
+    return data;
   } catch (error) {
     return error;
   }

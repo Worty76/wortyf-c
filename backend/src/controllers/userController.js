@@ -70,13 +70,23 @@ const register = async (req, res) => {
       bio: req.body.bio || null,
       role: req.body.role || null,
     });
-    console.log(user);
 
     // Create an user in MongoDB
     await user.save().then(() => {
+      const token = jwt.sign(
+        {
+          id: user.id,
+        },
+        process.env.TOKEN /*{ expiresIn: new Date() + 9999 }*/
+      );
+
       res
         .status(200)
-        .send({ message: "Successfully added an user", data: user });
+        .send({
+          message: "Successfully added an user",
+          data: user,
+          token: token,
+        });
     });
   } catch (error) {
     res.status(500).send({ error: error });
