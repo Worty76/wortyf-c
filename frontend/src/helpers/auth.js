@@ -31,6 +31,7 @@ const auth = {
       let data = JSON.parse(sessionStorage.getItem("jwt"));
       data.avatar_url = newAvatarUrl;
       sessionStorage.setItem("jwt", JSON.stringify(data));
+      console.log(JSON.parse(sessionStorage.getItem("jwt")))
     }
   },
 };

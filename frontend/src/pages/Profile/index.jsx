@@ -119,12 +119,13 @@ export default function Profile() {
     setUploadError(null);
 
     try {
-      await changeAvatar(
+      const response = await changeAvatar(
         { id: params.id },
         { t: JSON.parse(auth.isAuthenticated().token) },
         imageData
       );
-      auth.updateAvatarUrl(URL.createObjectURL(file));
+      console.log(response);
+      auth.updateAvatarUrl(JSON.parse(response));
       setUploadSuccess(true);
       window.location.reload(true);
     } catch (error) {

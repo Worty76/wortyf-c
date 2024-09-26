@@ -7,7 +7,7 @@ const readComment = async (req, res) => {
     const commentId = req.params.commentId;
 
     const comment = await Comment.find({ comment_father: commentId });
-    
+
     if (comment) {
       return res.status(200).json({
         message: "Successfully get comment",
@@ -42,7 +42,7 @@ const createComment = async (req, res) => {
       author: {
         _id: user._id,
         username: user.username,
-        avatar_url: user.avatar_url 
+        avatar_url: user.avatar_url,
       },
       post_id: postId,
       createdAt: timestamps,
@@ -73,18 +73,18 @@ const updateComment = async (req, res) => {
       return res.status(400).send({ message: "Could not find the user!" });
 
     const post = await Post.findById({ _id: postId });
-    
+
     if (!post)
       return res.status(400).send({ message: "Could not find the post!" });
 
-    await Comment.findOneAndUpdate(
-      { _id: commentId },
-      { text: req.body.text }
-    )
-    
-    const comments = await Comment.find({ post_id: postId, comment_father: undefined });
+    await Comment.findOneAndUpdate({ _id: commentId }, { text: req.body.text });
 
-    res.send({comments: comments, message: "Successfully updated a comment"});
+    const comments = await Comment.find({
+      post_id: postId,
+      comment_father: undefined,
+    });
+
+    res.send({ comments: comments, message: "Successfully updated a comment" });
   } catch (error) {
     res.status(500).send({ error: error });
   }
@@ -106,14 +106,18 @@ const deleteComment = async (req, res) => {
 
     if (!post)
       return res.status(400).json({ message: "Could not find the post!" });
-    
+
     await Comment.deleteMany({ comment_father: commentId, post_id: postId });
     post.comments = removeObjectWithId(post.comments, commentId);
     await Comment.findByIdAndDelete({ _id: commentId });
+
     const newPost = new Post(post);
     await newPost.save();
-    const comments = await Comment.find({ post_id: postId, comment_father: undefined });
-    res.status(200).json({ 
+    const comments = await Comment.find({
+      post_id: postId,
+      comment_father: undefined,
+    });
+    res.status(200).json({
       comments: comments,
       message: "Successfully deleted a comment",
     });
@@ -130,14 +134,14 @@ const markAsAnswer = async (req, res) => {
 
     const post = await Post.findById({ _id: postId });
 
-    if (!post) 
+    if (!post)
       return res.status(400).json({ message: "Failed to find the post!" });
 
     const comment = await Comment.findById({ _id: commentId });
 
-    if (!comment) 
+    if (!comment)
       return res.status(400).json({ message: "Failed to find the comment!" });
-    
+
     if (post.solved === false) {
       await Comment.findByIdAndUpdate({ _id: commentId }, { correctAns: true });
       await Post.findByIdAndUpdate({ _id: postId }, { solved: true });
@@ -185,18 +189,19 @@ const createReply = async (req, res) => {
     });
 
     comment.comments.push(reply);
-    await reply.save()
-    await comment.save()
-    .then(() => {
-      res.json({
-        message: "Successfully created a reply",
-        reply: reply,
-        replyTo: parentComment,
+    await reply.save();
+    await comment
+      .save()
+      .then(() => {
+        res.json({
+          message: "Successfully created a reply",
+          reply: reply,
+          replyTo: parentComment,
+        });
+      })
+      .catch((error) => {
+        res.send({ message: "Failed to create a reply", error: error });
       });
-    })
-    .catch((error) => {
-      res.send({ message: "Failed to create a reply", error: error });
-    });
   } catch (error) {
     res.status(500).send({ error: error });
   }
@@ -229,13 +234,16 @@ const updateReply = async (req, res) => {
 
     if (!reply)
       return res.status(400).send({ message: "Could not find the reply!" });
-    
+
     await Comment.findOneAndUpdate(
       { _id: subCommentId },
       { text: req.body.text }
     );
 
-    const replies = await Comment.find({post_id: postId, comment_father: commentId});
+    const replies = await Comment.find({
+      post_id: postId,
+      comment_father: commentId,
+    });
 
     res.send({
       message: "Successfully updated a reply",
@@ -264,22 +272,28 @@ const deleteReply = async (req, res) => {
     if (!post)
       return res.status(400).send({ message: "Could not find the post!" });
 
-    const comment = await Comment.findById({_id: commentId});
+    const comment = await Comment.findById({ _id: commentId });
 
-    if(!comment)
+    if (!comment)
       return res.status(400).send({ message: "Couldn't find the comment!" });
 
-    const reply = await Comment.findById({_id: subCommentId});
+    const reply = await Comment.findById({ _id: subCommentId });
 
-    if(!reply)
+    if (!reply)
       return res.status(400).send({ message: "Couldn't find the reply!" });
 
-    await Comment.findByIdAndDelete({ _id: subCommentId, comment_father: commentId });
+    await Comment.findByIdAndDelete({
+      _id: subCommentId,
+      comment_father: commentId,
+    });
     comment.comments = removeObjectWithId(comment.comments, subCommentId);
     const newComment = new Comment(comment);
     await comment.save(newComment);
-    const replies = await Comment.find({ post_id: postId, comment_father: commentId });
-    res.status(200).json({ 
+    const replies = await Comment.find({
+      post_id: postId,
+      comment_father: commentId,
+    });
+    res.status(200).json({
       replies: replies,
       message: "Successfully deleted a reply",
     });

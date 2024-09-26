@@ -11,11 +11,11 @@ import {
   Button,
   Tooltip,
   Avatar,
-  // Badge,
+  Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useNavigate } from "react-router-dom";
-// import NotificationsIcon from "@mui/icons-material/Notifications";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import auth from "../helpers/Auth";
 
 export default function Appbar() {
@@ -138,34 +138,28 @@ export default function Appbar() {
             </Box>
 
             {/* Notification Icon */}
-            {/* <MenuItem>
+            <MenuItem>
               <IconButton size="small" color="inherit">
                 <Badge badgeContent={14} color="error">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
-            </MenuItem> */}
+            </MenuItem>
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open options">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   {auth.isAuthenticated().user ? (
-                    auth.isAuthenticated().user.avatar_url.includes("blob") ? (
-                      <Avatar
-                        src={auth.isAuthenticated().user.avatar_url}
-                        alt={"author"}
-                      />
-                    ) : (
-                      <Avatar
-                        src={`http://localhost:8000/${
-                          auth.isAuthenticated().user.avatar_url
-                        }`}
-                      />
-                    )
+                    <Avatar
+                      src={`http://localhost:8000/${
+                        auth.isAuthenticated().user.avatar_url
+                      }`}
+                    />
                   ) : (
                     <Avatar />
                   )}
                 </IconButton>
               </Tooltip>
+              {console.log(auth.isAuthenticated())}
 
               <Menu
                 sx={{ mt: "45px" }}

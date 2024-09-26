@@ -138,7 +138,6 @@ const changeAvatar = async (req, res) => {
   form.maxFileSize = 50 * 1024 * 1024; // 5MB
   form.uploadDir = uploadFolder;
   const body = await doSomethingWithNodeRequest(req);
-  console.log(body);
 
   const timestamp = Date.now();
   const ref = `${timestamp}-${body.newFilename}.webp`;
@@ -147,7 +146,6 @@ const changeAvatar = async (req, res) => {
     .webp({ quality: 20 })
     .toFile("./uploads/" + ref);
 
-  // Storing data into database
   user.avatar_url = ref;
 
   await user.save();
@@ -162,8 +160,9 @@ const changeAvatar = async (req, res) => {
     { $set: { "author.avatar_url": ref } }
   );
 
-  console.log("Successfully changed avatar");
-  res.status(200).send({ message: "Successfully changed avatar" });
+  res
+    .status(200)
+    .json({ message: "Successfully changed avatar", avatar_url: ref });
 };
 
 const photo = (req, res, next) => {

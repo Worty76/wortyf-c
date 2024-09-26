@@ -1,38 +1,64 @@
-import React, { useEffect } from "react";
-// import { makeStyles } from "@mui/styles";
+import React, { useEffect, useState } from "react";
 import {
-  Avatar,
   Box,
   Button,
   Checkbox,
-  CssBaseline,
+  Container,
   FormControlLabel,
-  Grid,
-  Paper,
   TextField,
   Typography,
+  styled,
+  Paper,
+  InputAdornment,
 } from "@mui/material";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { FaEnvelope } from "react-icons/fa";
+import { useNavigate } from "../../../node_modules/react-router-dom/dist/index";
 import { signIn } from "./authApi";
 import auth from "../../helpers/Auth";
-import ecommerceImg from "../../images/ecommerce.png";
 
-// const useStyles = makeStyles({
-//   root: {
-//     padding: "5%",
-//   },
-//   Container: {
-//     display: "flex",
-//     justifyContent: "center",
-//     alignItems: "center",
-//     maxWidth: 600,
-//     minHeight: 400,
-//     margin: "0 auto",
-//   },
-// });
+const BackgroundImage = styled(Box)(({ theme }) => ({
+  backgroundImage:
+    "url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80)",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  minHeight: "100vh",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
 
-export default function SignIn() {
+const FormContainer = styled(Paper)(({ theme }) => ({
+  backgroundColor: "rgba(255, 255, 255, 0.9)",
+  borderRadius: theme.shape.borderRadius,
+  padding: theme.spacing(4),
+  boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+  backdropFilter: "blur(4px)",
+  border: "1px solid rgba(255, 255, 255, 0.18)",
+  maxWidth: 400,
+  width: "100%",
+  [theme.breakpoints.down("sm")]: {
+    padding: theme.spacing(3),
+    maxWidth: "90%",
+  },
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  marginBottom: theme.spacing(1),
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: theme.palette.primary.main,
+    },
+    "&:hover fieldset": {
+      borderColor: theme.palette.primary.dark,
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+}));
+
+const SignInPage = () => {
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const [values, setValues] = useState({
     email: "",
@@ -64,14 +90,6 @@ export default function SignIn() {
     });
   };
 
-  const renderError = () => {
-    return (
-      <div style={{ width: "100%", textAlign: "center", color: "red" }}>
-        {values.error}
-      </div>
-    );
-  };
-
   useEffect(() => {
     if (redirect) {
       navigate("/home");
@@ -80,91 +98,101 @@ export default function SignIn() {
   }, [redirect]);
 
   return (
-    <Grid container component="main" sx={{ height: "100vh" }}>
-      <CssBaseline />
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
+    <BackgroundImage>
+      <Container
+        component="main"
+        maxWidth="xs"
         sx={{
-          backgroundImage: `url(${ecommerceImg})`,
-          backgroundRepeat: "no-repeat",
-          backgroundColor: (t) =>
-            t.palette.mode === "light"
-              ? t.palette.grey[50]
-              : t.palette.grey[900],
-          backgroundSize: "contain",
-          backgroundPosition: "center",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
         }}
-      />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <Box
-          sx={{
-            my: 8,
-            mx: 4,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "secondary" }}>
-            {/* <LockOutlinedIcon /> */}
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
+      >
+        <FormContainer elevation={3}>
+          <Typography
+            component="h1"
+            variant="h4"
+            align="center"
+            gutterBottom
+            fontWeight="bold"
+            color="primary"
+          >
+            Welcome to WortyF-C
           </Typography>
-          <Box component="form" noValidate sx={{ mt: 1 }}>
-            <TextField
+          <Typography
+            variant="body1"
+            align="center"
+            gutterBottom
+            color="textSecondary"
+          >
+            Please sign in to continue
+          </Typography>
+          <div>
+            <StyledTextField
+              variant="outlined"
               margin="normal"
               required
               fullWidth
               id="email"
               label="Email Address"
               name="email"
-              onChange={handleChange("email")}
               autoComplete="email"
               autoFocus
+              onChange={handleChange("email")}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <FaEnvelope color="#1976d2" />
+                  </InputAdornment>
+                ),
+              }}
             />
-            <TextField
+            <StyledTextField
+              variant="outlined"
               margin="normal"
               required
               fullWidth
+              type="password"
               name="password"
               label="Password"
-              type="password"
-              onChange={handleChange("password")}
               id="password"
               autoComplete="current-password"
+              onChange={handleChange("password")}
             />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={
+                <Checkbox
+                  value="remember"
+                  color="primary"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+              }
               label="Remember me"
             />
-            {values.error ? renderError() : null}
+            <div style={{ color: "red" }}>{values.error}</div>
             <Button
+              onClick={onSignIn}
+              type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={onSignIn}
+              color="primary"
+              size="large"
+              sx={{
+                mt: 3,
+                mb: 2,
+                background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
+                boxShadow: "0 3px 5px 2px rgba(33, 203, 243, .3)",
+              }}
             >
               Sign In
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Typography component={Link} to="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Grid>
-    </Grid>
+          </div>
+        </FormContainer>
+      </Container>
+    </BackgroundImage>
   );
-}
+};
+
+export default SignInPage;

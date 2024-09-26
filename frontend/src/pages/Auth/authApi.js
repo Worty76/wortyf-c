@@ -48,11 +48,11 @@ const changeAvatar = async (params, credentials, imageData) => {
       {
         headers: {
           "Content-Type": "multipart/form-data",
-          "Authorization": "Bearer " + credentials.t,
+          Authorization: "Bearer " + credentials.t,
         },
       }
     );
-    return JSON.stringify(response.data.data);
+    return JSON.stringify(response.data.avatar_url);
   } catch (error) {
     return error;
   }
