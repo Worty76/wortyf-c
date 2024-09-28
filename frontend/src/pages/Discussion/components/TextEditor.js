@@ -17,6 +17,7 @@ export default function TextEditor({ placeholder, setText, onCreateComment }) {
         onKeyUp={(e) => {
           if (e.key === "Enter") {
             onCreateComment();
+            editorRef.current.setContent("");
           }
         }}
         apiKey={TINY_MCE_API_KEY}

@@ -279,14 +279,6 @@ export default function Discussion() {
     });
   };
 
-  // const debounce = (fn, delay) => {
-  //   let timerId;
-  //   return (...args) => {
-  //     clearTimeout(timerId);
-  //     timerId = setTimeout(() => fn(...args), delay);
-  //   };
-  // };
-
   return (
     <div className={classes.root}>
       {/* <CssBaseline /> */}

@@ -30,7 +30,8 @@ const UserSchema = new Schema(
     },
     avatar_url: {
       type: String,
-      default: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+      default:
+        "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
     from: {
       type: String,
@@ -42,6 +43,7 @@ const UserSchema = new Schema(
     },
     role: {
       type: String,
+      default: "user",
     },
   },
   {
