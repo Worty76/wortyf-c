@@ -207,6 +207,7 @@ export default function Profile() {
             <CardContent>
               <ListItem sx={{ display: "flex", justifyContent: "center" }}>
                 <ListItemAvatar>
+                  {console.log(user)}
                   <Avatar
                     src={
                       image

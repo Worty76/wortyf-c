@@ -16,6 +16,7 @@ const postRouter = require("./routes/postRouter");
 const topicRouter = require("./routes/topicRouter");
 const chatRouter = require("./routes/chatRouter");
 const messageRouter = require("./routes/messageRouter");
+const ratingRouter = require("./routes/ratingRouter");
 
 // PORT
 const PORT = process.env.PORT;
@@ -43,7 +44,7 @@ const upload = multer({ storage });
 // Configurations for "Static-files"
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.use(express.static("./uploads"));
+app.use(express.static("./public/uploads"));
 app.use(express.static(`${__dirname}/public`));
 
 // End-points
@@ -52,6 +53,11 @@ app.use("/api/post", postRouter);
 app.use("/api/topic", topicRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/chat", chatRouter);
+app.use("/api/rating", ratingRouter);
+
+app.use("/", (req, res) => {
+  res.send("Hello to WortyF-c project's backend");
+});
 
 const server = app.listen(PORT, () => {
   console.log(`Server is running on http:localhost:${PORT}`);

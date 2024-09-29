@@ -80,13 +80,11 @@ const register = async (req, res) => {
         process.env.TOKEN /*{ expiresIn: new Date() + 9999 }*/
       );
 
-      res
-        .status(200)
-        .send({
-          message: "Successfully added an user",
-          data: user,
-          token: token,
-        });
+      res.status(200).send({
+        message: "Successfully added an user",
+        data: user,
+        token: token,
+      });
     });
   } catch (error) {
     res.status(500).send({ error: error });
@@ -154,7 +152,7 @@ const changeAvatar = async (req, res) => {
   const buffer = fs.readFileSync(body.image._writeStream.path);
   await sharp(buffer)
     .webp({ quality: 20 })
-    .toFile("./uploads/" + ref);
+    .toFile("./public/uploads/" + ref);
 
   user.avatar_url = ref;
 
