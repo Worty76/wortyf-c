@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CreatePost() {
+export const CreatePost = () => {
   const classes = useStyles();
   const [values, setValues] = useState({
     title: "",
@@ -315,4 +315,4 @@ export default function CreatePost() {
       </Paper>
     </div>
   );
-}
+};

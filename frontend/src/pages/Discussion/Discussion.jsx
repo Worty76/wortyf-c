@@ -55,7 +55,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Discussion() {
+export const Discussion = () => {
   const classes = useStyles();
   // Initializations
   const params = useParams();
@@ -552,4 +552,4 @@ export default function Discussion() {
       </Paper>
     </div>
   );
-}
+};

@@ -4,7 +4,7 @@ import ChatBox from "./components/ChatBox";
 import auth from "../../helpers/Auth";
 import { useNavigate } from "react-router-dom";
 
-function Chat() {
+export const Chat = () => {
   const navigate = useNavigate();
   const user = auth.isAuthenticated();
 
@@ -30,6 +30,4 @@ function Chat() {
       )}
     </div>
   );
-}
-
-export default Chat;
+};

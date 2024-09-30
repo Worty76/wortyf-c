@@ -11,6 +11,8 @@ router.post("/register", userController.register);
 
 router.get("/users", userController.getUsers);
 
+router.get("/guardians", userController.getGuardians);
+
 router.get("/:id", userController.getUser);
 
 router.put("/:id/changeAvt", verifyToken, userController.changeAvatar);

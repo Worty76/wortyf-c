@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Discussions from "./Discussion/index";
+import { Discussions } from "./Discussion/";
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
 
@@ -9,7 +9,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Home() {
+export const Home = () => {
   const classes = useStyles();
 
   const [posts, setPosts] = useState([]);
@@ -61,4 +61,4 @@ export default function Home() {
       />
     </div>
   );
-}
+};

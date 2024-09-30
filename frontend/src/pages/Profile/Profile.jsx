@@ -24,7 +24,6 @@ import {
 } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import ChatIcon from "@mui/icons-material/Chat";
 import CloseIcon from "@mui/icons-material/Close";
 import auth from "../../helpers/Auth";
 import { changeAvatar } from "../Auth/authApi";
@@ -73,7 +72,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Profile() {
+export const Profile = () => {
   const classes = useStyles();
 
   const [user, setUser] = useState({});
@@ -398,23 +397,57 @@ export default function Profile() {
           <Card sx={{ maxWidth: "300px" }}>
             <CardContent>
               <ListItem>
-                <Badge>
-                  <ChatIcon />
-                </Badge>
                 <ListItemText
                   primary={
-                    <Typography variant="body1" sx={{ paddingLeft: "10px" }}>
-                      Recent Comments Today
+                    <Typography
+                      variant="body1"
+                      sx={{ textAlign: "center", fontWeight: "bold" }}
+                    >
+                      Manage posts
                     </Typography>
                   }
                 />
               </ListItem>
               <Divider />
-              <List>{/* Add recent comments here */}</List>
+              <List>
+                <ListItem>
+                  <Typography
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": { color: "grey" },
+                      transition: "0.2s ease",
+                    }}
+                  >
+                    Approved posts (2)
+                  </Typography>
+                </ListItem>
+                <ListItem>
+                  <Typography
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": { color: "grey" },
+                      transition: "0.2s ease",
+                    }}
+                  >
+                    Waiting for approval (1)
+                  </Typography>
+                </ListItem>
+                <ListItem>
+                  <Typography
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": { color: "grey" },
+                      transition: "0.2s ease",
+                    }}
+                  >
+                    Unapproved posts (1)
+                  </Typography>
+                </ListItem>
+              </List>
             </CardContent>
           </Card>
         </Box>
       </Box>
     </div>
   );
-}
+};

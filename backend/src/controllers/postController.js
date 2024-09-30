@@ -8,7 +8,6 @@ const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
 
-// Read
 const readPost = async (req, res) => {
   try {
     // the 2nd argument is removing fields that you don't want to fetch
@@ -58,7 +57,6 @@ const createPost = async (req, res) => {
     if (!user)
       return res.status(400).send({ message: "Could not find the user!" });
 
-    // Ensure upload directory exists
     fs.access("./uploads", (error) => {
       if (error) {
         fs.mkdirSync("./uploads");
@@ -78,7 +76,7 @@ const createPost = async (req, res) => {
     let imagesArray = [];
 
     if (body.images) {
-      const images = Array.isArray(body.images) ? body.images : [body.images]; // Ensure it's an array
+      const images = Array.isArray(body.images) ? body.images : [body.images];
       for (let image of images) {
         const timestamp = Date.now();
         const ref = `${timestamp}-${image.newFilename}.webp`;
@@ -103,7 +101,7 @@ const createPost = async (req, res) => {
         } else {
           const newTopic = new Topic({
             name: topicName.trim(),
-            color: req.body.topicColors?.[topicName] || "#FFFFFF", // Optional color assignment
+            color: req.body.topicColors?.[topicName] || "#FFFFFF",
           });
           await newTopic.save();
           topicArray.push(newTopic);
@@ -121,14 +119,12 @@ const createPost = async (req, res) => {
         avatar_url: user.avatar_url,
       },
       topic: topicArray,
-      images: imagesArray, // Associate images with the post
+      images: imagesArray,
       createdAt: new Date().toLocaleString(),
     });
 
-    // Save post to MongoDB
     await post.save();
 
-    // Respond with success message and post data
     res
       .status(200)
       .json({ message: "Successfully created a post", data: post });
@@ -189,59 +185,6 @@ const deletePost = async (req, res) => {
     res.status(500).json({ message: "Interval error", error: error });
   }
 };
-
-// Search
-// data example: will be a string, there will be [tags] to search tags, and title to search the most relevant title
-// const searchPost = async (req, res) => {
-//   try {
-//     const searchQuery = req.query.text;
-//     console.log(searchQuery);
-
-//     let searchCondition = {};
-
-//     const tagPattern = /\[([^\]]*)\]/g;
-
-//     let tags = [];
-//     let match;
-
-//     while ((match = tagPattern.exec(searchQuery)) !== null) {
-//       if (match[1].trim()) {
-//         tags.push(match[1].trim());
-//       }
-//     }
-
-//     const cleanSearchQuery = searchQuery.replace(tagPattern, "").trim();
-
-//     let topics = [];
-//     if (tags.length > 0) {
-//       topics = await Topic.find({
-//         name: { $in: tags },
-//       }).distinct("_id", {});
-
-//       searchCondition.topic = { $in: topics };
-//     }
-
-//     if (cleanSearchQuery) {
-//       searchCondition.title = { $regex: cleanSearchQuery, $options: "i" };
-//     }
-//     const posts = await Post.find(searchCondition);
-
-//     if (posts.length > 0) {
-//       return res
-//         .status(200)
-//         .send({ message: "Successfully found posts", data: posts });
-//     } else {
-//       return res.status(200).send({ message: "No posts found", data: posts });
-//     }
-
-//     return res.status(404).send({ message: "Error" });
-//   } catch (error) {
-//     console.error(error);
-//     res
-//       .status(500)
-//       .send({ message: "Internal server error", error: error.message });
-//   }
-// };
 
 const searchPost = async (req, res) => {
   try {

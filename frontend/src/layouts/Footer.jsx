@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Footer() {
+export const Footer = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -51,4 +51,4 @@ export default function Footer() {
       </div>
     </div>
   );
-}
+};

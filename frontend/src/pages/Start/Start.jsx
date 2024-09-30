@@ -4,7 +4,7 @@ import Head from "./components/Head";
 import PreviewContents from "./components/PreviewContents";
 import Recommendations from "./components/Recommendations";
 
-export default function index() {
+export const Start = () => {
   return (
     <React.Fragment>
       <main>
@@ -15,4 +15,4 @@ export default function index() {
       <Footer />
     </React.Fragment>
   );
-}
+};

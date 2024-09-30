@@ -20,7 +20,7 @@ import auth from "../helpers/Auth";
 import { ChatState } from "../context/ChatProvider";
 import { getSender } from "../Logic/ChatLogics";
 
-export default function Appbar() {
+export const Appbar = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -251,4 +251,4 @@ export default function Appbar() {
       </AppBar>
     </div>
   );
-}
+};

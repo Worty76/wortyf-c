@@ -57,7 +57,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const SignInPage = () => {
+export const SignIn = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const [values, setValues] = useState({
@@ -215,5 +215,3 @@ const SignInPage = () => {
     </BackgroundImage>
   );
 };
-
-export default SignInPage;

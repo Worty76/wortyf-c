@@ -100,6 +100,15 @@ const getUsers = async (req, res) => {
   res.status(200).send({ message: "Successfully get users", data: users });
 };
 
+const getGuardians = async (req, res) => {
+  const users = await User.find({ role: "guardian" });
+
+  if (!users)
+    return res.status(400).send({ message: "Could not get any user" });
+
+  res.status(200).send({ message: "Successfully get users", data: users });
+};
+
 const getUser = async (req, res) => {
   const user = await User.findById({ _id: req.params.id });
 
@@ -220,6 +229,7 @@ const userController = {
   changeAvatar,
   photo,
   allUsers,
+  getGuardians,
 };
 
 module.exports = userController;

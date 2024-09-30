@@ -58,7 +58,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-export default function SignUp() {
+export const SignUp = () => {
   const navigate = useNavigate();
   const [values, setValues] = useState({
     username: "",
@@ -250,4 +250,4 @@ export default function SignUp() {
       </Container>
     </BackgroundImage>
   );
-}
+};

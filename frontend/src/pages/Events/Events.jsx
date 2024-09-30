@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Events() {
+export const Events = () => {
   const classes = useStyles();
 
   return (
@@ -37,4 +37,4 @@ export default function Events() {
       <div className={classes.body}>No events</div>
     </div>
   );
-}
+};

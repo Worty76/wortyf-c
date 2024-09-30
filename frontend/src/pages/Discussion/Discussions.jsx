@@ -90,13 +90,13 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Discussions({
+export const Discussions = ({
   posts,
   setPosts,
   nPages,
   currentPage,
   setCurrentPage,
-}) {
+}) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [option, setOption] = useState("");
@@ -475,4 +475,4 @@ export default function Discussions({
       </Box>
     </Paper>
   );
-}
+};

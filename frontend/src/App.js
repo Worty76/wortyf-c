@@ -1,16 +1,17 @@
 import { Routes, Route } from "react-router-dom";
-import Appbar from "./layouts/Appbar";
-import Start from "./pages/Start";
-import Home from "./pages/Home";
-import Discussion from "./pages/Discussion/Discussion";
-import SignIn from "./pages/Auth/SignIn";
-import SignUp from "./pages/Auth/SignUp";
-import Profile from "./pages/Profile";
+import { Appbar } from "./layouts";
+import { Start } from "./pages/Start";
+import { Home } from "./pages";
+import { SignIn } from "./pages/Auth";
+import { SignUp } from "./pages/Auth";
+import { Profile } from "./pages/Profile";
+import { Guardian } from "./pages/Guardian";
+import { Events } from "./pages/Events";
+import { Chat } from "./pages/Chat";
+import { CreatePost } from "./pages/Discussion";
+import { Discussion } from "./pages/Discussion";
 import "./App.css";
-import Guardians from "./pages/Guardian";
-import Events from "./pages/Events";
-import Chat from "./pages/Chat";
-import CreatePost from "./pages/Discussion/CreatePost";
+// import { Footer } from "./layouts/Footer";
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/home" element={<Home />} />
         <Route path="/home/create" element={<CreatePost />} />
-        <Route path="/guardians" element={<Guardians />} />
+        <Route path="/guardians" element={<Guardian />} />
         <Route path="/events" element={<Events />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/profile/:id" element={<Profile />} />
