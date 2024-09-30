@@ -22,11 +22,11 @@ export default function MidMans() {
             <ListItemText
               primary={
                 <Typography variant="h5" color={"variant"}>
-                  List of Midman
+                  List of Guardians
                 </Typography>
               }
               secondary={
-                "If you wan't to be a Mid Man, contact lethanhdat762003@gmail.com and i'll give you permissions"
+                "If you wan't to be a guardian, contact lethanhdat762003@gmail.com and i'll give you permissions"
               }
             />
           </ListItem>

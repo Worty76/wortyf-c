@@ -21,8 +21,11 @@ import auth from "../helpers/Auth";
 export default function Appbar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-
+  const [anchorEl, setAnchorEl] = useState(null);
+  // eslint-disable-next-line
+  const [notification, setNotification] = useState([]);
   const navigate = useNavigate();
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -37,6 +40,14 @@ export default function Appbar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
   const pages = [
@@ -138,13 +149,31 @@ export default function Appbar() {
             </Box>
 
             {/* Notification Icon */}
-            <MenuItem>
-              <IconButton size="small" color="inherit">
-                <Badge badgeContent={14} color="error">
+            <div>
+              <IconButton size="small" color="inherit" onClick={handleClick}>
+                <Badge badgeContent={notification.length} color="error">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
-            </MenuItem>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                PaperProps={{
+                  style: {
+                    maxHeight: 400,
+                    width: 300,
+                  },
+                }}
+              >
+                <div style={{ padding: 5 }}>
+                  <b>New Messages</b>
+                </div>
+                <div style={{ padding: 5 }}>
+                  {!notification.length && "No New Messages"}
+                </div>
+              </Menu>
+            </div>
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open options">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

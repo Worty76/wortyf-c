@@ -448,12 +448,6 @@ export default function Discussions({
               )}
             </ListItem>
           </List>
-          {/* <ListItem>
-            <Badge>
-              <Crop169Icon sx={{ color: "#38E54D" }} />
-            </Badge>
-            <ListItemText primary={<Typography>: Solved posts</Typography>} />
-          </ListItem> */}
           <Divider />
           <List>
             {topics.map((topic, id) => (
@@ -464,7 +458,14 @@ export default function Discussions({
                     fontSize="small"
                   />
                 </Badge>
-                <Typography sx={{ paddingLeft: "10px" }}>
+                <Typography
+                  sx={{
+                    paddingLeft: "10px",
+                    cursor: "pointer",
+                    "&:hover": { color: "grey" },
+                    transition: "0.2s ease",
+                  }}
+                >
                   {topic.name}
                 </Typography>
               </ListItem>

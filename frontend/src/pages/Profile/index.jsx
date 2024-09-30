@@ -153,9 +153,10 @@ export default function Profile() {
         config
       );
 
-      navigate("/chat");
-      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      if (!chats.find((c) => c._id === data._id))
+        await setChats([data, ...chats]);
       setSelectedChat(data);
+      navigate("/chat");
     } catch (error) {}
   };
 

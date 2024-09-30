@@ -43,11 +43,11 @@ const UserSchema = new Schema(
     },
     role: {
       type: String,
-      default: "user",
+      enum: ["user", "moderator", "guardian", "admin"],
     },
   },
   {
-    timestamps: { joined_at: "created_at" },
+    timestamps: true,
   }
 );
 

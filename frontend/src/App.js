@@ -9,13 +9,10 @@ import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 import Profile from "./pages/Profile/index";
 import "./App.css";
-import MidMans from "./pages/MidMans/index";
+import MidMans from "./pages/Guadian/index";
 import Events from "./pages/Events/index";
 import Chat from "./pages/Chat/index";
 import CreatePost from "./pages/Discussion/CreatePost";
-// import ChatGPT from "./pages/ChatGPT/index";
-// import ChatBotHelper from "./components/ChatBotHelper";
-
 function App() {
   return (
     <div className="App">

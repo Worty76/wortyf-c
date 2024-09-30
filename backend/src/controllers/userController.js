@@ -68,7 +68,7 @@ const register = async (req, res) => {
       email: req.body.email,
       from: req.body.from || null,
       bio: req.body.bio || null,
-      role: req.body.role || null,
+      role: "user",
     });
 
     // Create an user in MongoDB

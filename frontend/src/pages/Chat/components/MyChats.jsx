@@ -7,6 +7,8 @@ import {
   Typography,
   Drawer,
   Input,
+  Avatar,
+  ListItemAvatar,
 } from "@mui/material";
 import { ChatState } from "../../../context/ChatProvider";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -16,10 +18,6 @@ import GroupChatModal from "./ModalButton/GroupChatModal";
 import SearchIcon from "@mui/icons-material/Search";
 import UserListItem from "./ModalButton/components/UserListItem";
 import { getSender, getSenderAvatar } from "../../../Logic/ChatLogics";
-import {
-  Avatar,
-  ListItemAvatar,
-} from "../../../../node_modules/@material-ui/core/index";
 
 function MyChats({ fetchAgain }) {
   const { selectedChat, setSelectedChat, chats, setChats } = ChatState();

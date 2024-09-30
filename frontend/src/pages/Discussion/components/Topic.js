@@ -46,6 +46,7 @@ export default function Topic({ topicId }) {
                 alignItems: "center",
                 border: `1px solid ${topic.color}`,
                 margin: 5,
+                cursor: "pointer",
               }}
               key={id}
             >

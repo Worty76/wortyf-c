@@ -17,8 +17,8 @@ const PostSchema = new Schema({
   },
   images: [
     {
-      type: String
-    }
+      type: String,
+    },
   ],
   comments: [
     {
@@ -39,10 +39,13 @@ const PostSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: "Topic",
       default: [],
-      // required: true
     },
   ],
   solved: {
+    type: Boolean,
+    default: false,
+  },
+  approved: {
     type: Boolean,
     default: false,
   },
