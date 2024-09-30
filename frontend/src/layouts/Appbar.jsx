@@ -17,13 +17,15 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useNavigate } from "react-router-dom";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import auth from "../helpers/Auth";
+import { ChatState } from "../context/ChatProvider";
+import { getSender } from "../Logic/ChatLogics";
 
 export default function Appbar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   // eslint-disable-next-line
-  const [notification, setNotification] = useState([]);
+  const { setSelectedChat, notification, setNotification } = ChatState();
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
@@ -52,7 +54,7 @@ export default function Appbar() {
 
   const pages = [
     { name: "Home", URL: "home" },
-    { name: "Midmans", URL: "midmans" },
+    { name: "Guardians", URL: "guardians" },
     { name: "Events", URL: "events" },
     // { name: "ChatGPT", URL: "chatgpt" },
     { name: "Chat", URL: "chat" },
@@ -149,7 +151,7 @@ export default function Appbar() {
             </Box>
 
             {/* Notification Icon */}
-            <div>
+            <div style={{ padding: 10 }}>
               <IconButton size="small" color="inherit" onClick={handleClick}>
                 <Badge badgeContent={notification.length} color="error">
                   <NotificationsIcon />
@@ -171,6 +173,23 @@ export default function Appbar() {
                 </div>
                 <div style={{ padding: 5 }}>
                   {!notification.length && "No New Messages"}
+                  {notification?.map((noti) => (
+                    <MenuItem
+                      key={noti.id}
+                      onClick={() => {
+                        setSelectedChat(noti.chat);
+                        setNotification(notification.filter((n) => n !== noti));
+                        navigate("/chat");
+                      }}
+                    >
+                      {noti.chat.isGroupChat
+                        ? `New Message in ${noti.chat.chatName}`
+                        : `New Message from ${getSender(
+                            auth.isAuthenticated().user,
+                            noti.chat.users
+                          )}`}
+                    </MenuItem>
+                  ))}
                 </div>
               </Menu>
             </div>
@@ -188,7 +207,6 @@ export default function Appbar() {
                   )}
                 </IconButton>
               </Tooltip>
-              {console.log(auth.isAuthenticated())}
 
               <Menu
                 sx={{ mt: "45px" }}
