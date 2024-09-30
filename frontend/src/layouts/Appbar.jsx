@@ -21,6 +21,8 @@ import { ChatState } from "../context/ChatProvider";
 import { getSender } from "../logic/ChatLogics";
 
 export const Appbar = () => {
+  const user = auth.isAuthenticated().user;
+
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -52,13 +54,16 @@ export const Appbar = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const pages = [
-    { name: "Home", URL: "home" },
-    { name: "Guardians", URL: "guardians" },
-    { name: "Events", URL: "events" },
-    // { name: "ChatGPT", URL: "chatgpt" },
-    { name: "Chat", URL: "chat" },
-  ];
+  const pages = {
+    user: [
+      { name: "Home", URL: "home" },
+      { name: "Guardians", URL: "guardians" },
+      { name: "Events", URL: "events" },
+      { name: "Chat", URL: "chat" },
+    ],
+    admin: [{ name: "Manage", URL: "admin/manage" }],
+    moderator: [{ name: "In approval", URL: "moderator/approve" }],
+  };
 
   return (
     <div>
@@ -106,11 +111,27 @@ export const Appbar = () => {
                 onClose={handleCloseNavMenu}
                 sx={{ display: { xs: "block", md: "none" } }}
               >
-                {pages.map((page) => (
-                  <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page.name}</Typography>
-                  </MenuItem>
-                ))}
+                {user &&
+                  user.role === "user" &&
+                  pages.user.map((page) => (
+                    <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">{page.name}</Typography>
+                    </MenuItem>
+                  ))}
+                {user &&
+                  user.role === "admin" &&
+                  pages.admin.map((page) => (
+                    <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">{page.name}</Typography>
+                    </MenuItem>
+                  ))}
+                {user &&
+                  user.role === "moderator" &&
+                  pages.moderator.map((page) => (
+                    <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">{page.name}</Typography>
+                    </MenuItem>
+                  ))}
               </Menu>
             </Box>
 
@@ -124,30 +145,85 @@ export const Appbar = () => {
                 paddingLeft: "10px",
               }}
             >
-              {pages.map((page) => (
-                <Button
-                  key={page.name}
-                  onClick={handleCloseNavMenu}
-                  sx={{
-                    color: window.location.pathname.includes(page.URL)
-                      ? "grey"
-                      : "white",
-                    display: "block",
-                    "&:hover": {
-                      backgroundColor: window.location.pathname.includes(
-                        page.URL
-                      )
-                        ? "#24292F"
-                        : "grey",
-                    },
-                    textAlign: "center",
-                  }}
-                  component={Link}
-                  to={`${page.URL}`}
-                >
-                  {page.name}
-                </Button>
-              ))}
+              {(!user || user.role === "user" || user.role === "guardian") &&
+                pages.user.map((page) => (
+                  <Button
+                    key={page.name}
+                    onClick={handleCloseNavMenu}
+                    sx={{
+                      color: window.location.pathname.includes(page.URL)
+                        ? "grey"
+                        : "white",
+                      display: "block",
+                      "&:hover": {
+                        backgroundColor: window.location.pathname.includes(
+                          page.URL
+                        )
+                          ? "#24292F"
+                          : "grey",
+                      },
+                      textAlign: "center",
+                    }}
+                    component={Link}
+                    to={`${page.URL}`}
+                  >
+                    {page.name}
+                  </Button>
+                ))}
+
+              {user &&
+                user.role === "admin" &&
+                pages.admin.map((page) => (
+                  <Button
+                    key={page.name}
+                    onClick={handleCloseNavMenu}
+                    sx={{
+                      color: window.location.pathname.includes(page.URL)
+                        ? "grey"
+                        : "white",
+                      display: "block",
+                      "&:hover": {
+                        backgroundColor: window.location.pathname.includes(
+                          page.URL
+                        )
+                          ? "#24292F"
+                          : "grey",
+                      },
+                      textAlign: "center",
+                    }}
+                    component={Link}
+                    to={`${page.URL}`}
+                  >
+                    {page.name}
+                  </Button>
+                ))}
+
+              {user &&
+                user.role === "moderator" &&
+                pages.moderator.map((page) => (
+                  <Button
+                    key={page.name}
+                    onClick={handleCloseNavMenu}
+                    sx={{
+                      color: window.location.pathname.includes(page.URL)
+                        ? "grey"
+                        : "white",
+                      display: "block",
+                      "&:hover": {
+                        backgroundColor: window.location.pathname.includes(
+                          page.URL
+                        )
+                          ? "#24292F"
+                          : "grey",
+                      },
+                      textAlign: "center",
+                    }}
+                    component={Link}
+                    to={`${page.URL}`}
+                  >
+                    {page.name}
+                  </Button>
+                ))}
             </Box>
 
             {/* Notification Icon */}
@@ -185,7 +261,7 @@ export const Appbar = () => {
                       {noti.chat.isGroupChat
                         ? `New Message in ${noti.chat.chatName}`
                         : `New Message from ${getSender(
-                            auth.isAuthenticated().user,
+                            user,
                             noti.chat.users
                           )}`}
                     </MenuItem>
@@ -196,12 +272,8 @@ export const Appbar = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open options">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  {auth.isAuthenticated().user ? (
-                    <Avatar
-                      src={`http://localhost:8000/${
-                        auth.isAuthenticated().user.avatar_url
-                      }`}
-                    />
+                  {user ? (
+                    <Avatar src={`http://localhost:8000/${user.avatar_url}`} />
                   ) : (
                     <Avatar />
                   )}
@@ -218,11 +290,11 @@ export const Appbar = () => {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {auth.isAuthenticated().user ? (
+                {user ? (
                   <div>
                     <MenuItem
                       component={Link}
-                      to={`/profile/${auth.isAuthenticated().user._id}`}
+                      to={`/profile/${user._id}`}
                       onClick={handleCloseUserMenu}
                     >
                       <Typography textAlign="center">Profile</Typography>
