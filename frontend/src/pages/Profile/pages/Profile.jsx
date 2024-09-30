@@ -393,22 +393,22 @@ export const Profile = () => {
         </Box>
         <Box sx={{ flex: 1, padding: 2 }}>
           {/* Posts management section */}
-          <Card sx={{ maxWidth: "300px" }}>
-            <CardContent>
-              <ListItem>
-                <ListItemText
-                  primary={
-                    <Typography
-                      variant="body1"
-                      sx={{ textAlign: "center", fontWeight: "bold" }}
-                    >
-                      Manage posts
-                    </Typography>
-                  }
-                />
-              </ListItem>
-              <Divider />
-              {auth.isAuthenticated().user._id === user._id && (
+          {auth.isAuthenticated().user._id === user._id && (
+            <Card sx={{ maxWidth: "300px" }}>
+              <CardContent>
+                <ListItem>
+                  <ListItemText
+                    primary={
+                      <Typography
+                        variant="body1"
+                        sx={{ textAlign: "center", fontWeight: "bold" }}
+                      >
+                        Manage posts
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+                <Divider />
                 <List>
                   <ListItem>
                     <Typography
@@ -444,9 +444,9 @@ export const Profile = () => {
                     </Typography>
                   </ListItem>
                 </List>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
           {/* Rating section */}
           <Card sx={{ maxWidth: "300px", marginTop: 2 }}>
             <CardContent>
@@ -463,22 +463,19 @@ export const Profile = () => {
                 />
               </ListItem>
               <Divider />
-              {auth.isAuthenticated().user._id === user._id && (
-                <List>
-                  <ListItem>
-                    <Typography
-                      sx={{
-                        cursor: "pointer",
-                        "&:hover": { color: "grey" },
-                        transition: "0.2s ease",
-                      }}
-                    >
-                      5 stars from Lee Chong Wei: Good job and handle things
-                      well
-                    </Typography>
-                  </ListItem>
-                </List>
-              )}
+              <List>
+                <ListItem>
+                  <Typography
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": { color: "grey" },
+                      transition: "0.2s ease",
+                    }}
+                  >
+                    5 stars from Lee Chong Wei: Good job and handle things well
+                  </Typography>
+                </ListItem>
+              </List>
             </CardContent>
           </Card>
         </Box>

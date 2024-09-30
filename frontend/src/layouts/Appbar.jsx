@@ -18,7 +18,7 @@ import { Link, useNavigate } from "react-router-dom";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import auth from "../helpers/Auth";
 import { ChatState } from "../context/ChatProvider";
-import { getSender } from "../Logic/ChatLogics";
+import { getSender } from "../logic/ChatLogics";
 
 export const Appbar = () => {
   const [anchorElNav, setAnchorElNav] = useState(null);

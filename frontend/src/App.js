@@ -11,6 +11,8 @@ import { Chat } from "./pages/Chat";
 import { CreatePost } from "./pages/Discussion";
 import { Discussion } from "./pages/Discussion";
 import "./App.css";
+import { AdminPrivateRoute } from "./helpers/AdminPrivateRoute";
+import { UserManagement } from "./pages/Admin";
 // import { Footer } from "./layouts/Footer";
 
 function App() {
@@ -21,6 +23,7 @@ function App() {
 
       {/* Body */}
       <Routes>
+        {/* User route */}
         <Route exact path="/" element={<Start />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
@@ -31,6 +34,18 @@ function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/discussions/:id" element={<Discussion />} />
+
+        {/* Admin route */}
+        <Route
+          path="/admin/manage"
+          element={
+            <AdminPrivateRoute>
+              <UserManagement />
+            </AdminPrivateRoute>
+          }
+        />
+
+        {/* Moderator route */}
       </Routes>
 
       {/* Footer */}

@@ -5,7 +5,7 @@ import {
   isSameSender,
   isSameSenderMargin,
   isSameUser,
-} from "../../../../../Logic/ChatLogics.js";
+} from "../../../../../logic/ChatLogics.js";
 import auth from "../../../../../helpers/Auth";
 import { Avatar, Tooltip, Typography, Box } from "@mui/material";
 

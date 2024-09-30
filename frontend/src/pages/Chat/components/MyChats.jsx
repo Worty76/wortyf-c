@@ -17,7 +17,7 @@ import auth from "../../../helpers/Auth";
 import GroupChatModal from "./ModalButton/GroupChatModal";
 import SearchIcon from "@mui/icons-material/Search";
 import UserListItem from "./ModalButton/components/UserListItem";
-import { getSender, getSenderAvatar } from "../../../Logic/ChatLogics";
+import { getSender, getSenderAvatar } from "../../../logic/ChatLogics";
 
 function MyChats({ fetchAgain }) {
   const { selectedChat, setSelectedChat, chats, setChats } = ChatState();
