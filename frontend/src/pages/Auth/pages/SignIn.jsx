@@ -12,9 +12,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { FaEnvelope } from "react-icons/fa";
-import { useNavigate } from "../../../node_modules/react-router-dom/dist/index";
-import { signIn } from "./authApi";
-import auth from "../../helpers/Auth";
+import { useNavigate } from "../../../../node_modules/react-router-dom/dist/index";
+import { signIn } from "../api/authApi";
+import auth from "../../../helpers/Auth";
 
 const BackgroundImage = styled(Box)(({ theme }) => ({
   backgroundImage:

@@ -31,13 +31,13 @@ import {
   deleteLike,
   deletePost,
   updatePost,
-} from "./DiscussionApi";
+} from "../api/DiscussionApi";
 import { VariantType, useSnackbar } from "notistack";
-import SingleComment from "./components/SingleComment";
-import Topic from "./components/Topic";
-import auth from "../../helpers/Auth";
+import SingleComment from "../components/SingleComment";
+import Topic from "../components/Topic";
+import auth from "../../../helpers/Auth";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import TextEditor from "./components/TextEditor";
+import TextEditor from "../components/TextEditor";
 import { Markup } from "interweave";
 
 const useStyles = makeStyles({
@@ -449,7 +449,7 @@ export const Discussion = () => {
                         (Object.keys(likes).length > 0) ? (
                         checkLiked(likes) ? (
                           <IconButton onClick={debouncedOnDeleteLike}>
-                            <FavoriteIcon sx={{ color: "red" }} />
+                            <FavoriteIcon sx={{ color: "#DC143C" }} />
                           </IconButton>
                         ) : (
                           <IconButton onClick={debouncedOnCreateLike}>

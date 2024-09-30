@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signUp } from "./authApi";
-import auth from "../../helpers/Auth";
+import { signUp } from "../api/authApi";
+import auth from "../../../helpers/Auth";
 
 const BackgroundImage = styled(Box)(({ theme }) => ({
   backgroundImage:

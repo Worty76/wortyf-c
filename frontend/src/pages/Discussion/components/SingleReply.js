@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import auth from "../../../helpers/Auth";
 import React, { useState } from "react";
-import { deleteReply, updateReply } from "../DiscussionApi";
+import { deleteReply, updateReply } from "../api/DiscussionApi";
 import { Link } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Markup } from "interweave";

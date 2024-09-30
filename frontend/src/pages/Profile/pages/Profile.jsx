@@ -25,10 +25,10 @@ import {
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CloseIcon from "@mui/icons-material/Close";
-import auth from "../../helpers/Auth";
-import { changeAvatar } from "../Auth/authApi";
-import Topic from "../Discussion/components/Topic";
-import { ChatState } from "../../context/ChatProvider";
+import auth from "../../../helpers/Auth";
+import { changeAvatar } from "../../Auth/api/authApi";
+import Topic from "../../Discussion/components/Topic";
+import { ChatState } from "../../../context/ChatProvider";
 import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -151,8 +151,6 @@ export const Profile = () => {
         { userId },
         config
       );
-
-      console.log(data);
 
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
@@ -394,6 +392,7 @@ export const Profile = () => {
           )}
         </Box>
         <Box sx={{ flex: 1, padding: 2 }}>
+          {/* Posts management section */}
           <Card sx={{ maxWidth: "300px" }}>
             <CardContent>
               <ListItem>
@@ -409,41 +408,77 @@ export const Profile = () => {
                 />
               </ListItem>
               <Divider />
-              <List>
-                <ListItem>
-                  <Typography
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": { color: "grey" },
-                      transition: "0.2s ease",
-                    }}
-                  >
-                    Approved posts (2)
-                  </Typography>
-                </ListItem>
-                <ListItem>
-                  <Typography
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": { color: "grey" },
-                      transition: "0.2s ease",
-                    }}
-                  >
-                    Waiting for approval (1)
-                  </Typography>
-                </ListItem>
-                <ListItem>
-                  <Typography
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": { color: "grey" },
-                      transition: "0.2s ease",
-                    }}
-                  >
-                    Unapproved posts (1)
-                  </Typography>
-                </ListItem>
-              </List>
+              {auth.isAuthenticated().user._id === user._id && (
+                <List>
+                  <ListItem>
+                    <Typography
+                      sx={{
+                        cursor: "pointer",
+                        "&:hover": { color: "grey" },
+                        transition: "0.2s ease",
+                      }}
+                    >
+                      Approved posts (2)
+                    </Typography>
+                  </ListItem>
+                  <ListItem>
+                    <Typography
+                      sx={{
+                        cursor: "pointer",
+                        "&:hover": { color: "grey" },
+                        transition: "0.2s ease",
+                      }}
+                    >
+                      Waiting for approval (1)
+                    </Typography>
+                  </ListItem>
+                  <ListItem>
+                    <Typography
+                      sx={{
+                        cursor: "pointer",
+                        "&:hover": { color: "grey" },
+                        transition: "0.2s ease",
+                      }}
+                    >
+                      Unapproved posts (1)
+                    </Typography>
+                  </ListItem>
+                </List>
+              )}
+            </CardContent>
+          </Card>
+          {/* Rating section */}
+          <Card sx={{ maxWidth: "300px", marginTop: 2 }}>
+            <CardContent>
+              <ListItem>
+                <ListItemText
+                  primary={
+                    <Typography
+                      variant="body1"
+                      sx={{ textAlign: "center", fontWeight: "bold" }}
+                    >
+                      Ratings (5)
+                    </Typography>
+                  }
+                />
+              </ListItem>
+              <Divider />
+              {auth.isAuthenticated().user._id === user._id && (
+                <List>
+                  <ListItem>
+                    <Typography
+                      sx={{
+                        cursor: "pointer",
+                        "&:hover": { color: "grey" },
+                        transition: "0.2s ease",
+                      }}
+                    >
+                      5 stars from Lee Chong Wei: Good job and handle things
+                      well
+                    </Typography>
+                  </ListItem>
+                </List>
+              )}
             </CardContent>
           </Card>
         </Box>

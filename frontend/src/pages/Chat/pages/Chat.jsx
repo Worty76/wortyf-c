@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import MyChats from "./components/MyChats";
-import ChatBox from "./components/ChatBox";
-import auth from "../../helpers/Auth";
+import MyChats from "../components/MyChats";
+import ChatBox from "../components/ChatBox";
 import { useNavigate } from "react-router-dom";
+import auth from "../../../helpers/Auth";
 
 export const Chat = () => {
   const navigate = useNavigate();

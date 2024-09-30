@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { Box, ListItem, ListItemText, Typography } from "@mui/material";
-import { GuardiansList } from "./components";
+import { GuardiansList } from "../components/GuardiansList";
 import axios from "axios";
 
 const useStyles = makeStyles({

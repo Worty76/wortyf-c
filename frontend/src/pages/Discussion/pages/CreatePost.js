@@ -18,11 +18,11 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
-import { create } from "./DiscussionsApi";
-import auth from "../../helpers/Auth";
+import { create } from "../api/DiscussionsApi";
+import auth from "../../../helpers/Auth";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import TextEditor from "./components/TextEditor";
+import TextEditor from "../components/TextEditor";
 
 const useStyles = makeStyles((theme) => ({
   root: {

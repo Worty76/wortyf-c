@@ -42,7 +42,6 @@ export const GuardiansList = ({ guardians }) => {
                     width: 64,
                     height: 64,
                     mr: 2,
-                    border: "2px solid #1976d2",
                   }}
                 />
                 <CardContent sx={{ flexGrow: 1 }}>
