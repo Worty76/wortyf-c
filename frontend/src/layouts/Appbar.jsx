@@ -61,8 +61,20 @@ export const Appbar = () => {
       { name: "Events", URL: "events" },
       { name: "Chat", URL: "chat" },
     ],
-    admin: [{ name: "Manage", URL: "admin/manage" }],
-    moderator: [{ name: "In approval", URL: "moderator/approve" }],
+    admin: [
+      { name: "Home", URL: "home" },
+      { name: "Guardians", URL: "guardians" },
+      { name: "Events", URL: "events" },
+      { name: "Chat", URL: "chat" },
+      { name: "Manage", URL: "admin/manage" },
+    ],
+    moderator: [
+      { name: "Home", URL: "home" },
+      { name: "Guardians", URL: "guardians" },
+      { name: "Events", URL: "events" },
+      { name: "Chat", URL: "chat" },
+      { name: "In approval", URL: "moderator/approve" },
+    ],
   };
 
   return (

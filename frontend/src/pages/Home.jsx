@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Discussions } from "./Discussion/";
+import { Discussions } from "./Discussion";
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
 

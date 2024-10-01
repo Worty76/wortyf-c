@@ -1,3 +1,5 @@
+import { DataTable } from "./components";
+
 export const UserManagement = () => {
-  return <div>Hello</div>;
+  return <DataTable />;
 };

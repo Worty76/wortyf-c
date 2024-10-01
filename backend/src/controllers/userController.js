@@ -206,7 +206,7 @@ function doSomethingWithNodeRequest(req) {
   });
 }
 
-const allUsers = async (req, res) => {
+const searchUsers = async (req, res) => {
   const keyword = req.query.search
     ? {
         $or: [
@@ -220,6 +220,12 @@ const allUsers = async (req, res) => {
   res.send(users);
 };
 
+const changeRole = async (req, res) => {
+  await User.findOneAndUpdate({ _id: req.params.id }, { role: req.body.role });
+
+  return res.status(200).json({ message: "Successfully changed role" });
+};
+
 const userController = {
   login,
   register,
@@ -228,8 +234,9 @@ const userController = {
   getUser,
   changeAvatar,
   photo,
-  allUsers,
   getGuardians,
+  changeRole,
+  searchUsers,
 };
 
 module.exports = userController;
