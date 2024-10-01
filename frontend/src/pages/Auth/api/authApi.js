@@ -48,7 +48,7 @@ const signUp = async (user) => {
 const changeAvatar = async (params, credentials, imageData) => {
   try {
     let response = await axios.put(
-      `http://localhost:8000/api/user/${params.id}/changeAvt`,
+      `http://localhost:8000/api/user/${params.id}/change-avatar`,
       imageData,
       {
         headers: {

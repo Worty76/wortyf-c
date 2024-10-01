@@ -27,7 +27,8 @@ export const Appbar = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   // eslint-disable-next-line
-  const { setSelectedChat, notification, setNotification } = ChatState();
+  const { setSelectedChat, notification, setNotification, setIsLoggedIn } =
+    ChatState();
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
@@ -314,6 +315,7 @@ export const Appbar = () => {
                     <MenuItem
                       onClick={() => {
                         auth.clearJwt(() => navigate("/"));
+                        setIsLoggedIn(false);
                       }}
                     >
                       <Typography>Logout</Typography>

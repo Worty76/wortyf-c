@@ -15,6 +15,7 @@ import { FaEnvelope } from "react-icons/fa";
 import { useNavigate } from "../../../../node_modules/react-router-dom/dist/index";
 import { signIn } from "../api/authApi";
 import auth from "../../../helpers/Auth";
+import { ChatState } from "../../../context/ChatProvider";
 
 const BackgroundImage = styled(Box)(({ theme }) => ({
   backgroundImage:
@@ -67,6 +68,8 @@ export const SignIn = () => {
     redirect: false,
   });
 
+  const { setIsLoggedIn } = ChatState();
+
   const { redirect } = values;
 
   const handleChange = (name) => (event) => {
@@ -85,6 +88,7 @@ export const SignIn = () => {
         let user = JSON.parse(data.user);
         auth.authenticate(user, data.token, () => {
           setValues({ ...values, redirect: true });
+          setIsLoggedIn(true);
         });
       }
     });

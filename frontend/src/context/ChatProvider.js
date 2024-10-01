@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import auth from "../helpers/Auth";
+import axios from "axios";
 
 const ChatContext = createContext();
 
@@ -6,6 +8,30 @@ const ChatProvider = ({ children }) => {
   const [selectedChat, setSelectedChat] = useState("");
   const [chats, setChats] = useState();
   const [notification, setNotification] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (isLoggedIn || auth.isAuthenticated()) {
+      const fetchChats = async () => {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
+          },
+        };
+        try {
+          const { data } = await axios.get(
+            "http://localhost:8000/api/chat",
+            config
+          );
+          setChats(data);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchChats();
+    }
+  }, [isLoggedIn]);
 
   return (
     <ChatContext.Provider
@@ -16,6 +42,7 @@ const ChatProvider = ({ children }) => {
         setChats,
         notification,
         setNotification,
+        setIsLoggedIn,
       }}
     >
       {children}

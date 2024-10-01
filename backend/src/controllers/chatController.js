@@ -176,11 +176,15 @@ const addToGroup = async (req, res) => {
   }
 };
 
-module.exports = {
+const chatController = {
   accessChats,
   fetchChats,
   createGroupChat,
   renameGroup,
   removeFromGroup,
   addToGroup,
+};
+
+module.exports = {
+  chatController,
 };

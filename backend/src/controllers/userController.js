@@ -47,7 +47,6 @@ const login = async (req, res) => {
 // Register
 const register = async (req, res) => {
   try {
-    console.log(req.body);
     const newEmail = await User.findOne({ email: req.body.email });
     // Checking if the email is existed or not
     if (newEmail)
@@ -92,10 +91,12 @@ const register = async (req, res) => {
 };
 
 const getUsers = async (req, res) => {
-  const users = await User.find({});
+  let users = await User.find();
 
   if (!users)
     return res.status(400).send({ message: "Could not get any user" });
+
+  users = users.filter((user) => user._id.valueOf() !== req.user._id.valueOf());
 
   res.status(200).send({ message: "Successfully get users", data: users });
 };
@@ -110,12 +111,9 @@ const getGuardians = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const user = await User.findById({ _id: req.params.id });
-
+  const user = await User.findOne({ _id: req.params.id });
   if (!user) return res.status(400).json({ message: "Could not get any user" });
-
   const posts = await Post.find({ "author._id": req.params.id });
-
   res.status(200).json({
     message: "Successfully get user",
     user: user,
@@ -183,7 +181,6 @@ const changeAvatar = async (req, res) => {
 };
 
 const photo = (req, res, next) => {
-  console.log(req);
   if (req.user) {
     res.set("Content-Type", req.params.id.contentType);
     return res.send(req.params.id.data);
@@ -199,8 +196,6 @@ function doSomethingWithNodeRequest(req) {
         reject(error);
         return;
       }
-      console.log("Parsed Fields: ", fields);
-      console.log("Parsed Files: ", files);
       resolve({ ...fields, ...files });
     });
   });

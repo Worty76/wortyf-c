@@ -151,8 +151,9 @@ export const Profile = () => {
         { userId },
         config
       );
-
-      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      if (!chats.find((c) => c._id === data._id)) {
+        setChats([data, ...chats]);
+      }
       setSelectedChat(data);
       navigate("/chat");
     } catch (error) {}
@@ -206,7 +207,6 @@ export const Profile = () => {
             <CardContent>
               <ListItem sx={{ display: "flex", justifyContent: "center" }}>
                 <ListItemAvatar>
-                  {console.log(user)}
                   <Avatar
                     src={
                       image

@@ -30,6 +30,7 @@ export const DataTable = () => {
           <MenuItem value="admin">Admin</MenuItem>
           <MenuItem value="guardian">Guardian</MenuItem>
           <MenuItem value="user">User</MenuItem>
+          <MenuItem value="moderator">Moderator</MenuItem>
         </Select>
       ),
     },
@@ -40,8 +41,13 @@ export const DataTable = () => {
 
   const getUsers = async (signal) => {
     try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
+        },
+      };
       await axios
-        .get("http://localhost:8000/api/user/users", {
+        .get("http://localhost:8000/api/user/admin/get-users", config, {
           cancelToken: signal,
         })
         .then((response) => {
