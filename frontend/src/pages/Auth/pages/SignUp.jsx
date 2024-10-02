@@ -229,7 +229,7 @@ export const SignUp = () => {
                 <Grid item>
                   <Typography
                     component={Link}
-                    to="/signin"
+                    to="/sign-in"
                     sx={{
                       textDecoration: "none",
                       cursor: "pointer",

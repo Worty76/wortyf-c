@@ -130,8 +130,6 @@ const renameGroup = async (req, res) => {
 const removeFromGroup = async (req, res) => {
   const { chatId, userId } = req.body;
 
-  // check if the requester is admin
-
   const removed = await Chat.findByIdAndUpdate(
     chatId,
     {
@@ -155,7 +153,6 @@ const removeFromGroup = async (req, res) => {
 const addToGroup = async (req, res) => {
   const { chatId, userId } = req.body;
 
-  // check if the requester is admin
   const added = await Chat.findByIdAndUpdate(
     chatId,
     {

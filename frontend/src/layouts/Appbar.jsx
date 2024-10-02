@@ -324,7 +324,7 @@ export const Appbar = () => {
                 ) : (
                   <MenuItem
                     component={Link}
-                    to="/signin"
+                    to="/sign-in"
                     onClick={handleCloseUserMenu}
                   >
                     <Typography textAlign="center">Sign in</Typography>

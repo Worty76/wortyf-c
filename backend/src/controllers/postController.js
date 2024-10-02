@@ -85,7 +85,7 @@ const createPost = async (req, res) => {
 
         await sharp(buffer)
           .webp({ quality: 20 })
-          .toFile("./uploads/" + ref);
+          .toFile("./public/uploads/" + ref);
 
         imagesArray.push(ref);
       }

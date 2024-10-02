@@ -13,6 +13,8 @@ import { Discussion } from "./pages/Discussion";
 import "./App.css";
 import { AdminPrivateRoute } from "./helpers/AdminPrivateRoute";
 import { UserManagement } from "./pages/Admin";
+import { ModeratorPrivateRoute } from "./helpers/ModeratorPrivateRoute";
+import { InApprovalPosts } from "./pages/Moderator";
 // import { Footer } from "./layouts/Footer";
 
 function App() {
@@ -25,8 +27,8 @@ function App() {
       <Routes>
         {/* User route */}
         <Route exact path="/" element={<Start />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
         <Route path="/home" element={<Home />} />
         <Route path="/home/create" element={<CreatePost />} />
         <Route path="/guardians" element={<Guardian />} />
@@ -46,6 +48,14 @@ function App() {
         />
 
         {/* Moderator route */}
+        <Route
+          path="/moderator/approve"
+          element={
+            <ModeratorPrivateRoute>
+              <InApprovalPosts />
+            </ModeratorPrivateRoute>
+          }
+        />
       </Routes>
 
       {/* Footer */}

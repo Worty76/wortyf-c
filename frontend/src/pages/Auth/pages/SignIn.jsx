@@ -95,7 +95,7 @@ export const SignIn = () => {
   };
 
   const redirectToSignUp = () => {
-    navigate("/signup");
+    navigate("/sign-up");
   };
 
   useEffect(() => {
