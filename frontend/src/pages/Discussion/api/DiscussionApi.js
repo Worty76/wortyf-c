@@ -9,7 +9,7 @@ const createComment = async (params, credentials, comment) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + credentials.t,
+          Authorization: "Bearer " + credentials.t,
         },
       }
     );
@@ -28,7 +28,7 @@ const createReply = async (params, credentials, reply) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + credentials.t,
+          Authorization: "Bearer " + credentials.t,
         },
       }
     );
@@ -47,7 +47,7 @@ const createLike = async (params, credentials, like) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + credentials.t,
+          Authorization: "Bearer " + credentials.t,
         },
       }
     );
@@ -65,7 +65,7 @@ const deleteLike = async (params, credentials) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + credentials.t,
+          Authorization: "Bearer " + credentials.t,
         },
       }
     );
@@ -84,7 +84,7 @@ const markAsAnswer = async (params, credentials, markAnswer) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + credentials.t,
+          Authorization: "Bearer " + credentials.t,
         },
       }
     );
@@ -102,7 +102,7 @@ const deletePost = async (params, credentials, deletePostEmit) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + credentials.t,
+          Authorization: "Bearer " + credentials.t,
         },
         data: {
           deletePostEmit,
@@ -123,7 +123,7 @@ const deleteComment = async (params, credentials, deleteCommentEmit) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + credentials.t,
+          Authorization: "Bearer " + credentials.t,
         },
         data: {
           deleteCommentEmit,
@@ -144,7 +144,7 @@ const deleteReply = async (params, credentials, deleteReplyEmit) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + credentials.t,
+          Authorization: "Bearer " + credentials.t,
         },
         data: {
           deleteReplyEmit,
@@ -166,7 +166,7 @@ const updatePost = async (params, credentials, post) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + credentials.t,
+          Authorization: "Bearer " + credentials.t,
         },
       }
     );
@@ -185,7 +185,7 @@ const updateComment = async (params, credentials, commentData) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + credentials.t,
+          Authorization: "Bearer " + credentials.t,
         },
       }
     );
@@ -205,7 +205,7 @@ const updateReply = async (params, credentials, commentData) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + credentials.t,
+          Authorization: "Bearer " + credentials.t,
         },
       }
     );

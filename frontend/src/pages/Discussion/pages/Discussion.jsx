@@ -124,7 +124,6 @@ export const Discussion = () => {
         })
         .then((response) => {
           const data = response.data;
-          console.log(data);
           setPost(data.post);
           setUser(data.author);
           setLikes(data.post.likes);

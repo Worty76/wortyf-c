@@ -8,10 +8,10 @@ const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
 
-const readPost = async (req, res) => {
+const getApprovedPosts = async (req, res) => {
   try {
     // the 2nd argument is removing fields that you don't want to fetch
-    const posts = await Post.find({});
+    const posts = await Post.find({ approved: true });
 
     if (posts)
       return res
@@ -24,7 +24,23 @@ const readPost = async (req, res) => {
   }
 };
 
-const readSpecificPost = async (req, res) => {
+const getInApprovalPosts = async (req, res) => {
+  try {
+    // the 2nd argument is removing fields that you don't want to fetch
+    const posts = await Post.find({ approved: false });
+
+    if (posts)
+      return res
+        .status(200)
+        .send({ message: "Successfully get posts", data: posts });
+
+    return res.status(400).send({ message: "Failed to get posts" });
+  } catch (error) {
+    res.status(500).send({ message: "Interval error", error: error });
+  }
+};
+
+const getSpecificPost = async (req, res) => {
   try {
     const post = await Post.findById({ _id: req.params.id });
 
@@ -178,8 +194,9 @@ const deletePost = async (req, res) => {
       return res.status(400).json({ message: "This post doesn't exist!" });
 
     await Post.findByIdAndDelete({ _id: req.params.id });
-
     await Comment.deleteMany({ post_id: req.params.id });
+    await Like.deleteMany({ post_id: req.params.id });
+
     res.status(200).json({ message: "Successfully deleted a post" });
   } catch (error) {
     res.status(500).json({ message: "Interval error", error: error });
@@ -244,13 +261,32 @@ const searchPost = async (req, res) => {
   }
 };
 
+const approvePost = async (req, res) => {
+  console.log(req.params);
+  try {
+    await Post.findOneAndUpdate({ _id: req.params.id }, { approved: true });
+
+    const posts = await Post.find({ approved: false });
+
+    return res
+      .status(200)
+      .send({ message: "Successfully approved a post!", data: posts });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "Internal server error", error: error.message });
+  }
+};
+
 const postController = {
-  readPost,
+  getApprovedPosts,
   createPost,
   updatePost,
   deletePost,
-  readSpecificPost,
+  getSpecificPost,
   searchPost,
+  getInApprovalPosts,
+  approvePost,
 };
 
 module.exports = postController;
