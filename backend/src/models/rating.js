@@ -6,6 +6,9 @@ const RatingSchema = new Schema({
     type: Number,
     default: 0
   }
+  comment: {
+    type: String,
+  }
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",

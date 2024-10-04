@@ -322,6 +322,9 @@ export const Profile = () => {
                       primary={
                         <Typography variant="h6" sx={{ cursor: "pointer" }}>
                           {post.title}
+                          {post.approved === false ? (
+                            <span style={{ color: "red" }}> In approval</span>
+                          ) : null}
                         </Typography>
                       }
                       secondary={new Date(post.createdAt).toLocaleDateString()}
@@ -418,7 +421,12 @@ export const Profile = () => {
                         transition: "0.2s ease",
                       }}
                     >
-                      Approved posts (2)
+                      Approved posts (
+                      {
+                        usersPosts.filter((post) => post.approved === true)
+                          .length
+                      }
+                      )
                     </Typography>
                   </ListItem>
                   <ListItem>
@@ -429,7 +437,12 @@ export const Profile = () => {
                         transition: "0.2s ease",
                       }}
                     >
-                      Waiting for approval (1)
+                      Waiting for approval (
+                      {
+                        usersPosts.filter((post) => post.approved === false)
+                          .length
+                      }
+                      )
                     </Typography>
                   </ListItem>
                   <ListItem>
@@ -440,7 +453,7 @@ export const Profile = () => {
                         transition: "0.2s ease",
                       }}
                     >
-                      Unapproved posts (1)
+                      Unapproved posts (0)
                     </Typography>
                   </ListItem>
                 </List>

@@ -19,4 +19,23 @@ const approve = async (params, credentials, approvePost) => {
   }
 };
 
-export { approve };
+const reject = async (params, credentials, rejectPost) => {
+  try {
+    let response = await axios.put(
+      `http://localhost:8000/api/post/moderator/reject-post/${params.postId}`,
+      rejectPost,
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + credentials.t,
+        },
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+export { approve, reject };

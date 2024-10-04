@@ -77,7 +77,21 @@ export const InApprovalPosts = () => {
     });
   };
 
-  // const handleRejectPost = () => {};
+  // const handleRejectPost = (postId) => {
+  //   let rejectPost = new FormData();
+
+  //   reject(
+  //     { postId: postId },
+  //     { t: JSON.parse(auth.isAuthenticated().token) },
+  //     rejectPost
+  //   ).then((data) => {
+  //     if (data.stack) {
+  //     } else {
+  //       handleVariant("success");
+  //       setPosts(data);
+  //     }
+  //   });
+  // };
 
   useEffect(() => {
     const CancelToken = axios.CancelToken;
@@ -128,11 +142,11 @@ export const InApprovalPosts = () => {
                       Approve
                     </Button>
                   </div>
-                  {/* <div style={{ padding: 2 }}>
+                  <div style={{ padding: 2 }}>
                     <Button variant="contained" color="error">
                       Reject
                     </Button>
-                  </div> */}
+                  </div>
                 </List>
               </CardContent>
             </Card>

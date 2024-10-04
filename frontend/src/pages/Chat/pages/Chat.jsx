@@ -11,7 +11,7 @@ export const Chat = () => {
   const [fetchAgain, setFetchAgain] = useState(false);
 
   useEffect(() => {
-    if (!user) return navigate("/signin");
+    if (!user) return navigate("/sign-in");
   });
 
   return (
