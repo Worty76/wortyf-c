@@ -113,7 +113,9 @@ const getGuardians = async (req, res) => {
 const getUser = async (req, res) => {
   const user = await User.findOne({ _id: req.params.id });
   if (!user) return res.status(400).json({ message: "Could not get any user" });
-  const posts = await Post.find({ "author._id": req.params.id });
+  const posts = await Post.find({ "author._id": req.params.id }).populate(
+    "topic"
+  );
   res.status(200).json({
     message: "Successfully get user",
     user: user,

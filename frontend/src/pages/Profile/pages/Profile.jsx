@@ -27,9 +27,9 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CloseIcon from "@mui/icons-material/Close";
 import auth from "../../../helpers/Auth";
 import { changeAvatar } from "../../Auth/api/authApi";
-import Topic from "../../Discussion/components/Topic";
 import { ChatState } from "../../../context/ChatProvider";
 import { useNavigate } from "react-router-dom";
+import { Topic } from "../../Discussion/components/Topic";
 
 const useStyles = makeStyles({
   root: {
@@ -345,7 +345,12 @@ export const Profile = () => {
                   <ListItem>
                     {post.topic &&
                       post.topic.map((topic, id) => (
-                        <Topic topicId={topic} key={id} />
+                        <Topic
+                          key={id}
+                          name={topic.name}
+                          color={topic.color}
+                          id={id}
+                        />
                       ))}
                   </ListItem>
                   <Box

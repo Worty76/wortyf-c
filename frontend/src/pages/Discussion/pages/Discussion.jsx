@@ -34,11 +34,11 @@ import {
 } from "../api/DiscussionApi";
 import { VariantType, useSnackbar } from "notistack";
 import SingleComment from "../components/SingleComment";
-import Topic from "../components/Topic";
 import auth from "../../../helpers/Auth";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import TextEditor from "../components/TextEditor";
 import { Markup } from "interweave";
+import { Topic } from "../components/Topic";
 
 const useStyles = makeStyles({
   root: {
@@ -435,7 +435,12 @@ export const Discussion = () => {
               <ListItem>
                 {post.topic &&
                   post.topic.map((topic, id) => (
-                    <Topic topicId={topic} key={id} />
+                    <Topic
+                      key={id}
+                      name={topic.name}
+                      color={topic.color}
+                      id={id}
+                    />
                   ))}
               </ListItem>
               <Toolbar disableGutters>

@@ -11,7 +11,7 @@ const sharp = require("sharp");
 const getApprovedPosts = async (req, res) => {
   try {
     // the 2nd argument is removing fields that you don't want to fetch
-    const posts = await Post.find({ approved: true });
+    const posts = await Post.find({ approved: true }).populate("topic");
 
     if (posts)
       return res
@@ -42,7 +42,7 @@ const getInApprovalPosts = async (req, res) => {
 
 const getSpecificPost = async (req, res) => {
   try {
-    const post = await Post.findById({ _id: req.params.id });
+    const post = await Post.findById({ _id: req.params.id }).populate("topic");
 
     const author = await User.findById({ _id: post.author._id });
 
