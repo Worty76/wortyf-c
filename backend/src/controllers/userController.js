@@ -7,6 +7,7 @@ const formidable = require("formidable");
 const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
+const Rating = require("../models/rating");
 require("dotenv").config();
 
 // Login
@@ -116,10 +117,15 @@ const getUser = async (req, res) => {
   const posts = await Post.find({ "author._id": req.params.id }).populate(
     "topic"
   );
+  const ratings = await Rating.find({ user_id: req.params.id }).populate(
+    "author",
+    "email username createdAt"
+  );
   res.status(200).json({
     message: "Successfully get user",
     user: user,
     usersPosts: posts,
+    ratings: ratings,
   });
 };
 

@@ -20,4 +20,27 @@ const sold = async ({ postId, buyerId }, credentials, markAnswer) => {
   }
 };
 
-export { sold };
+const rate = async (
+  { postId, buyerId, sellerId, noOfStars, comment },
+  credentials
+) => {
+  try {
+    let response = await axios.post(
+      `http://localhost:8000/api/rating/rate`,
+      { postId, buyerId, sellerId, noOfStars, comment },
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + credentials.t,
+        },
+      }
+    );
+    console.log(response);
+    return JSON.stringify(response.data.message);
+  } catch (error) {
+    return error;
+  }
+};
+
+export { sold, rate };

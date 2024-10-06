@@ -9,6 +9,7 @@ import ScrollableChat from "./ModalButton/components/ScrollableChat";
 import { Link } from "react-router-dom";
 import { sold } from "../api/ChatApi";
 import { useNavigate } from "react-router-dom";
+import RateModalButton from "./RateModalButton/RateModalButton";
 
 var socket, selectedChatCompare;
 const ENDPOINT = "http://localhost:8000";
@@ -223,9 +224,15 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                           </Typography>
                         ))}
                       {auth.isAuthenticated().user._id ===
-                        selectedChat.post.buyer?._id && (
-                        <Button variant="contained">Rate</Button>
-                      )}
+                        selectedChat.post.buyer?._id &&
+                        (selectedChat.post.rated ? (
+                          <Typography sx={{ color: "green" }}>
+                            You already rated, you can see your rating at the
+                            author's profile
+                          </Typography>
+                        ) : (
+                          <RateModalButton chat={selectedChat} />
+                        ))}
                     </div>
                   </div>
                 </Card>

@@ -30,6 +30,7 @@ import { changeAvatar } from "../../Auth/api/authApi";
 import { ChatState } from "../../../context/ChatProvider";
 import { useNavigate } from "react-router-dom";
 import { Topic } from "../../Discussion/components/Topic";
+import { Stars } from "../components/Stars";
 
 const useStyles = makeStyles({
   root: {
@@ -78,6 +79,7 @@ export const Profile = () => {
   const [user, setUser] = useState({});
   const [usersPosts, setUsersPosts] = useState([]);
   const [image, setImage] = useState(null);
+  const [ratings, setRatings] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState(null);
@@ -96,6 +98,8 @@ export const Profile = () => {
       const data = response.data;
       setUser(data.user);
       setUsersPosts(data.usersPosts);
+      setRatings(data.ratings);
+      console.log(data);
     } catch (error) {
       if (axios.isCancel(error)) {
         console.log("Request canceled", error.message);
@@ -475,24 +479,27 @@ export const Profile = () => {
                       variant="body1"
                       sx={{ textAlign: "center", fontWeight: "bold" }}
                     >
-                      Ratings (5)
+                      Ratings ({ratings.length})
                     </Typography>
                   }
                 />
               </ListItem>
               <Divider />
               <List>
-                <ListItem>
-                  <Typography
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": { color: "grey" },
-                      transition: "0.2s ease",
-                    }}
-                  >
-                    5 stars from Lee Chong Wei: Good job and handle things well
-                  </Typography>
-                </ListItem>
+                {ratings &&
+                  ratings.map((rating, id) => (
+                    <ListItem key={id}>
+                      <Typography
+                        sx={{
+                          cursor: "pointer",
+                          "&:hover": { color: "grey" },
+                          transition: "0.2s ease",
+                        }}
+                      >
+                        <Stars totalStars={rating.noOfStars} />
+                      </Typography>
+                    </ListItem>
+                  ))}
               </List>
             </CardContent>
           </Card>
