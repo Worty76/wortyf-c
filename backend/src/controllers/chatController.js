@@ -3,48 +3,69 @@ const User = require("../models/user.js");
 
 const accessChats = async (req, res) => {
   console.log(req.body);
-  const { userId } = req.body;
+  const { userId, postId } = req.body;
 
   if (!userId) {
     console.log("UserId param not sent with request");
     return res.sendStatus(400);
   }
 
-  var isChat = await Chat.find({
-    isGroupChat: false,
-    $and: [
-      { users: { $elemMatch: { $eq: req.user._id } } },
-      { users: { $elemMatch: { $eq: userId } } },
-    ],
-  })
-    .populate("users", "-password")
-    .populate("latestMessage");
+  try {
+    let isChat;
 
-  isChat = await User.populate(isChat, {
-    path: "latestMessage.sender",
-    select: "username avatar_url email",
-  });
-
-  if (isChat.length > 0) {
-    res.send(isChat[0]);
-  } else {
-    var chatData = {
-      chatName: "sender",
-      isGroupChat: false,
-      users: [req.user._id, userId],
-    };
-
-    try {
-      const createdChat = await Chat.create(chatData);
-      const FullChat = await Chat.findOne({ _id: createdChat._id }).populate(
-        "users",
-        "-password"
-      );
-      res.status(200).json(FullChat);
-    } catch (error) {
-      res.status(400);
-      throw new Error(error.message);
+    if (postId) {
+      isChat = await Chat.find({
+        isGroupChat: false,
+        $and: [
+          { users: { $elemMatch: { $eq: req.user._id } } },
+          { users: { $elemMatch: { $eq: userId } } },
+          { post: postId },
+        ],
+      })
+        .populate("post")
+        .populate("users", "-password")
+        .populate("latestMessage");
+    } else {
+      isChat = await Chat.find({
+        isGroupChat: false,
+        $and: [
+          { users: { $elemMatch: { $eq: req.user._id } } },
+          { users: { $elemMatch: { $eq: userId } } },
+        ],
+      })
+        .populate("users", "-password")
+        .populate("latestMessage");
     }
+
+    isChat = await User.populate(isChat, {
+      path: "latestMessage.sender",
+      select: "username avatar_url email",
+    });
+
+    if (isChat.length > 0) {
+      console.log(isChat);
+      return res.send(isChat[0]);
+    } else {
+      const chatData = {
+        chatName: "sender",
+        isGroupChat: false,
+        users: [req.user._id, userId],
+        post: postId || null,
+      };
+
+      const createdChat = await Chat.create(chatData);
+
+      const fullChat = await Chat.findOne({ _id: createdChat._id })
+        .populate("users", "-password")
+        .populate("post");
+
+      return res.status(200).json(fullChat);
+    }
+  } catch (error) {
+    console.error(error.message);
+    return res
+      .status(500)
+      .json({ message: "An error occurred while accessing chats." });
   }
 };
 
@@ -54,6 +75,7 @@ const fetchChats = async (req, res) => {
       .populate("users", "-password")
       .populate("groupAdmin", "-password")
       .populate("latestMessage")
+      .populate("post")
       .sort({ updatedAt: -1 })
       .then(async (results) => {
         results = await User.populate(results, {

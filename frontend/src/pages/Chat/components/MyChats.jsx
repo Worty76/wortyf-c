@@ -119,16 +119,20 @@ function MyChats({ fetchAgain }) {
         >
           My Chats
           <div style={{ display: "flex" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ marginRight: 1 }}
-              onClick={toggleDrawer(true)}
-              startIcon={<SearchIcon />}
-            >
-              Search User
-            </Button>
-            <GroupChatModal />
+            {auth.isAuthenticated().user.role === "guardian" && (
+              <>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ marginRight: 1 }}
+                  onClick={toggleDrawer(true)}
+                  startIcon={<SearchIcon />}
+                >
+                  Search User
+                </Button>
+                <GroupChatModal />
+              </>
+            )}
           </div>
         </Box>
         <Box sx={{ width: "100%" }}>
@@ -175,13 +179,37 @@ function MyChats({ fetchAgain }) {
                         : chat.chatName
                     }
                     secondary={
-                      chat.latestMessage
-                        ? chat.latestMessage.sender.username +
-                          ": " +
-                          chat.latestMessage.content
-                        : ""
+                      <div>
+                        <Typography sx={{ fontSize: "15px", display: "block" }}>
+                          {chat.post?.title}
+                        </Typography>
+                        <Typography sx={{ fontSize: "15px", display: "block" }}>
+                          {chat.latestMessage
+                            ? chat.latestMessage?.sender?.username +
+                              ": " +
+                              chat.latestMessage?.content
+                            : ""}
+                        </Typography>
+                      </div>
                     }
                   />
+                  {chat.post?.images && (
+                    <div style={{ width: "80px", height: "80px" }}>
+                      <img
+                        alt=""
+                        style={{
+                          objectFit: "cover",
+                          borderRadius: "10px",
+                          maxWidth: "100%",
+                          height: "100%",
+                          width: "auto",
+                          display: "block",
+                          margin: "0 auto",
+                        }}
+                        src={`http://localhost:8000/${chat.post?.images[0]}`}
+                      />
+                    </div>
+                  )}
                 </ListItemButton>
               </Box>
             ))

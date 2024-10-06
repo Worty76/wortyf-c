@@ -22,10 +22,8 @@ import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
 import OutlinedFlagOutlinedIcon from "@mui/icons-material/OutlinedFlagOutlined";
 import { Link } from "react-router-dom";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import axios from "axios";
 import CircleIcon from "@mui/icons-material/Circle";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import auth from "../../../helpers/Auth";
 // eslint-disable-next-line
 import Crop169Icon from "@mui/icons-material/Crop169";
@@ -351,43 +349,20 @@ export const Discussions = ({
                       },
                     }}
                   >
-                    <div>
-                      <ListItem>
-                        {/* Show how many people are there in the comments */}
-                        {/* <ListItemAvatar>
-                        <TotalAvatars props={comments} />
-                      </ListItemAvatar> */}
-                      </ListItem>
-                      <ListItem>
-                        <Badge>
-                          <ChatBubbleOutlineIcon />
-                        </Badge>
-                        <ListItemText
-                          primary={
-                            <Typography
-                              sx={{ paddingLeft: "5px" }}
-                              variant="h8"
-                            >
-                              {Object.keys(post.comments).length} Comments
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <Badge>
-                          <FavoriteBorderIcon />
-                        </Badge>
-                        <ListItemText
-                          primary={
-                            <Typography
-                              sx={{ paddingLeft: "5px" }}
-                              variant="h8"
-                            >
-                              {Object.keys(post.likes).length} Likes
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
+                    <div style={{ width: "150px", height: "150px" }}>
+                      <img
+                        alt=""
+                        style={{
+                          objectFit: "cover",
+                          borderRadius: "10px",
+                          maxWidth: "100%",
+                          height: "100%",
+                          width: "auto",
+                          display: "block",
+                          margin: "0 auto",
+                        }}
+                        src={`http://localhost:8000/${post.images[0]}`}
+                      />
                     </div>
                   </Box>
                 </Paper>

@@ -143,7 +143,7 @@ export const CreatePost = () => {
   const validateForm = () => {
     let errors = {};
     if (!values.title) errors.title = "Title is required.";
-    if (values.title.length > 11 || values.title.length < 100)
+    if (values.title.length < 11 || values.title.length > 100)
       errors.title =
         "Title should be more than 10 or less than 100 characters.";
     if (!values.description) errors.description = "Description is required.";

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { Paper, Typography } from "@mui/material";
-import home from "../../../images/home.png";
-import discussion from "../../../images/discussion.png";
-import profile from "../../../images/profile.png";
+import home from "../../../assets/images/home.png";
+import discussion from "../../../assets/images/discussion.png";
+import profile from "../../../assets/images/profile.png";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 

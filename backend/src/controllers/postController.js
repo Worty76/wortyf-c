@@ -42,7 +42,9 @@ const getInApprovalPosts = async (req, res) => {
 
 const getSpecificPost = async (req, res) => {
   try {
-    const post = await Post.findById({ _id: req.params.id }).populate("topic");
+    const post = await Post.findById({ _id: req.params.id })
+      .populate("topic")
+      .populate("likes");
 
     const author = await User.findById({ _id: post.author._id });
 

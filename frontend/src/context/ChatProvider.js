@@ -33,6 +33,8 @@ const ChatProvider = ({ children }) => {
     }
   }, [isLoggedIn]);
 
+  console.log(chats);
+
   return (
     <ChatContext.Provider
       value={{

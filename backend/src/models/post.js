@@ -29,7 +29,7 @@ const PostSchema = new Schema({
   ],
   likes: [
     {
-      type: Schema.Types.Object,
+      type: Schema.Types.ObjectId,
       ref: "Like",
       default: [],
     },

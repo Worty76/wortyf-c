@@ -21,6 +21,7 @@ let theme = createTheme({
       textTransform: "none",
     },
   },
+  components: {},
 });
 
 theme = responsiveFontSizes(theme);

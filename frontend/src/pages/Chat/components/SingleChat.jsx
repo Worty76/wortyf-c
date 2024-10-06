@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Card, Button, Typography } from "@mui/material";
 import { ChatState } from "../../../context/ChatProvider";
 import { InputBase } from "@mui/material";
 import auth from "../../../helpers/Auth";
@@ -121,6 +121,60 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
               overflowY: "auto",
             }}
           >
+            {selectedChat.post && (
+              <Box
+                sx={{
+                  padding: 1,
+                  borderRadius: "10px",
+                }}
+              >
+                <Card
+                  elevation={1}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {selectedChat.post.images && (
+                    <div style={{ width: "100px", height: "100px" }}>
+                      <img
+                        alt=""
+                        style={{
+                          objectFit: "cover",
+                          borderRadius: "10px",
+                          maxWidth: "100%",
+                          height: "100%",
+                          width: "auto",
+                          display: "block",
+                        }}
+                        src={`http://localhost:8000/${selectedChat.post.images[0]}`}
+                      />
+                    </div>
+                  )}
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      alignItems: "center",
+                      padding: 10,
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div>
+                      <Typography>{selectedChat.post.title}</Typography>
+                      <Typography sx={{ color: "red" }}>10000$</Typography>
+                    </div>
+                    <div>
+                      {auth.isAuthenticated().user._id ===
+                        selectedChat.post.author._id && (
+                        <Button variant="contained">Sold to this person</Button>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              </Box>
+            )}
             <div
               className="messages"
               style={{

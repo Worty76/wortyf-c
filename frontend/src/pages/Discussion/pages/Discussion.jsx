@@ -39,6 +39,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import TextEditor from "../components/TextEditor";
 import { Markup } from "interweave";
 import { Topic } from "../components/Topic";
+import { ChatState } from "../../../context/ChatProvider";
 
 const useStyles = makeStyles({
   root: {
@@ -68,9 +69,10 @@ export const Discussion = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const timeoutRef = useRef(null);
+  const { setSelectedChat, chats, setChats } = ChatState();
 
   // Handle multiple clicks on Like/Unlike button
-  const debouncedOnCreateLike = (event) => {
+  const debouncedOnCreateLike = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
@@ -80,7 +82,7 @@ export const Discussion = () => {
     }, 300);
   };
 
-  const debouncedOnDeleteLike = (event) => {
+  const debouncedOnDeleteLike = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
@@ -124,6 +126,7 @@ export const Discussion = () => {
         })
         .then((response) => {
           const data = response.data;
+          console.log(data);
           setPost(data.post);
           setUser(data.author);
           setLikes(data.post.likes);
@@ -278,6 +281,30 @@ export const Discussion = () => {
     });
   };
 
+  const accessChat = async (userId, postId) => {
+    console.log(userId);
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
+        },
+      };
+      const { data } = await axios.post(
+        `http://localhost:8000/api/chat`,
+        { userId, postId },
+        config
+      );
+
+      if (!chats.find((c) => c._id === data._id)) {
+        setChats([data, ...chats]);
+      }
+      setSelectedChat(data);
+      navigate("/chat");
+    } catch (error) {}
+  };
+
   return (
     <div className={classes.root}>
       {/* <CssBaseline /> */}
@@ -384,7 +411,12 @@ export const Discussion = () => {
                     </Menu>
                   </>
                 ) : (
-                  ""
+                  <Button
+                    variant="contained"
+                    onClick={() => accessChat(user._id, post._id)}
+                  >
+                    Chat
+                  </Button>
                 )}
               </ListItem>
               {openEditing ? (
@@ -418,6 +450,7 @@ export const Discussion = () => {
                                 alt="images"
                                 style={{
                                   width: "300px",
+                                  borderRadius: "10px",
                                   minHeight: "100%",
                                   objectFit: "contain",
                                   padding: 2,
