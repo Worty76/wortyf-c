@@ -31,6 +31,7 @@ const accessChats = async (req, res) => {
         $and: [
           { users: { $elemMatch: { $eq: req.user._id } } },
           { users: { $elemMatch: { $eq: userId } } },
+          { post: null },
         ],
       })
         .populate("users", "-password")
@@ -75,7 +76,11 @@ const fetchChats = async (req, res) => {
       .populate("users", "-password")
       .populate("groupAdmin", "-password")
       .populate("latestMessage")
-      .populate("post")
+      .populate({
+        path: "post",
+        populate: { path: "buyer", select: "username email avatar_url" },
+      })
+      .populate("post.buyer")
       .sort({ updatedAt: -1 })
       .then(async (results) => {
         results = await User.populate(results, {

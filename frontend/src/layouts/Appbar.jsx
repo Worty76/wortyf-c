@@ -314,7 +314,8 @@ export const Appbar = () => {
                     </MenuItem>
                     <MenuItem
                       onClick={() => {
-                        auth.clearJwt(() => navigate("/"));
+                        auth.clearJwt(() => navigate("/sign-in"));
+                        navigate(0);
                         setIsLoggedIn(false);
                       }}
                     >

@@ -38,6 +38,7 @@ const sendMessage = async (req, res) => {
 };
 
 const allMessages = async (req, res) => {
+  console.log(req.params);
   try {
     const messages = await Message.find({ chat: req.params.chatId })
       .populate("sender", "username avatar_url email")

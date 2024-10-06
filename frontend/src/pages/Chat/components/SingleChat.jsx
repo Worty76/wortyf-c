@@ -202,11 +202,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                     <div>
                       {auth.isAuthenticated().user._id ===
                         selectedChat.post.author._id &&
-                        (selectedChat.post.sold ? (
-                          <Typography sx={{ color: "green" }}>
-                            Already sold
-                          </Typography>
-                        ) : (
+                        (!selectedChat.post.sold ? (
                           <Button
                             variant="contained"
                             onClick={() =>
@@ -221,7 +217,15 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                           >
                             Sold to this person
                           </Button>
+                        ) : (
+                          <Typography sx={{ color: "green" }}>
+                            Already Sold
+                          </Typography>
                         ))}
+                      {auth.isAuthenticated().user._id ===
+                        selectedChat.post.buyer?._id && (
+                        <Button variant="contained">Rate</Button>
+                      )}
                     </div>
                   </div>
                 </Card>

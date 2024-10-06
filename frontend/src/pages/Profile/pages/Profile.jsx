@@ -321,7 +321,7 @@ export const Profile = () => {
                     <ListItemText
                       primary={
                         <Typography variant="h6" sx={{ cursor: "pointer" }}>
-                          {post.title}
+                          {post.name}
                           {post.approved === false ? (
                             <span style={{ color: "red" }}> In approval</span>
                           ) : null}

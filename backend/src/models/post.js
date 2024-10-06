@@ -49,6 +49,10 @@ const PostSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  rated: {
+    type: Boolean,
+    default: false,
+  },
   author: {
     _id: {
       type: Schema.Types.ObjectId,

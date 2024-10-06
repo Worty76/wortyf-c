@@ -112,8 +112,8 @@ export const InApprovalPosts = () => {
               <CardContent>
                 <Grid container spacing={2}>
                   <Grid item>
-                    <Typography variant="h6">{post.title}</Typography>
-                    <Typography variant="body2">{post.description}</Typography>
+                    <Typography variant="h6">{post.name}</Typography>
+                    <Typography variant="body2">{post.price}</Typography>
                     <Typography variant="body2">
                       <Markup content={post.content} />
                     </Typography>
@@ -142,16 +142,18 @@ export const InApprovalPosts = () => {
                       Approve
                     </Button>
                   </div>
-                  <div style={{ padding: 2 }}>
+                  {/* <div style={{ padding: 2 }}>
                     <Button variant="contained" color="error">
                       Reject
                     </Button>
-                  </div>
+                  </div> */}
                 </List>
               </CardContent>
             </Card>
           </Grid>
         ))}
+
+        {posts.length === 0 && <div>No posts found</div>}
       </Grid>
     </div>
   );

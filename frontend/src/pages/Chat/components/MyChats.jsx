@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Box,
   ListItemText,
@@ -38,12 +39,15 @@ const useStyles = makeStyles({
 });
 
 function MyChats({ fetchAgain }) {
+  const { chatId } = useParams();
   const { selectedChat, setSelectedChat, chats, setChats } = ChatState();
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const [hasCalledEffect, setHasCalledEffect] = useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -115,6 +119,27 @@ function MyChats({ fetchAgain }) {
     // eslint-disable-next-line
   }, [fetchAgain]);
 
+  useEffect(() => {
+    if (!chats) return;
+    if (!hasCalledEffect) {
+      console.log("im calling");
+
+      if (chats && chatId) {
+        const chatExists = chats.find((chat) => chat._id === chatId);
+        if (chatExists) {
+          setSelectedChat(chatExists);
+        } else {
+          console.log("Chat ID not found in fetched chats");
+        }
+      }
+
+      setHasCalledEffect(true);
+    }
+    // eslint-disable-next-line
+  }, [chatId, chats, hasCalledEffect]);
+
+  console.log(chats);
+
   return (
     <>
       <Box
@@ -163,7 +188,10 @@ function MyChats({ fetchAgain }) {
             chats.map((chat, id) => (
               <Box
                 key={id}
-                onClick={() => setSelectedChat(chat)}
+                onClick={() => {
+                  setSelectedChat(chat);
+                  navigate(`/chat/${chat._id}`);
+                }}
                 sx={{
                   backgroundColor: `${
                     selectedChat === chat ? "#e0f7fa" : "#ffffff"
@@ -205,24 +233,19 @@ function MyChats({ fetchAgain }) {
                           : chat.chatName
                       }
                       secondary={
-                        <div>
-                          <Typography
-                            className={classes.TitleMultiLineEllipsis}
-                            sx={{ fontSize: "15px", display: "block" }}
-                          >
-                            {chat.post?.title}
-                          </Typography>
-                          <Typography
-                            className={classes.TitleMultiLineEllipsis}
-                            sx={{ fontSize: "15px", display: "block" }}
-                          >
+                        <Typography
+                          className={classes.TitleMultiLineEllipsis}
+                          sx={{ fontSize: "15px", display: "block" }}
+                        >
+                          {chat.post?.name}
+                          <span>
                             {chat.latestMessage
                               ? chat.latestMessage?.sender?.username +
                                 ": " +
                                 chat.latestMessage?.content
                               : ""}
-                          </Typography>
-                        </div>
+                          </span>
+                        </Typography>
                       }
                     />
                     {chat.post?.images && (

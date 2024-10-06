@@ -31,9 +31,8 @@ const ChatProvider = ({ children }) => {
 
       fetchChats();
     }
+    console.log("Chat's states are ready");
   }, [isLoggedIn]);
-
-  console.log(chats);
 
   return (
     <ChatContext.Provider

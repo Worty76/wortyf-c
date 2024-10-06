@@ -34,6 +34,7 @@ function App() {
         <Route path="/guardians" element={<Guardian />} />
         <Route path="/events" element={<Events />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path="/chat/:chatId" element={<Chat />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/discussions/:id" element={<Discussion />} />
 

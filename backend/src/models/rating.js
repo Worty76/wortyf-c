@@ -19,6 +19,11 @@ const RatingSchema = new Schema({
     ref: "User",
     required: true,
   },
+  postId: {
+    type: Schema.Types.ObjectId,
+    ref: "Post",
+    required: true,
+  }
 }, {timestamp: true});
 
 module.exports = mongoose.model("Rating", RatingSchema);
