@@ -126,28 +126,23 @@ const deleteComment = async (req, res) => {
   }
 };
 
-// Mark comment as correct answer
-const markAsAnswer = async (req, res) => {
+const sold = async (req, res) => {
   try {
-    const postId = req.params.id;
-    const commentId = req.params.CommentId;
+    const { postId, buyerId } = req.body;
 
     const post = await Post.findById({ _id: postId });
 
     if (!post)
       return res.status(400).json({ message: "Failed to find the post!" });
 
-    const comment = await Comment.findById({ _id: commentId });
-
-    if (!comment)
-      return res.status(400).json({ message: "Failed to find the comment!" });
-
-    if (post.solved === false) {
-      await Comment.findByIdAndUpdate({ _id: commentId }, { correctAns: true });
-      await Post.findByIdAndUpdate({ _id: postId }, { solved: true });
-      res.json({ message: "Successfully mark a comment as answer" });
+    if (post.sold === false) {
+      await Post.findByIdAndUpdate(
+        { _id: postId },
+        { sold: true, $set: { buyer: buyerId } }
+      );
+      res.status(200).json({ message: "Successfully sold to a person" });
     } else {
-      res.status(400).json({ message: "There's already a correct answer" });
+      res.status(400).json({ message: "Already sold" });
     }
   } catch (error) {
     res.status(500).json({ message: "Interval error", error: error });
@@ -332,7 +327,7 @@ const commentController = {
   createReply,
   updateReply,
   deleteReply,
-  markAsAnswer,
+  sold,
 };
 
 module.exports = commentController;

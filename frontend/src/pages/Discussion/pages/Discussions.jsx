@@ -274,7 +274,7 @@ export const Discussions = ({
                     },
                   }}
                 >
-                  {post.solved && (
+                  {post.sold && (
                     <Box
                       sx={{
                         position: "absolute",
@@ -308,7 +308,7 @@ export const Discussions = ({
                             variant="h6"
                             className={classes.TitleMultiLineEllipsis}
                           >
-                            {post.title}
+                            {post.name}
                           </Typography>
                         }
                         secondary={post.createdAt}

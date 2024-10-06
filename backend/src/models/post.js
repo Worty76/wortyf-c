@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const PostSchema = new Schema({
-  title: {
+  name: {
     type: String,
     required: true,
     minlength: 10,
     maxlength: 100,
   },
-  description: {
+  price: {
     type: String,
   },
   content: {
@@ -41,7 +41,7 @@ const PostSchema = new Schema({
       default: [],
     },
   ],
-  solved: {
+  sold: {
     type: Boolean,
     default: false,
   },
@@ -61,6 +61,11 @@ const PostSchema = new Schema({
     avatar_url: {
       type: String,
     },
+  },
+  buyer: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: false,
   },
   createdAt: {
     type: String,

@@ -18,9 +18,28 @@ import GroupChatModal from "./ModalButton/GroupChatModal";
 import SearchIcon from "@mui/icons-material/Search";
 import UserListItem from "./ModalButton/components/UserListItem";
 import { getSender, getSenderAvatar } from "../../../logic/ChatLogics";
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles({
+  TitleMultiLineEllipsis: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    "-webkit-line-clamp": 1,
+    "-webkit-box-orient": "vertical",
+  },
+  ContentMultiLineEllipsis: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    "-webkit-line-clamp": 2,
+    "-webkit-box-orient": "vertical",
+  },
+});
 
 function MyChats({ fetchAgain }) {
   const { selectedChat, setSelectedChat, chats, setChats } = ChatState();
+  const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
@@ -172,44 +191,64 @@ function MyChats({ fetchAgain }) {
                       }
                     />
                   </ListItemAvatar>
-                  <ListItemText
-                    primary={
-                      !chat.isGroupChat
-                        ? getSender(auth.isAuthenticated().user, chat.users)
-                        : chat.chatName
-                    }
-                    secondary={
-                      <div>
-                        <Typography sx={{ fontSize: "15px", display: "block" }}>
-                          {chat.post?.title}
-                        </Typography>
-                        <Typography sx={{ fontSize: "15px", display: "block" }}>
-                          {chat.latestMessage
-                            ? chat.latestMessage?.sender?.username +
-                              ": " +
-                              chat.latestMessage?.content
-                            : ""}
-                        </Typography>
-                      </div>
-                    }
-                  />
-                  {chat.post?.images && (
-                    <div style={{ width: "80px", height: "80px" }}>
-                      <img
-                        alt=""
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      width: "100%",
+                    }}
+                  >
+                    <ListItemText
+                      primary={
+                        !chat.isGroupChat
+                          ? getSender(auth.isAuthenticated().user, chat.users)
+                          : chat.chatName
+                      }
+                      secondary={
+                        <div>
+                          <Typography
+                            className={classes.TitleMultiLineEllipsis}
+                            sx={{ fontSize: "15px", display: "block" }}
+                          >
+                            {chat.post?.title}
+                          </Typography>
+                          <Typography
+                            className={classes.TitleMultiLineEllipsis}
+                            sx={{ fontSize: "15px", display: "block" }}
+                          >
+                            {chat.latestMessage
+                              ? chat.latestMessage?.sender?.username +
+                                ": " +
+                                chat.latestMessage?.content
+                              : ""}
+                          </Typography>
+                        </div>
+                      }
+                    />
+                    {chat.post?.images && (
+                      <div
                         style={{
-                          objectFit: "cover",
-                          borderRadius: "10px",
-                          maxWidth: "100%",
-                          height: "100%",
-                          width: "auto",
-                          display: "block",
-                          margin: "0 auto",
+                          height: "80px",
+                          justifyContent: "center",
+                          alignItems: "center",
                         }}
-                        src={`http://localhost:8000/${chat.post?.images[0]}`}
-                      />
-                    </div>
-                  )}
+                      >
+                        <img
+                          alt=""
+                          style={{
+                            objectFit: "cover",
+                            borderRadius: "10px",
+                            maxWidth: "100%",
+                            height: "100%",
+                            width: "auto",
+                            display: "block",
+                            margin: "0 auto",
+                          }}
+                          src={`http://localhost:8000/${chat.post?.images[0]}`}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </ListItemButton>
               </Box>
             ))

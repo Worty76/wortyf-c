@@ -19,11 +19,10 @@ import { VariantType, useSnackbar } from "notistack";
 import {
   createReply,
   deleteComment,
-  markAsAnswer,
   updateComment,
 } from "../api/DiscussionApi";
 import auth from "../../../helpers/Auth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Markup } from "interweave";
 import TextEditor from "./TextEditor";
@@ -32,14 +31,12 @@ export default function SingleComment({
   updateComments,
   comment,
   postId,
-  solved,
   authorId,
 }) {
   const [openReply, setOpenReply] = useState(false);
   const [replies, setReplies] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const [openEditing, setOpenEditing] = useState(false);
-  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -94,22 +91,6 @@ export default function SingleComment({
   // Update replies
   const updateReplies = (replies) => {
     setReplies(replies);
-  };
-
-  const onMarkAnswer = () => {
-    let markAnswer = new FormData();
-
-    markAsAnswer(
-      { postId: postId, commentId: comment._id },
-      { t: JSON.parse(auth.isAuthenticated().token) },
-      markAnswer
-    ).then((data) => {
-      if (data.stack) {
-        console.log(data);
-      } else {
-        navigate(0);
-      }
-    });
   };
 
   const onDeleteComment = () => {
@@ -240,14 +221,6 @@ export default function SingleComment({
         ) : (
           ""
         )}
-        {auth.isAuthenticated().user &&
-          (auth.isAuthenticated().user._id === authorId ? (
-            solved ? null : (
-              <Button variant="contained" onClick={onMarkAnswer}>
-                Mark as sold
-              </Button>
-            )
-          ) : null)}
       </ListItem>
       <ListItem>
         {openEditing ? (

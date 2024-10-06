@@ -14,6 +14,7 @@ router.get("/:id", postController.getSpecificPost);
 router.post("/create", verifyToken, postController.createPost);
 router.put("/:id/update", verifyToken, postController.updatePost);
 router.delete("/:id/delete", verifyToken, postController.deletePost);
+router.put("/sold", verifyToken, commentController.sold);
 
 // Moderator
 router.get(
@@ -46,11 +47,6 @@ router.delete(
   "/:id/comment/:CommentId/delete",
   verifyToken,
   commentController.deleteComment
-);
-router.put(
-  "/:id/comment/:CommentId/mark",
-  verifyToken,
-  commentController.markAsAnswer
 );
 
 // Reply

@@ -6,6 +6,9 @@ import auth from "../../../helpers/Auth";
 import axios from "axios";
 import io from "socket.io-client";
 import ScrollableChat from "./ModalButton/components/ScrollableChat";
+import { Link } from "react-router-dom";
+import { sold } from "../api/ChatApi";
+import { useNavigate } from "react-router-dom";
 
 var socket, selectedChatCompare;
 const ENDPOINT = "http://localhost:8000";
@@ -15,6 +18,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   const [newMessage, setNewMessage] = useState("");
   // eslint-disable-next-line
   const [socketConnected, setSocketConnected] = useState(false);
+  const navigate = useNavigate();
 
   const { selectedChat, notification, setNotification } = ChatState();
 
@@ -77,6 +81,22 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
         console.log(error);
       }
     }
+  };
+
+  const soldPost = (postId, buyerId) => {
+    let soldPost = new FormData();
+
+    sold(
+      { postId: postId, buyerId: buyerId },
+      { t: JSON.parse(auth.isAuthenticated().token) },
+      soldPost
+    ).then((data) => {
+      if (data.stack) {
+        console.log(data);
+      } else {
+        navigate(0);
+      }
+    });
   };
 
   useEffect(() => {
@@ -162,14 +182,46 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                     }}
                   >
                     <div>
-                      <Typography>{selectedChat.post.title}</Typography>
+                      <Typography
+                        sx={{
+                          cursor: "pointer",
+                          color: "black",
+                          textDecoration: "none",
+                          "&:hover": {
+                            color: "grey",
+                          },
+                          transition: "0.2s ease",
+                        }}
+                        component={Link}
+                        to={`/discussions/${selectedChat.post._id}`}
+                      >
+                        {selectedChat.post.name}
+                      </Typography>
                       <Typography sx={{ color: "red" }}>10000$</Typography>
                     </div>
                     <div>
                       {auth.isAuthenticated().user._id ===
-                        selectedChat.post.author._id && (
-                        <Button variant="contained">Sold to this person</Button>
-                      )}
+                        selectedChat.post.author._id &&
+                        (selectedChat.post.sold ? (
+                          <Typography sx={{ color: "green" }}>
+                            Already sold
+                          </Typography>
+                        ) : (
+                          <Button
+                            variant="contained"
+                            onClick={() =>
+                              soldPost(
+                                selectedChat.post._id,
+                                selectedChat.users[0]?._id ===
+                                  auth.isAuthenticated().user?._id
+                                  ? selectedChat.users[1]._id
+                                  : selectedChat.users[0]._id
+                              )
+                            }
+                          >
+                            Sold to this person
+                          </Button>
+                        ))}
                     </div>
                   </div>
                 </Card>

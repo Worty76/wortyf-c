@@ -58,7 +58,6 @@ const useStyles = makeStyles({
 
 export const Discussion = () => {
   const classes = useStyles();
-  // Initializations
   const params = useParams();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -92,7 +91,6 @@ export const Discussion = () => {
     }, 300);
   };
 
-  // Handle open options
   const handleOpenOptions = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -101,23 +99,20 @@ export const Discussion = () => {
     setAnchorEl(null);
   };
 
-  // Handle editing post's information
   const [openEditing, setOpenEditing] = useState(false);
 
   const [valuesEditing, setValuesEditing] = useState({
-    title: "",
-    description: "",
+    name: "",
+    price: "",
     content: "",
   });
 
-  // Handle comments
   const [text, setText] = useState("");
 
   const handleOpenEditing = () => {
     setOpenEditing(!openEditing);
   };
 
-  // Fetching posts information from database
   const getPost = async (signal) => {
     try {
       await axios
@@ -135,8 +130,8 @@ export const Discussion = () => {
             .sort((a, b) => (a.correctAns > b.correctAns ? false : true));
           setComments(sortComments);
           setValuesEditing({
-            title: data.post.title,
-            description: data.post.description,
+            name: data.post.name,
+            price: data.post.price,
             content: data.post.content,
           });
         })
@@ -150,12 +145,10 @@ export const Discussion = () => {
     }
   };
 
-  // Calling API after saving editing
   const onSaveEditing = () => {
     let post = new FormData();
-    valuesEditing.title && post.append("title", valuesEditing.title);
-    valuesEditing.description &&
-      post.append("description", valuesEditing.description);
+    valuesEditing.name && post.append("name", valuesEditing.name);
+    valuesEditing.price && post.append("price", valuesEditing.price);
     valuesEditing.content && post.append("content", valuesEditing.content);
 
     updatePost(
@@ -174,7 +167,6 @@ export const Discussion = () => {
     });
   };
 
-  // Fetch post
   useEffect(() => {
     const CancelToken = axios.CancelToken;
     const source = CancelToken.source();
@@ -186,7 +178,6 @@ export const Discussion = () => {
     // eslint-disable-next-line
   }, []);
 
-  // Check if users liked post or not
   const checkLiked = (likesProp) => {
     return (
       likesProp
@@ -195,22 +186,18 @@ export const Discussion = () => {
     );
   };
 
-  // Handle changing data while editing post
   const handleChangeEditing = (name) => (event) => {
     setValuesEditing({ ...valuesEditing, [name]: event.target.value });
   };
 
-  // Send notifications when users did an action
   const handleVariant = (variant: VariantType) => {
     enqueueSnackbar("Successfully did an action", { variant });
   };
 
-  // Update comments
   const updateComments = (comments) => {
     setComments(comments);
   };
 
-  // Calling API
   const onCreateLike = () => {
     let like = new FormData();
     createLike(
@@ -323,9 +310,7 @@ export const Discussion = () => {
           >
             <ListItem disablePadding>
               <ListItemIcon>
-                <CheckCircleIcon
-                  sx={{ color: post.solved ? "green" : "gray" }}
-                />
+                <CheckCircleIcon sx={{ color: post.sold ? "green" : "gray" }} />
               </ListItemIcon>
               <ListItemText
                 primary={
@@ -349,15 +334,22 @@ export const Discussion = () => {
               {/* Post's content */}
               {openEditing ? (
                 <TextField
-                  value={valuesEditing.title}
+                  value={valuesEditing.name}
                   sx={{ width: "100%" }}
                   placeholder="Content"
                   variant="outlined"
                   multiline={true}
-                  onChange={handleChangeEditing("title")}
+                  onChange={handleChangeEditing("name")}
                 />
               ) : (
-                <Typography variant="h5">{post.title}</Typography>
+                <ListItemText
+                  primary={<Typography variant="h5">{post.name}</Typography>}
+                  secondary={
+                    <Typography sx={{ color: "red" }} variant="h8">
+                      {post.price}
+                    </Typography>
+                  }
+                />
               )}
               <ListItem>
                 <ListItemAvatar>
@@ -410,14 +402,16 @@ export const Discussion = () => {
                       </MenuItem>
                     </Menu>
                   </>
-                ) : (
-                  <Button
-                    variant="contained"
-                    onClick={() => accessChat(user._id, post._id)}
-                  >
-                    Chat
-                  </Button>
-                )}
+                ) : null}
+                {auth.isAuthenticated().user &&
+                  auth.isAuthenticated().user._id !== user._id && (
+                    <Button
+                      variant="contained"
+                      onClick={() => accessChat(user._id, post._id)}
+                    >
+                      Chat
+                    </Button>
+                  )}
               </ListItem>
               {openEditing ? (
                 <TextField
@@ -578,7 +572,6 @@ export const Discussion = () => {
                       updateComments={updateComments}
                       comment={comment}
                       postId={params.id}
-                      solved={post.solved}
                       authorId={user._id}
                     />
                   </Box>

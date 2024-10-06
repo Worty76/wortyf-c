@@ -59,8 +59,8 @@ const useStyles = makeStyles((theme) => ({
 export const CreatePost = () => {
   const classes = useStyles();
   const [values, setValues] = useState({
-    title: "",
-    description: "",
+    name: "",
+    price: "",
     content: "",
     error: "",
   });
@@ -88,6 +88,22 @@ export const CreatePost = () => {
       value = input;
     }
 
+    if (name === "price") {
+      let numericValue = parseFloat(value.replace(/[^0-9]/g, ""));
+
+      if (!isNaN(numericValue)) {
+        value = numericValue.toLocaleString("it-IT", {
+          style: "currency",
+          currency: "VND",
+        });
+      }
+
+      setValues({
+        ...values,
+        [name]: value,
+      });
+      return;
+    }
     setValues({ ...values, [name]: value });
   };
 
@@ -142,11 +158,10 @@ export const CreatePost = () => {
 
   const validateForm = () => {
     let errors = {};
-    if (!values.title) errors.title = "Title is required.";
-    if (values.title.length < 11 || values.title.length > 100)
-      errors.title =
-        "Title should be more than 10 or less than 100 characters.";
-    if (!values.description) errors.description = "Description is required.";
+    if (!values.name) errors.name = "Name is required.";
+    if (values.name.length < 11 || values.name.length > 50)
+      errors.name = "Name should be more than 10 or less than 50 characters.";
+    if (!values.price) errors.description = "Price is required.";
     if (!values.content) errors.content = "Content is required.";
     return errors;
   };
@@ -161,8 +176,8 @@ export const CreatePost = () => {
     setLoading(true);
 
     let postData = new FormData();
-    values.title && postData.append("title", values.title);
-    values.description && postData.append("description", values.description);
+    values.name && postData.append("name", values.name);
+    values.price && postData.append("price", values.price);
     values.content && postData.append("content", values.content);
     images && images.forEach((image) => postData.append("images", image));
     selectTopics && postData.append("topic", selectTopics);
@@ -203,30 +218,29 @@ export const CreatePost = () => {
         <Grid container spacing={2}>
           <Grid item xs={12} className={classes.formItem}>
             <TextField
-              label="Title"
+              label="Name"
               variant="outlined"
               fullWidth
-              onChange={handleChange("title")}
-              value={values.title}
+              onChange={handleChange("name")}
+              value={values.name}
               placeholder="Summarize your problem in one line"
-              error={!!errorMessages.title}
-              helperText={errorMessages.title || "Required field"}
-              aria-label="Title"
+              error={!!errorMessages.name}
+              helperText={errorMessages.name || "Required field"}
+              aria-label="Name"
             />
           </Grid>
 
           <Grid item xs={12} className={classes.formItem}>
             <TextField
-              label="Description"
+              label="Price"
               variant="outlined"
               fullWidth
-              onChange={handleChange("description")}
-              value={values.description}
-              placeholder="Describe your problem in detail"
+              onChange={handleChange("price")}
+              value={values.price}
+              placeholder="Your price"
               multiline
-              minRows={3}
-              error={!!errorMessages.description}
-              helperText={errorMessages.description || "Required field"}
+              error={!!errorMessages.price}
+              helperText={errorMessages.price || "Required field"}
               aria-label="Description"
             />
           </Grid>

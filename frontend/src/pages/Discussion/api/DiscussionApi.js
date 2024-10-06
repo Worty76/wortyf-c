@@ -75,25 +75,6 @@ const deleteLike = async (params, credentials) => {
   }
 };
 
-const markAsAnswer = async (params, credentials, markAnswer) => {
-  try {
-    let response = await axios.put(
-      `http://localhost:8000/api/post/${params.postId}/comment/${params.commentId}/mark`,
-      markAnswer,
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + credentials.t,
-        },
-      }
-    );
-    return JSON.stringify(response.data.message);
-  } catch (error) {
-    return error;
-  }
-};
-
 const deletePost = async (params, credentials, deletePostEmit) => {
   try {
     let response = await axios.delete(
@@ -219,7 +200,6 @@ export {
   createComment,
   createReply,
   createLike,
-  markAsAnswer,
   deletePost,
   deleteComment,
   deleteReply,

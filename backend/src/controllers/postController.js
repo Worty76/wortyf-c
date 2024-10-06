@@ -128,8 +128,8 @@ const createPost = async (req, res) => {
     }
 
     const post = new Post({
-      title: body.title,
-      description: body.description || null,
+      name: body.name,
+      price: body.price || null,
       content: body.content,
       author: {
         _id: user._id,
@@ -170,8 +170,8 @@ function doSomethingWithNodeRequest(req) {
 const updatePost = async (req, res) => {
   try {
     const newPost = {
-      title: req.body.title,
-      description: req.body.description,
+      name: req.body.name,
+      price: req.body.price,
       content: req.body.content,
     };
 
@@ -218,7 +218,7 @@ const searchPost = async (req, res) => {
     if (searchQuery.includes("[")) {
       if (!searchQuery.includes("]")) {
         const cleanSearchQuery = searchQuery.replace("[", "").trim();
-        searchCondition.title = { $regex: cleanSearchQuery, $options: "i" };
+        searchCondition.name = { $regex: cleanSearchQuery, $options: "i" };
       } else {
         while ((match = tagPattern.exec(searchQuery)) !== null) {
           if (match[1].trim()) {
@@ -238,12 +238,12 @@ const searchPost = async (req, res) => {
         }
 
         if (cleanSearchQuery) {
-          searchCondition.title = { $regex: cleanSearchQuery, $options: "i" };
+          searchCondition.name = { $regex: cleanSearchQuery, $options: "i" };
         }
       }
     } else {
       const cleanSearchQuery = searchQuery.trim();
-      searchCondition.title = { $regex: cleanSearchQuery, $options: "i" };
+      searchCondition.name = { $regex: cleanSearchQuery, $options: "i" };
     }
 
     const posts = await Post.find(searchCondition);
