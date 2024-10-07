@@ -35,7 +35,7 @@ try {
 
 // Config
 const corsOptions = {
-  origin: [process.env.API],
+  origin: "*",
   credentials: true,
   methods: ["POST", "GET", "PUT", "DELETE"],
   optionSuccessStatus: 200,
@@ -71,6 +71,7 @@ const server = app.listen(PORT, () => {
 
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
+  transports: ["websocket", "polling"],
   cors: {
     origin: process.env.API,
     credentials: true,
