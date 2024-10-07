@@ -37,7 +37,7 @@ try {
 const corsOptions = {
   origin: [process.env.API],
   credentials: true,
-  methods: ["POST", "GET"],
+  methods: ["POST", "GET", "PUT", "DELETE"],
   optionSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
