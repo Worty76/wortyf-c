@@ -12,6 +12,8 @@ import {
   ListItemAvatar,
   ListItemText,
 } from "@mui/material";
+import { Stars } from "../../Profile/components/Stars";
+import { Link } from "react-router-dom";
 
 export const GuardiansList = ({ guardians }) => {
   return (
@@ -37,7 +39,11 @@ export const GuardiansList = ({ guardians }) => {
                     </ListItem>
                     <ListItemText
                       primary={
-                        <Typography>
+                        <Typography
+                          component={Link}
+                          to={`/profile/${guardian._id}`}
+                          sx={{ textDecoration: "none", color: "black" }}
+                        >
                           <b>{guardian.username}</b>
                         </Typography>
                       }
@@ -50,13 +56,9 @@ export const GuardiansList = ({ guardians }) => {
                     <Divider />
                   </List>
                   <List>
-                    <ListItemText
-                      primary={
-                        <Typography>
-                          <i>"{""}"</i>
-                        </Typography>
-                      }
-                    />
+                    <Typography sx={{ textAlign: "center" }}>
+                      <Stars noOfStars={guardian.avgRating} />
+                    </Typography>
                   </List>
                 </CardContent>
               </Card>

@@ -266,8 +266,6 @@ export const Appbar = () => {
                     <MenuItem
                       key={index}
                       onClick={() => {
-                        console.log("day la noti");
-                        console.log(noti);
                         setSelectedChat(noti.chat);
                         setNotification(
                           notification.filter(

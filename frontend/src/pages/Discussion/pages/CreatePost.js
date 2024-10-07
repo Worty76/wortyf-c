@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Button,
   FormControl,
@@ -70,6 +70,7 @@ export const CreatePost = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState({});
+  const editorRef = useRef(null);
   const navigate = useNavigate();
 
   const steps = [
@@ -249,6 +250,7 @@ export const CreatePost = () => {
             <TextEditor
               placeholder={"Write your content here..."}
               setText={handleChange("content")}
+              editorRef={editorRef}
             />
           </Grid>
 

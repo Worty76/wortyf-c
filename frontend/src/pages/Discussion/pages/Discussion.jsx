@@ -559,7 +559,11 @@ export const Discussion = () => {
                   >
                     <TextEditor setText={setText} editorRef={editorRef} />
                   </div>
-                  <Button variant="contained" onClick={onCreateComment}>
+                  <Button
+                    sx={{ margin: 2 }}
+                    variant="contained"
+                    onClick={onCreateComment}
+                  >
                     Send
                   </Button>
                 </ListItem>

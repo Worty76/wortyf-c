@@ -1,5 +1,6 @@
 const Rating = require("../models/rating");
 const Post = require("../models/post");
+const User = require("../models/user");
 
 const createRating = async (req, res) => {
   try {
@@ -10,6 +11,11 @@ const createRating = async (req, res) => {
     if (!post)
       return res.status(400).json({ message: "Failed to find the post!" });
 
+    const user = await User.findById({ _id: sellerId });
+
+    if (!user)
+      return res.status(400).json({ message: "Failed to find the user!" });
+
     await Post.findOneAndUpdate({ _id: postId }, { rated: true });
 
     const rating = new Rating({
@@ -19,6 +25,12 @@ const createRating = async (req, res) => {
       userId: sellerId,
       author: buyerId,
     });
+
+    await User.findByIdAndUpdate(
+      { _id: sellerId },
+      { $push: { ratings: rating } }
+    );
+
     await rating.save();
     res.status(200).json({ message: "Successfully rated a post" });
   } catch (error) {

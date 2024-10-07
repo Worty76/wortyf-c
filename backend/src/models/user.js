@@ -45,6 +45,12 @@ const UserSchema = new Schema(
       type: String,
       enum: ["user", "moderator", "guardian", "admin"],
     },
+    ratings: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Rating",
+      },
+    ],
   },
   {
     timestamps: true,

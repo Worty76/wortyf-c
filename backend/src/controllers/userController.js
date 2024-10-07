@@ -103,12 +103,35 @@ const getUsers = async (req, res) => {
 };
 
 const getGuardians = async (req, res) => {
-  const users = await User.find({ role: "guardian" });
+  try {
+    const users = await User.find({ role: "guardian" }).populate("ratings");
 
-  if (!users)
-    return res.status(400).send({ message: "Could not get any user" });
+    if (!users || users.length === 0) {
+      return res.status(400).send({ message: "Could not get any guardians" });
+    }
 
-  res.status(200).send({ message: "Successfully get users", data: users });
+    const guardiansWithAvgRatings = users.map((user) => {
+      let avgRating = 0;
+      if (user.ratings && user.ratings.length > 0) {
+        const totalStars = user.ratings.reduce(
+          (acc, rating) => acc + rating.noOfStars,
+          0
+        );
+        avgRating = Math.floor(totalStars / user.ratings.length);
+      }
+
+      return {
+        ...user._doc,
+        avgRating,
+      };
+    });
+    res.status(200).send({
+      message: "Successfully fetched guardians with ratings",
+      data: guardiansWithAvgRatings,
+    });
+  } catch (error) {
+    res.status(500).send({ message: "Server error", error: error.message });
+  }
 };
 
 const getUser = async (req, res) => {
