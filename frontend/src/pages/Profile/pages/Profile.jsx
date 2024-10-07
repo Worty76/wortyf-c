@@ -91,7 +91,7 @@ export const Profile = () => {
   const getUser = async (signal) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/user/${params.id}`,
+        `${process.env.REACT_APP_API}/api/user/${params.id}`,
         {
           cancelToken: signal,
         }
@@ -153,7 +153,7 @@ export const Profile = () => {
       };
 
       const { data } = await axios.post(
-        `http://localhost:8000/api/chat`,
+        `${process.env.REACT_APP_API}/api/chat`,
         { userId },
         config
       );
@@ -217,7 +217,7 @@ export const Profile = () => {
                     src={
                       image
                         ? URL.createObjectURL(image)
-                        : `http://localhost:8000/${user.avatar_url}`
+                        : `${process.env.REACT_APP_API}/${user.avatar_url}`
                     }
                     className={classes.avatar}
                   />
