@@ -67,6 +67,7 @@ export const Discussion = () => {
   const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
+  const editorRef = useRef(null);
   const open = Boolean(anchorEl);
   const timeoutRef = useRef(null);
   const { setSelectedChat, chats, setChats } = ChatState();
@@ -249,6 +250,7 @@ export const Discussion = () => {
         setComments([comment, ...comments]);
         setText("");
         handleVariant("success");
+        editorRef.current.setContent("");
       }
     });
   };
@@ -550,12 +552,16 @@ export const Discussion = () => {
                       setText(event.target.value);
                     }}
                   /> */}
-                  <div style={{ width: "100%" }}>
-                    <TextEditor
-                      setText={setText}
-                      onCreateComment={onCreateComment}
-                    />
+                  <div
+                    style={{
+                      width: "100%",
+                    }}
+                  >
+                    <TextEditor setText={setText} editorRef={editorRef} />
                   </div>
+                  <Button variant="contained" onClick={onCreateComment}>
+                    Send
+                  </Button>
                 </ListItem>
               </List>
               {comments &&

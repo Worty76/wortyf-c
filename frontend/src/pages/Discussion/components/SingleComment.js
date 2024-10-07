@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BestAnswer from "../../../components/customIcons/Mark";
 import ReplyComment from "./ReplyComment";
 import { VariantType, useSnackbar } from "notistack";
@@ -38,6 +38,7 @@ export default function SingleComment({
   const { enqueueSnackbar } = useSnackbar();
   const [openEditing, setOpenEditing] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const editorRef = useRef(null);
   const open = Boolean(anchorEl);
 
   const handleOpenOptions = (event) => {
@@ -263,7 +264,7 @@ export default function SingleComment({
         <List style={{ paddingLeft: "100px" }}>
           <ListItem>
             <div style={{ width: "100%" }}>
-              <TextEditor setText={setText} />
+              <TextEditor setText={setText} editorRef={editorRef} />
             </div>
             <List>
               <ListItem>

@@ -1,10 +1,8 @@
-import { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import auth from "../../../helpers/Auth";
 
-export default function TextEditor({ placeholder, setText }) {
+export default function TextEditor({ placeholder, setText, editorRef }) {
   const TINY_MCE_API_KEY = process.env.REACT_APP_API_KEY_RTE;
-  const editorRef = useRef(null);
 
   function log() {
     const content = editorRef.current.getContent();

@@ -192,9 +192,11 @@ function MyChats({ fetchAgain }) {
                 }}
                 sx={{
                   backgroundColor: `${
-                    selectedChat === chat ? "#e0f7fa" : "#ffffff"
+                    selectedChat._id === chat._id ? "#e0f7fa" : "#ffffff"
                   }`,
-                  color: `${selectedChat === chat ? "#00796b" : "#000000"}`,
+                  color: `${
+                    selectedChat._id === chat._id ? "#00796b" : "#000000"
+                  }`,
                   borderRadius: "4px",
                   marginBottom: "1px",
                   cursor: "pointer",

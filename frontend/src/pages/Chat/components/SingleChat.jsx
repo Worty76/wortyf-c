@@ -33,8 +33,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
 
   // Fetch messages
   const fetchMessages = async () => {
-    if (!selectedChat || selectedChat === null || selectedChat === undefined)
-      return;
+    if (!selectedChat) return;
 
     try {
       const config = {
@@ -104,8 +103,9 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   const debouncedSendMessage = debounce(sendMessage, 200);
 
   useEffect(() => {
-    if (!selectedChat || selectedChat._id === selectedChatCompare?._id) {
-      return; // Avoid unnecessary fetch
+    // !selectedChat|| selectedChat._id === selectedChatCompare?._id
+    if (!selectedChat) {
+      return;
     }
     fetchMessages();
 
@@ -116,6 +116,8 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
 
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
+      console.log("new message ne cu");
+      console.log(newMessageReceived);
       if (
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageReceived.chat._id
