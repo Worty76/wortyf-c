@@ -20,7 +20,7 @@ const ChatProvider = ({ children }) => {
         };
         try {
           const { data } = await axios.get(
-            "http://localhost:8000/api/chat",
+            `${process.env.REACT_APP_API}/api/chat`,
             config
           );
           setChats(data);

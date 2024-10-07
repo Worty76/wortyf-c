@@ -35,7 +35,7 @@ try {
 
 // Config
 const corsOptions = {
-  origin: [process.env.API, "http://localhost:3000"],
+  origin: [process.env.API],
   credentials: true,
   methods: ["POST", "GET"],
   optionSuccessStatus: 200,
