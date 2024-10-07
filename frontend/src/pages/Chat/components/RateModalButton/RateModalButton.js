@@ -35,7 +35,7 @@ function RateModalButton({ chat }) {
   const [rating, setRating] = useState(null);
   const [hover, setHover] = useState(null);
   const [comment, setComment] = useState("");
-  const [totalStars, setTotalStars] = useState(5);
+  const totalStars = 5;
   const [errorMessages, setErrorMessages] = useState({});
   const navigate = useNavigate();
 

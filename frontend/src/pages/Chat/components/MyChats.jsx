@@ -122,8 +122,6 @@ function MyChats({ fetchAgain }) {
   useEffect(() => {
     if (!chats) return;
     if (!hasCalledEffect) {
-      console.log("im calling");
-
       if (chats && chatId) {
         const chatExists = chats.find((chat) => chat._id === chatId);
         if (chatExists) {
@@ -138,7 +136,7 @@ function MyChats({ fetchAgain }) {
     // eslint-disable-next-line
   }, [chatId, chats, hasCalledEffect]);
 
-  console.log(chats);
+  // console.log(chats);
 
   return (
     <>

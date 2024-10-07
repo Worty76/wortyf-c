@@ -153,7 +153,7 @@ export default function SingleReply({
           ) : (
             <ListItemText
               primary={
-                <Typography>
+                <Typography component="div">
                   <Markup content={comment.text} />
                 </Typography>
               }

@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { sold } from "../api/ChatApi";
 import { useNavigate } from "react-router-dom";
 import RateModalButton from "./RateModalButton/RateModalButton";
+import { debounce } from "lodash";
 
 var socket, selectedChatCompare;
 const ENDPOINT = "http://localhost:8000";
@@ -32,7 +33,8 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
 
   // Fetch messages
   const fetchMessages = async () => {
-    if (!selectedChat) return;
+    if (!selectedChat || selectedChat === null || selectedChat === undefined)
+      return;
 
     try {
       const config = {
@@ -57,7 +59,6 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
       try {
-        console.log(newMessage, selectedChat);
         const config = {
           headers: {
             Accept: "application/json",
@@ -100,7 +101,12 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
     });
   };
 
+  const debouncedSendMessage = debounce(sendMessage, 200);
+
   useEffect(() => {
+    if (!selectedChat || selectedChat._id === selectedChatCompare?._id) {
+      return; // Avoid unnecessary fetch
+    }
     fetchMessages();
 
     selectedChatCompare = selectedChat;
@@ -119,9 +125,12 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
           setFetchAgain(!fetchAgain);
         }
       } else {
-        setMessages([...messages, newMessageReceived]);
+        setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
       }
     });
+    return () => {
+      socket.off("message received");
+    };
   });
 
   return (
@@ -268,7 +277,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
             aria-describedby="my-helper-text"
             onChange={(e) => setNewMessage(e.target.value)}
             value={newMessage}
-            onKeyDown={sendMessage}
+            onKeyDown={debouncedSendMessage}
           />
         </>
       ) : selectedChat === "" ? (

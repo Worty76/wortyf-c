@@ -22,7 +22,14 @@ const sendMessage = async (req, res) => {
     var message = await Message.create(newMessage);
 
     message = await message.populate("sender", "username avatar_url");
-    message = await message.populate("chat");
+    message = await message.populate({
+      path: "chat",
+      populate: {
+        path: "post",
+        populate: { path: "buyer", select: "username email avatar_url" },
+      },
+    });
+
     message = await User.populate(message, {
       path: "chat.users",
       select: "username avatar_url email",

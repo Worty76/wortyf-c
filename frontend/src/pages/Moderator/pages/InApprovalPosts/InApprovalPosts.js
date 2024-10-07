@@ -114,7 +114,7 @@ export const InApprovalPosts = () => {
                   <Grid item>
                     <Typography variant="h6">{post.name}</Typography>
                     <Typography variant="body2">{post.price}</Typography>
-                    <Typography variant="body2">
+                    <Typography variant="body2" component="div">
                       <Markup content={post.content} />
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: "bold" }}>

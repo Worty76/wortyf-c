@@ -235,8 +235,8 @@ export default function SingleComment({
         ) : (
           <ListItemText
             primary={
-              <Typography gutterBottom>
-                <Markup content={comment.text} />{" "}
+              <Typography gutterBottom component="div">
+                <Markup content={comment.text} />
               </Typography>
             }
           />
@@ -263,7 +263,7 @@ export default function SingleComment({
         <List style={{ paddingLeft: "100px" }}>
           <ListItem>
             <div style={{ width: "100%" }}>
-              <TextEditor setText={setText} onCreateComment={onSaveEditing} />
+              <TextEditor setText={setText} />
             </div>
             <List>
               <ListItem>

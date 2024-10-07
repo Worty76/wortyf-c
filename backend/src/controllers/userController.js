@@ -117,15 +117,22 @@ const getUser = async (req, res) => {
   const posts = await Post.find({ "author._id": req.params.id }).populate(
     "topic"
   );
-  const ratings = await Rating.find({ user_id: req.params.id }).populate(
+  const ratings = await Rating.find({ userId: req.params.id }).populate(
     "author",
     "email username createdAt"
   );
+
+  const totalStars = ratings.reduce((acc, rating) => acc + rating.noOfStars, 0);
+  const avgRatings = ratings.length
+    ? Math.floor(totalStars / ratings.length)
+    : 0;
+
   res.status(200).json({
     message: "Successfully get user",
     user: user,
     usersPosts: posts,
     ratings: ratings,
+    avgRatings: avgRatings,
   });
 };
 

@@ -262,12 +262,18 @@ export const Appbar = () => {
                 </div>
                 <div style={{ padding: 5 }}>
                   {!notification.length && "No New Messages"}
-                  {notification?.map((noti) => (
+                  {notification?.map((noti, index) => (
                     <MenuItem
-                      key={noti.id}
+                      key={index}
                       onClick={() => {
+                        console.log("day la noti");
+                        console.log(noti);
                         setSelectedChat(noti.chat);
-                        setNotification(notification.filter((n) => n !== noti));
+                        setNotification(
+                          notification.filter(
+                            (n) => n.chat._id !== noti.chat._id
+                          )
+                        );
                         navigate("/chat");
                       }}
                     >

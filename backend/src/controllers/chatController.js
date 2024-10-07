@@ -44,7 +44,7 @@ const accessChats = async (req, res) => {
     });
 
     if (isChat.length > 0) {
-      console.log(isChat);
+      // console.log(isChat);
       return res.send(isChat[0]);
     } else {
       const chatData = {

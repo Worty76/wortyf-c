@@ -38,6 +38,7 @@ import auth from "../../../helpers/Auth";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import TextEditor from "../components/TextEditor";
 import { Markup } from "interweave";
+
 import { Topic } from "../components/Topic";
 import { ChatState } from "../../../context/ChatProvider";
 
@@ -427,7 +428,7 @@ export const Discussion = () => {
                   <ListItemText
                     primary={
                       <>
-                        <Typography>
+                        <Typography component="div">
                           <Markup content={post.content} />
                         </Typography>
                         <div

@@ -84,6 +84,7 @@ export const Profile = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const { setSelectedChat, chats, setChats } = ChatState();
+  const [avgRatings, setAvgRatings] = useState(0);
   const navigate = useNavigate();
   const params = useParams();
 
@@ -99,6 +100,7 @@ export const Profile = () => {
       setUser(data.user);
       setUsersPosts(data.usersPosts);
       setRatings(data.ratings);
+      setAvgRatings(data.avgRatings);
       console.log(data);
     } catch (error) {
       if (axios.isCancel(error)) {
@@ -257,6 +259,11 @@ export const Profile = () => {
                   </Button>
                 </div>
               )}
+
+              <Typography sx={{ textAlign: "center" }}>
+                <Stars noOfStars={avgRatings} />
+              </Typography>
+
               <List>
                 <ListItemText
                   primary={
@@ -454,17 +461,6 @@ export const Profile = () => {
                       )
                     </Typography>
                   </ListItem>
-                  <ListItem>
-                    <Typography
-                      sx={{
-                        cursor: "pointer",
-                        "&:hover": { color: "grey" },
-                        transition: "0.2s ease",
-                      }}
-                    >
-                      Unapproved posts (0)
-                    </Typography>
-                  </ListItem>
                 </List>
               </CardContent>
             </Card>
@@ -488,17 +484,32 @@ export const Profile = () => {
               <List>
                 {ratings &&
                   ratings.map((rating, id) => (
-                    <ListItem key={id}>
-                      <Typography
-                        sx={{
-                          cursor: "pointer",
-                          "&:hover": { color: "grey" },
-                          transition: "0.2s ease",
-                        }}
-                      >
-                        <Stars totalStars={rating.noOfStars} />
+                    <Box
+                      sx={{
+                        textAlign: "center",
+                        border: "1px solid #ccc",
+                        borderRadius: "8px",
+                        padding: "10px",
+                        marginBottom: "10px",
+                        boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.1)",
+                      }}
+                      key={id}
+                    >
+                      <ListItem>
+                        <Typography
+                          sx={{
+                            cursor: "pointer",
+                            "&:hover": { color: "grey" },
+                            transition: "0.2s ease",
+                          }}
+                        >
+                          <Stars noOfStars={rating.noOfStars} />
+                        </Typography>
+                      </ListItem>
+                      <Typography>
+                        {rating.comment} from {rating.author.username}
                       </Typography>
-                    </ListItem>
+                    </Box>
                   ))}
               </List>
             </CardContent>

@@ -9,7 +9,7 @@ export const Stars = ({ noOfStars }) => {
           cursor: "pointer",
           fontSize: "2rem",
           margin: "5px",
-          color: index + 1 < noOfStars ? "#ffc107" : "#e4e5e9",
+          color: index < noOfStars ? "#ffc107" : "#e4e5e9",
         }}
       >
         &#9733;

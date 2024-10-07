@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import auth from "../../../helpers/Auth";
 
-export default function TextEditor({ placeholder, setText, onCreateComment }) {
+export default function TextEditor({ placeholder, setText }) {
   const TINY_MCE_API_KEY = process.env.REACT_APP_API_KEY_RTE;
   const editorRef = useRef(null);
 
@@ -14,12 +14,6 @@ export default function TextEditor({ placeholder, setText, onCreateComment }) {
   return (
     <>
       <Editor
-        onKeyUp={(e) => {
-          if (e.key === "Enter") {
-            onCreateComment();
-            editorRef.current.setContent("");
-          }
-        }}
         apiKey={TINY_MCE_API_KEY}
         onInit={(evt, editor) => (editorRef.current = editor)}
         disabled={auth.isAuthenticated() ? false : true}
