@@ -51,7 +51,7 @@ const upload = multer({ storage });
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static("./public/uploads"));
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(`${__dirname}/public/uploads`));
 
 // End-points
 app.use("/api/user", userRouter);
