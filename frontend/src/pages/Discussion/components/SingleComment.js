@@ -139,7 +139,7 @@ export default function SingleComment({
     try {
       await axios
         .get(
-          `http://localhost:8000/api/post/${postId}/comment/${comment._id}/read`,
+          `${process.env.REACT_APP_API}/api/post/${postId}/comment/${comment._id}/read`,
           {
             cancelToken: signal,
           }
@@ -177,7 +177,9 @@ export default function SingleComment({
       <br />
       <ListItem>
         <ListItemAvatar>
-          <Avatar src={`http://localhost:8000/${comment.author.avatar_url}`} />
+          <Avatar
+            src={`${process.env.REACT_APP_API}/${comment.author.avatar_url}`}
+          />
         </ListItemAvatar>
         <ListItemText
           primary={

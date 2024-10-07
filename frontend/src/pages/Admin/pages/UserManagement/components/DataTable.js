@@ -47,7 +47,7 @@ export const DataTable = () => {
         },
       };
       await axios
-        .get("http://localhost:8000/api/user/admin/get-users", config, {
+        .get(`${process.env.REACT_APP_API}/api/user/admin/get-users`, config, {
           cancelToken: signal,
         })
         .then((response) => {
@@ -73,7 +73,7 @@ export const DataTable = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/user/update-role/${id}`,
+        `${process.env.REACT_APP_API}/api/user/update-role/${id}`,
         {
           role: updatedRole,
         },

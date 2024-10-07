@@ -20,7 +20,7 @@ export const Guardian = () => {
   const getGuardians = async (signal) => {
     try {
       await axios
-        .get("http://localhost:8000/api/user/guardians", {
+        .get(`${process.env.REACT_APP_API}/api/user/guardians`, {
           cancelToken: signal,
         })
         .then((response) => {

@@ -13,7 +13,7 @@ import RateModalButton from "./RateModalButton/RateModalButton";
 import { debounce } from "lodash";
 
 var socket, selectedChatCompare;
-const ENDPOINT = "http://localhost:8000";
+const ENDPOINT = `${process.env.REACT_APP_API}`;
 
 function SingleChat({ fetchAgain, setFetchAgain }) {
   const [messages, setMessages] = useState([]);
@@ -43,7 +43,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
       };
 
       const { data } = await axios.get(
-        `http://localhost:8000/api/message/${selectedChat._id}`,
+        `${process.env.REACT_APP_API}/api/message/${selectedChat._id}`,
         config
       );
       setMessages(data);
@@ -67,7 +67,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
         };
         setNewMessage("");
         const { data } = await axios.post(
-          "http://localhost:8000/api/message",
+          `${process.env.REACT_APP_API}/api/message`,
           {
             content: newMessage,
             chatId: selectedChat,
@@ -177,7 +177,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                           width: "auto",
                           display: "block",
                         }}
-                        src={`http://localhost:8000/${selectedChat.post.images[0]}`}
+                        src={`${process.env.REACT_APP_API}/${selectedChat.post.images[0]}`}
                       />
                     </div>
                   )}

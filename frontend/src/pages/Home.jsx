@@ -18,13 +18,14 @@ export const Home = () => {
 
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const paginatedPosts = posts.slice(indexOfFirstRecord, indexOfLastRecord);
+  const paginatedPosts =
+    posts && posts.slice(indexOfFirstRecord, indexOfLastRecord);
   const nPages = Math.ceil(posts.length / recordsPerPage);
 
   const getPosts = async (signal) => {
     try {
       await axios
-        .get("http://localhost:8000/api/post", {
+        .get(`${process.env.REACT_APP_API}/api/post`, {
           cancelToken: signal,
         })
         .then((response) => {

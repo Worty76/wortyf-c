@@ -64,7 +64,7 @@ function MyChats({ fetchAgain }) {
       };
 
       const { data } = await axios.get(
-        `http://localhost:8000/api/user?search=${search}`,
+        `${process.env.REACT_APP_API}/api/user?search=${search}`,
         config
       );
 
@@ -84,7 +84,7 @@ function MyChats({ fetchAgain }) {
         },
       };
       const { data } = await axios.post(
-        `http://localhost:8000/api/chat`,
+        `${process.env.REACT_APP_API}/api/chat`,
         { userId },
         config
       );
@@ -104,7 +104,7 @@ function MyChats({ fetchAgain }) {
       };
       try {
         const { data } = await axios.get(
-          "http://localhost:8000/api/chat",
+          `${process.env.REACT_APP_API}/api/chat`,
           config
         );
         setChats(data);
@@ -211,7 +211,7 @@ function MyChats({ fetchAgain }) {
                     <Avatar
                       src={
                         !chat.isGroupChat
-                          ? `http://localhost:8000/${getSenderAvatar(
+                          ? `${process.env.REACT_APP_API}/${getSenderAvatar(
                               auth.isAuthenticated().user,
                               chat.users
                             )}`
@@ -267,7 +267,7 @@ function MyChats({ fetchAgain }) {
                             display: "block",
                             margin: "0 auto",
                           }}
-                          src={`http://localhost:8000/${chat.post?.images[0]}`}
+                          src={`${process.env.REACT_APP_API}/${chat.post?.images[0]}`}
                         />
                       </div>
                     )}

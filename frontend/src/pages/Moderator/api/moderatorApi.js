@@ -3,7 +3,7 @@ import axios from "axios";
 const approve = async (params, credentials, approvePost) => {
   try {
     let response = await axios.put(
-      `http://localhost:8000/api/post/moderator/approve-post/${params.postId}`,
+      `${process.env.REACT_APP_API}/api/post/moderator/approve-post/${params.postId}`,
       approvePost,
       {
         headers: {
@@ -22,7 +22,7 @@ const approve = async (params, credentials, approvePost) => {
 const reject = async (params, credentials, rejectPost) => {
   try {
     let response = await axios.put(
-      `http://localhost:8000/api/post/moderator/reject-post/${params.postId}`,
+      `${process.env.REACT_APP_API}/api/post/moderator/reject-post/${params.postId}`,
       rejectPost,
       {
         headers: {

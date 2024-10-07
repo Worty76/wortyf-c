@@ -118,7 +118,7 @@ export const Discussion = () => {
   const getPost = async (signal) => {
     try {
       await axios
-        .get(`http://localhost:8000/api/post/${params.id}`, {
+        .get(`${process.env.REACT_APP_API}/api/post/${params.id}`, {
           cancelToken: signal,
         })
         .then((response) => {
@@ -285,7 +285,7 @@ export const Discussion = () => {
         },
       };
       const { data } = await axios.post(
-        `http://localhost:8000/api/chat`,
+        `${process.env.REACT_APP_API}/api/chat`,
         { userId, postId },
         config
       );
@@ -362,7 +362,7 @@ export const Discussion = () => {
                   <Avatar
                     src={
                       user?.avatar_url
-                        ? `http://localhost:8000/${user?.avatar_url}`
+                        ? `${process.env.REACT_APP_API}/${user?.avatar_url}`
                         : ""
                     }
                   />
@@ -455,7 +455,7 @@ export const Discussion = () => {
                                   objectFit: "contain",
                                   padding: 2,
                                 }}
-                                src={`http://localhost:8000/${image}`}
+                                src={`${process.env.REACT_APP_API}/${image}`}
                               />
                             ))}
                         </div>

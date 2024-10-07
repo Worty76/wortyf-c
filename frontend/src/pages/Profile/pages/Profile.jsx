@@ -248,17 +248,18 @@ export const Profile = () => {
                     )}
                   </div>
                 )}
-              {auth.isAuthenticated().user._id !== user._id && (
-                <div className={classes.buttonWrapper}>
-                  <Button
-                    variant="contained"
-                    component="span"
-                    onClick={accessChat}
-                  >
-                    Send Message
-                  </Button>
-                </div>
-              )}
+              {auth.isAuthenticated() &&
+                auth.isAuthenticated().user._id !== user._id && (
+                  <div className={classes.buttonWrapper}>
+                    <Button
+                      variant="contained"
+                      component="span"
+                      onClick={accessChat}
+                    >
+                      Send Message
+                    </Button>
+                  </div>
+                )}
 
               <Typography sx={{ textAlign: "center" }}>
                 <Stars noOfStars={avgRatings} />
@@ -412,59 +413,60 @@ export const Profile = () => {
         </Box>
         <Box sx={{ flex: 1, padding: 2 }}>
           {/* Posts management section */}
-          {auth.isAuthenticated().user._id === user._id && (
-            <Card sx={{ maxWidth: "300px" }}>
-              <CardContent>
-                <ListItem>
-                  <ListItemText
-                    primary={
+          {auth.isAuthenticated() &&
+            auth.isAuthenticated().user._id === user._id && (
+              <Card sx={{ maxWidth: "300px" }}>
+                <CardContent>
+                  <ListItem>
+                    <ListItemText
+                      primary={
+                        <Typography
+                          variant="body1"
+                          sx={{ textAlign: "center", fontWeight: "bold" }}
+                        >
+                          Manage posts
+                        </Typography>
+                      }
+                    />
+                  </ListItem>
+                  <Divider />
+                  <List>
+                    <ListItem>
                       <Typography
-                        variant="body1"
-                        sx={{ textAlign: "center", fontWeight: "bold" }}
+                        sx={{
+                          cursor: "pointer",
+                          "&:hover": { color: "grey" },
+                          transition: "0.2s ease",
+                        }}
                       >
-                        Manage posts
+                        Approved posts (
+                        {
+                          usersPosts.filter((post) => post.approved === true)
+                            .length
+                        }
+                        )
                       </Typography>
-                    }
-                  />
-                </ListItem>
-                <Divider />
-                <List>
-                  <ListItem>
-                    <Typography
-                      sx={{
-                        cursor: "pointer",
-                        "&:hover": { color: "grey" },
-                        transition: "0.2s ease",
-                      }}
-                    >
-                      Approved posts (
-                      {
-                        usersPosts.filter((post) => post.approved === true)
-                          .length
-                      }
-                      )
-                    </Typography>
-                  </ListItem>
-                  <ListItem>
-                    <Typography
-                      sx={{
-                        cursor: "pointer",
-                        "&:hover": { color: "grey" },
-                        transition: "0.2s ease",
-                      }}
-                    >
-                      Waiting for approval (
-                      {
-                        usersPosts.filter((post) => post.approved === false)
-                          .length
-                      }
-                      )
-                    </Typography>
-                  </ListItem>
-                </List>
-              </CardContent>
-            </Card>
-          )}
+                    </ListItem>
+                    <ListItem>
+                      <Typography
+                        sx={{
+                          cursor: "pointer",
+                          "&:hover": { color: "grey" },
+                          transition: "0.2s ease",
+                        }}
+                      >
+                        Waiting for approval (
+                        {
+                          usersPosts.filter((post) => post.approved === false)
+                            .length
+                        }
+                        )
+                      </Typography>
+                    </ListItem>
+                  </List>
+                </CardContent>
+              </Card>
+            )}
           {/* Rating section */}
           <Card sx={{ maxWidth: "300px", marginTop: 2 }}>
             <CardContent>

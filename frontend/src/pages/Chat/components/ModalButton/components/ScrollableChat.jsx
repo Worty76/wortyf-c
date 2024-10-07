@@ -27,7 +27,7 @@ function ScrollableChat({ messages }) {
                 sx={{ marginRight: 1 }}
               >
                 <Avatar
-                  src={`http://localhost:8000/${m.sender.avatar_url}`}
+                  src={`${process.env.REACT_APP_API}/${m.sender.avatar_url}`}
                   alt={m.sender.username}
                   sx={{ width: 40, height: 40 }}
                 />

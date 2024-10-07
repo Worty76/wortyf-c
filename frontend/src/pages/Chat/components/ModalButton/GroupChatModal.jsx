@@ -25,7 +25,7 @@ const buttonStyle = {
   marginTop: 2,
   backgroundColor: "#007bff",
   color: "#fff",
-  '&:hover': {
+  "&:hover": {
     backgroundColor: "#0056b3",
   },
 };
@@ -67,7 +67,7 @@ function GroupChatModal() {
         },
       };
       const { data } = await axios.get(
-        `http://localhost:8000/api/user?search=${search}`,
+        `${process.env.REACT_APP_API}/api/user?search=${search}`,
         config
       );
       setSearchResult(data);
@@ -91,7 +91,7 @@ function GroupChatModal() {
         },
       };
       const { data } = await axios.post(
-        `http://localhost:8000/api/chat/group`,
+        `${process.env.REACT_APP_API}/api/chat/group`,
         {
           name: groupChatName,
           users: JSON.stringify(selectedUsers.map((u) => u._id)),
@@ -140,7 +140,7 @@ function GroupChatModal() {
             value={search}
           />
           {loading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+            <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
               <CircularProgress />
             </Box>
           ) : (
@@ -154,7 +154,7 @@ function GroupChatModal() {
               ))}
             </Box>
           )}
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 2 }}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", mb: 2 }}>
             {selectedUsers.map((u) => (
               <UserBadgeItem
                 key={u._id}
@@ -163,11 +163,7 @@ function GroupChatModal() {
               />
             ))}
           </Box>
-          <Button
-            onClick={handleSubmit}
-            sx={buttonStyle}
-            variant="contained"
-          >
+          <Button onClick={handleSubmit} sx={buttonStyle} variant="contained">
             Create
           </Button>
         </Box>

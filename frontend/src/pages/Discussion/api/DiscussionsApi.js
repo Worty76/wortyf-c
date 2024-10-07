@@ -3,7 +3,7 @@ import axios from "axios";
 const create = async (credentials, post) => {
   try {
     let response = await axios.post(
-      "http://localhost:8000/api/post/create",
+      `${process.env.REACT_APP_API}/api/post/create`,
       post,
       {
         headers: {

@@ -246,7 +246,7 @@ const searchPost = async (req, res) => {
       searchCondition.name = { $regex: cleanSearchQuery, $options: "i" };
     }
 
-    const posts = await Post.find(searchCondition);
+    const posts = await Post.find(searchCondition).populate("topic");
 
     if (posts.length > 0) {
       return res

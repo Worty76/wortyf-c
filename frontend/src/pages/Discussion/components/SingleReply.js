@@ -92,7 +92,7 @@ export default function SingleReply({
         <ListItem>
           <ListItemAvatar>
             <Avatar
-              src={`http://localhost:8000/${comment.author.avatar_url}`}
+              src={`${process.env.REACT_APP_API}/${comment.author.avatar_url}`}
             />
           </ListItemAvatar>
           <ListItemText

@@ -290,7 +290,9 @@ export const Appbar = () => {
               <Tooltip title="Open options">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   {user ? (
-                    <Avatar src={`http://localhost:8000/${user.avatar_url}`} />
+                    <Avatar
+                      src={`${process.env.REACT_APP_API}/${user.avatar_url}`}
+                    />
                   ) : (
                     <Avatar />
                   )}

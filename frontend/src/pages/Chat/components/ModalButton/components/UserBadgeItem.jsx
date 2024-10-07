@@ -19,7 +19,7 @@ const UserBadgeItem = ({ handleFunction, user }) => {
       onClick={handleFunction}
     >
       <Avatar
-        src={`http://localhost:8000/${user.avatar_url}`}
+        src={`${process.env.REACT_APP_API}/${user.avatar_url}`}
         alt={`${user.username}'s avatar`} // Added alt text for accessibility
         sx={{ width: 40, height: 40, marginRight: 2 }} // Adjusted size and margin
       />

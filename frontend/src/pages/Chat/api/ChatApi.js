@@ -3,7 +3,7 @@ import axios from "axios";
 const sold = async ({ postId, buyerId }, credentials, markAnswer) => {
   try {
     let response = await axios.put(
-      `http://localhost:8000/api/post/sold`,
+      `${process.env.REACT_APP_API}/api/post/sold`,
       { postId, buyerId },
       {
         headers: {
@@ -26,7 +26,7 @@ const rate = async (
 ) => {
   try {
     let response = await axios.post(
-      `http://localhost:8000/api/rating/rate`,
+      `${process.env.REACT_APP_API}/api/rating/rate`,
       { postId, buyerId, sellerId, noOfStars, comment },
       {
         headers: {

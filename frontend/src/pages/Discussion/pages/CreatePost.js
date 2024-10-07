@@ -111,7 +111,7 @@ export const CreatePost = () => {
   const getTopics = async (signal) => {
     try {
       await axios
-        .get(`http://localhost:8000/api/topic`, { cancelToken: signal })
+        .get(`${process.env.REACT_APP_API}/api/topic`, { cancelToken: signal })
         .then((response) => {
           setTopics(response.data.data);
         })

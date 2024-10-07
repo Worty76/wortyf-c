@@ -41,7 +41,7 @@ export const InApprovalPosts = () => {
 
       await axios
         .get(
-          "http://localhost:8000/api/post/moderator/in-approval-posts",
+          `${process.env.REACT_APP_API}/api/post/moderator/in-approval-posts`,
           config,
           {
             cancelToken: signal,
@@ -128,7 +128,7 @@ export const InApprovalPosts = () => {
                       alt=""
                       style={{ width: 200, padding: 2 }}
                       key={id}
-                      src={`http://localhost:8000/${image}`}
+                      src={`${process.env.REACT_APP_API}/${image}`}
                     />
                   ))}
                 </Grid>

@@ -3,7 +3,7 @@ import axios from "axios";
 const createComment = async (params, credentials, comment) => {
   try {
     let response = await axios.post(
-      `http://localhost:8000/api/post/${params.id}/comment/create`,
+      `${process.env.REACT_APP_API}/api/post/${params.id}/comment/create`,
       comment,
       {
         headers: {
@@ -22,7 +22,7 @@ const createComment = async (params, credentials, comment) => {
 const createReply = async (params, credentials, reply) => {
   try {
     let response = await axios.post(
-      `http://localhost:8000/api/post/${params.postId}/comment/${params.commentId}/reply`,
+      `${process.env.REACT_APP_API}/api/post/${params.postId}/comment/${params.commentId}/reply`,
       reply,
       {
         headers: {
@@ -41,7 +41,7 @@ const createReply = async (params, credentials, reply) => {
 const createLike = async (params, credentials, like) => {
   try {
     let response = await axios.post(
-      `http://localhost:8000/api/post/${params.id}/like`,
+      `${process.env.REACT_APP_API}/api/post/${params.id}/like`,
       like,
       {
         headers: {
@@ -60,7 +60,7 @@ const createLike = async (params, credentials, like) => {
 const deleteLike = async (params, credentials) => {
   try {
     let response = await axios.delete(
-      `http://localhost:8000/api/post/${params.id}/unlike`,
+      `${process.env.REACT_APP_API}/api/post/${params.id}/unlike`,
       {
         headers: {
           Accept: "application/json",
@@ -78,7 +78,7 @@ const deleteLike = async (params, credentials) => {
 const deletePost = async (params, credentials, deletePostEmit) => {
   try {
     let response = await axios.delete(
-      `http://localhost:8000/api/post/${params.id}/delete`,
+      `${process.env.REACT_APP_API}/api/post/${params.id}/delete`,
       {
         headers: {
           Accept: "application/json",
@@ -99,7 +99,7 @@ const deletePost = async (params, credentials, deletePostEmit) => {
 const deleteComment = async (params, credentials, deleteCommentEmit) => {
   try {
     let response = await axios.delete(
-      `http://localhost:8000/api/post/${params.postId}/comment/${params.commentId}/delete`,
+      `${process.env.REACT_APP_API}/api/post/${params.postId}/comment/${params.commentId}/delete`,
       {
         headers: {
           Accept: "application/json",
@@ -120,7 +120,7 @@ const deleteComment = async (params, credentials, deleteCommentEmit) => {
 const deleteReply = async (params, credentials, deleteReplyEmit) => {
   try {
     let response = await axios.delete(
-      `http://localhost:8000/api/post/${params.postId}/comment/${params.commentId}/reply/${params.replyId}/delete`,
+      `${process.env.REACT_APP_API}/api/post/${params.postId}/comment/${params.commentId}/reply/${params.replyId}/delete`,
       {
         headers: {
           Accept: "application/json",
@@ -141,7 +141,7 @@ const deleteReply = async (params, credentials, deleteReplyEmit) => {
 const updatePost = async (params, credentials, post) => {
   try {
     let response = await axios.put(
-      `http://localhost:8000/api/post/${params.id}/update`,
+      `${process.env.REACT_APP_API}/api/post/${params.id}/update`,
       post,
       {
         headers: {
@@ -160,7 +160,7 @@ const updatePost = async (params, credentials, post) => {
 const updateComment = async (params, credentials, commentData) => {
   try {
     let response = await axios.put(
-      `http://localhost:8000/api/post/${params.postId}/comment/${params.commentId}/update`,
+      `${process.env.REACT_APP_API}/api/post/${params.postId}/comment/${params.commentId}/update`,
       commentData,
       {
         headers: {
@@ -180,7 +180,7 @@ const updateComment = async (params, credentials, commentData) => {
 const updateReply = async (params, credentials, commentData) => {
   try {
     let response = await axios.put(
-      `http://localhost:8000/api/post/${params.postId}/comment/${params.commentId}/reply/${params.replyId}/update`,
+      `${process.env.REACT_APP_API}/api/post/${params.postId}/comment/${params.commentId}/reply/${params.replyId}/update`,
       commentData,
       {
         headers: {

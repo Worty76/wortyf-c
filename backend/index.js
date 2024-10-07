@@ -11,12 +11,12 @@ const multer = require("multer");
 require("dotenv").config();
 
 // Routers
-const userRouter = require("./routes/userRouter");
-const postRouter = require("./routes/postRouter");
-const topicRouter = require("./routes/topicRouter");
-const chatRouter = require("./routes/chatRouter");
-const messageRouter = require("./routes/messageRouter");
-const ratingRouter = require("./routes/ratingRouter");
+const userRouter = require("./src/routes/userRouter");
+const postRouter = require("./src/routes/postRouter");
+const topicRouter = require("./src/routes/topicRouter");
+const chatRouter = require("./src/routes/chatRouter");
+const messageRouter = require("./src/routes/messageRouter");
+const ratingRouter = require("./src/routes/ratingRouter");
 
 // PORT
 const PORT = process.env.PORT;
@@ -34,7 +34,13 @@ try {
 }
 
 // Config
-app.use(cors());
+const corsOptions = {
+  origin: [process.env.API, "http://localhost:3000"],
+  credentials: true,
+  methods: ["POST", "GET"],
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded());
 
@@ -66,7 +72,7 @@ const server = app.listen(PORT, () => {
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.API,
     credentials: true,
   },
 });

@@ -154,7 +154,7 @@ export const Discussions = ({
   const getTopics = async (signal) => {
     try {
       await axios
-        .get(`http://localhost:8000/api/topic`, {
+        .get(`${process.env.REACT_APP_API}/api/topic`, {
           cancelToken: signal,
         })
         .then((response) => {
@@ -172,7 +172,7 @@ export const Discussions = ({
 
   const searchPosts = async (key) => {
     await axios
-      .get(`http://localhost:8000/api/post/search?text=${key}`)
+      .get(`${process.env.REACT_APP_API}/api/post/search?text=${key}`)
       .then((res) => setPosts(res.data.data));
   };
 
@@ -294,7 +294,7 @@ export const Discussions = ({
                       <ListItemAvatar>
                         <Avatar
                           alt={post.author.username}
-                          src={`http://localhost:8000/${post?.author?.avatar_url}`}
+                          src={`${process.env.REACT_APP_API}/${post?.author?.avatar_url}`}
                           sx={{ height: "70px", width: "70px" }}
                         />
                       </ListItemAvatar>
@@ -361,7 +361,7 @@ export const Discussions = ({
                           display: "block",
                           margin: "0 auto",
                         }}
-                        src={`http://localhost:8000/${post.images[0]}`}
+                        src={`${process.env.REACT_APP_API}/${post.images[0]}`}
                       />
                     </div>
                   </Box>
@@ -430,26 +430,27 @@ export const Discussions = ({
           </List>
           <Divider />
           <List>
-            {topics.map((topic, id) => (
-              <ListItem key={id}>
-                <Badge>
-                  <CircleIcon
-                    sx={{ color: `${topic.color}` }}
-                    fontSize="small"
-                  />
-                </Badge>
-                <Typography
-                  sx={{
-                    paddingLeft: "10px",
-                    cursor: "pointer",
-                    "&:hover": { color: "grey" },
-                    transition: "0.2s ease",
-                  }}
-                >
-                  {topic.name}
-                </Typography>
-              </ListItem>
-            ))}
+            {topics &&
+              topics.map((topic, id) => (
+                <ListItem key={id}>
+                  <Badge>
+                    <CircleIcon
+                      sx={{ color: `${topic.color}` }}
+                      fontSize="small"
+                    />
+                  </Badge>
+                  <Typography
+                    sx={{
+                      paddingLeft: "10px",
+                      cursor: "pointer",
+                      "&:hover": { color: "grey" },
+                      transition: "0.2s ease",
+                    }}
+                  >
+                    {topic.name}
+                  </Typography>
+                </ListItem>
+              ))}
           </List>
         </div>
       </Box>
