@@ -181,6 +181,7 @@ export const Discussion = () => {
   }, []);
 
   const checkLiked = (likesProp) => {
+    console.log(likesProp);
     return (
       likesProp
         .map((e) => e.user_id)
@@ -212,6 +213,7 @@ export const Discussion = () => {
       if (data.stack) {
         console.log(data);
       } else {
+        console.log(JSON.parse(data));
         setLikes(JSON.parse(data));
       }
     });
@@ -227,6 +229,7 @@ export const Discussion = () => {
       if (data.stack) {
         console.log(data);
       } else {
+        console.log(JSON.parse(data));
         setLikes(JSON.parse(data));
       }
     });
@@ -487,7 +490,7 @@ export const Discussion = () => {
                           </IconButton>
                         ) : (
                           <IconButton onClick={debouncedOnCreateLike}>
-                            <FavoriteIcon />
+                            <FavoriteIcon sx={{ color: "lightblue" }} />
                           </IconButton>
                         )
                       ) : (
@@ -502,7 +505,7 @@ export const Discussion = () => {
                         ""
                       )}
                       {!auth.isAuthenticated() ? (
-                        <IconButton href="/signin">
+                        <IconButton href="/sign-in">
                           <FavoriteIcon />
                         </IconButton>
                       ) : (

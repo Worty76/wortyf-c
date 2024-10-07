@@ -11,20 +11,25 @@ async function likePost(req, res) {
 
     if (!post) res.status(400).send({ message: "Could not find the post" });
 
-    const like = await Like.findOne({ post_id: postId, user_id: user });
-
-    if (!like) {
-      const like = new Like({
-        user_id: user,
-        post_id: postId,
-      });
-      post.likes.push(like);
-      await like.save();
-      await post.save();
-      return res
-        .status(200)
-        .json({ message: "Successfully like a post", data: post.likes });
+    const existingLike = await Like.findOne({ post_id: postId, user_id: user });
+    if (existingLike) {
+      return res.status(400).send({ message: "Post already liked" });
     }
+
+    const newLike = new Like({
+      user_id: user,
+      post_id: postId,
+    });
+    await newLike.save();
+
+    const newPost = await Post.findByIdAndUpdate(
+      postId,
+      { $push: { likes: newLike._id } },
+      { new: true }
+    ).populate("likes");
+    return res
+      .status(200)
+      .json({ message: "Successfully like a post", data: newPost.likes });
 
     return res.status(400);
   } catch (error) {
@@ -44,16 +49,16 @@ async function unLikePost(req, res) {
     const like = await Like.findOne({ post_id: postId, user_id: user });
 
     await Like.findOneAndDelete({ post_id: postId, user_id: user });
-    post.likes = post.likes.filter(
-      (e) => e._id.valueOf() !== like._id.valueOf()
-    );
-    if (post.save()) {
-      return res
-        .status(200)
-        .json({ message: "Successfully unlike a post", data: post.likes });
-    } else {
-      return res.status(400).json({ message: "Error", error: error });
-    }
+    const newPost = await Post.findByIdAndUpdate(
+      postId,
+      {
+        $pull: { likes: { user_id: user } },
+      },
+      { new: true }
+    ).populate("likes");
+    return res
+      .status(200)
+      .json({ message: "Successfully unlike a post", data: newPost.likes });
   } catch (error) {
     res.status(500).send({ message: "Interval error", error: error });
   }
