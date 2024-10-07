@@ -4,6 +4,7 @@ const Topic = require("../models/topic");
 const Comment = require("../models/comment");
 const Like = require("../models/like");
 const formidable = require("formidable");
+const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
@@ -69,25 +70,12 @@ const getSpecificPost = async (req, res) => {
 
 const createPost = async (req, res) => {
   try {
+    console.log("run");
     const userId = req.user.id;
     const user = await User.findById(userId);
 
     if (!user)
       return res.status(400).send({ message: "Could not find the user!" });
-
-    fs.access("./uploads", (error) => {
-      if (error) {
-        fs.mkdirSync("./uploads");
-      }
-    });
-
-    let form = new formidable.IncomingForm();
-    form.keepExtensions = true;
-
-    const uploadFolder = path.join(__dirname, "public", "files");
-    form.multiples = true;
-    form.maxFileSize = 50 * 1024 * 1024; // 5MB
-    form.uploadDir = uploadFolder;
 
     const body = await doSomethingWithNodeRequest(req);
 
@@ -96,16 +84,20 @@ const createPost = async (req, res) => {
     if (body.images) {
       const images = Array.isArray(body.images) ? body.images : [body.images];
       for (let image of images) {
-        const timestamp = Date.now();
-        const ref = `${timestamp}-${image.newFilename}.webp`;
-
-        const buffer = fs.readFileSync(image._writeStream.path);
-
-        await sharp(buffer)
-          .webp({ quality: 20 })
-          .toFile("./public/uploads/" + ref);
-
-        imagesArray.push(ref);
+        await cloudinary.uploader.upload(
+          image.filepath,
+          async function (err, result) {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({
+                success: false,
+                message: "Error",
+              });
+            }
+            imagesArray.push(result.secure_url);
+            console.log(result);
+          }
+        );
       }
     }
 
@@ -146,6 +138,7 @@ const createPost = async (req, res) => {
     res
       .status(200)
       .json({ message: "Successfully created a post", data: post });
+    // .json({ message: "Successfully created a post", data: post });
   } catch (error) {
     res.status(500).send({ message: "Internal error", error: error.message });
   }

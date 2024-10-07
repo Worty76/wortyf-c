@@ -57,6 +57,7 @@ const changeAvatar = async (params, credentials, imageData) => {
         },
       }
     );
+    console.log(response);
     return JSON.stringify(response.data.avatar_url);
   } catch (error) {
     return error;

@@ -44,8 +44,13 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded());
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const storage = multer.diskStorage({
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 // Configurations for "Static-files"
 app.set("view engine", "ejs");

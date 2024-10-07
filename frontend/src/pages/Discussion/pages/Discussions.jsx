@@ -294,7 +294,7 @@ export const Discussions = ({
                       <ListItemAvatar>
                         <Avatar
                           alt={post.author.username}
-                          src={`${process.env.REACT_APP_API}/${post?.author?.avatar_url}`}
+                          src={post?.author?.avatar_url}
                           sx={{ height: "70px", width: "70px" }}
                         />
                       </ListItemAvatar>
@@ -361,7 +361,7 @@ export const Discussions = ({
                           display: "block",
                           margin: "0 auto",
                         }}
-                        src={`${process.env.REACT_APP_API}/${post.images[0]}`}
+                        src={post.images[0]}
                       />
                     </div>
                   </Box>
@@ -421,9 +421,9 @@ export const Discussions = ({
                     textAlign: "center",
                   }}
                   LinkComponent={Link}
-                  to={"/signin"}
+                  to={"/sign-in"}
                 >
-                  Sign in to start a new discussion
+                  Sign in to create a post
                 </Button>
               )}
             </ListItem>

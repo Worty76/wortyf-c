@@ -128,7 +128,7 @@ export const InApprovalPosts = () => {
                       alt=""
                       style={{ width: 200, padding: 2 }}
                       key={id}
-                      src={`${process.env.REACT_APP_API}/${image}`}
+                      src={image}
                     />
                   ))}
                 </Grid>

@@ -211,10 +211,10 @@ function MyChats({ fetchAgain }) {
                     <Avatar
                       src={
                         !chat.isGroupChat
-                          ? `${process.env.REACT_APP_API}/${getSenderAvatar(
+                          ? getSenderAvatar(
                               auth.isAuthenticated().user,
                               chat.users
-                            )}`
+                            )
                           : chat.chatName
                       }
                     />
@@ -267,7 +267,7 @@ function MyChats({ fetchAgain }) {
                             display: "block",
                             margin: "0 auto",
                           }}
-                          src={`${process.env.REACT_APP_API}/${chat.post?.images[0]}`}
+                          src={chat.post?.images[0]}
                         />
                       </div>
                     )}

@@ -32,7 +32,7 @@ export const GuardiansList = ({ guardians }) => {
                         sx={{ display: "flex", justifyContent: "center" }}
                       >
                         <Avatar
-                          src={`${process.env.REACT_APP_API}/${guardian.avatar_url}`}
+                          src={guardian.avatar_url}
                           sx={{ width: "80px", height: "80px" }}
                         />
                       </ListItemAvatar>

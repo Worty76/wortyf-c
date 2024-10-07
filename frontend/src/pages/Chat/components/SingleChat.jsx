@@ -177,7 +177,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                           width: "auto",
                           display: "block",
                         }}
-                        src={`${process.env.REACT_APP_API}/${selectedChat.post.images[0]}`}
+                        src={selectedChat.post.images[0]}
                       />
                     </div>
                   )}

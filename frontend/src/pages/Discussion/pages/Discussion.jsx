@@ -359,13 +359,7 @@ export const Discussion = () => {
               )}
               <ListItem>
                 <ListItemAvatar>
-                  <Avatar
-                    src={
-                      user?.avatar_url
-                        ? `${process.env.REACT_APP_API}/${user?.avatar_url}`
-                        : ""
-                    }
-                  />
+                  <Avatar src={user?.avatar_url ? user?.avatar_url : ""} />
                 </ListItemAvatar>
                 <ListItemText
                   primary={
@@ -455,7 +449,7 @@ export const Discussion = () => {
                                   objectFit: "contain",
                                   padding: 2,
                                 }}
-                                src={`${process.env.REACT_APP_API}/${image}`}
+                                src={image}
                               />
                             ))}
                         </div>

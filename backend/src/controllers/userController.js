@@ -7,6 +7,7 @@ const formidable = require("formidable");
 const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
+const cloudinary = require("../utils/cloudinary");
 const Rating = require("../models/rating");
 require("dotenv").config();
 
@@ -174,48 +175,48 @@ const deleteUser = async (req, res) => {
 };
 
 const changeAvatar = async (req, res) => {
-  const user = await User.findById({ _id: req.params.id });
-  if (!user) return res.status(400).send({ message: "Could not get any user" });
+  try {
+    const user = await User.findById({ _id: req.params.id });
+    if (!user)
+      return res.status(400).send({ message: "Could not get any user" });
 
-  fs.access("./uploads", (error) => {
-    if (error) {
-      fs.mkdirSync("./uploads");
-    }
-  });
+    const body = await doSomethingWithNodeRequest(req);
 
-  let form = new formidable.IncomingForm();
-  form.keepExtensions = true;
+    cloudinary.uploader.upload(
+      body.image.filepath,
+      async function (err, result) {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: false,
+            message: "Error",
+          });
+        }
+        await User.findByIdAndUpdate(
+          { _id: req.params.id },
+          { $set: { avatar_url: result.secure_url } }
+        );
 
-  const uploadFolder = path.join(__dirname, "public", "files");
-  form.multiples = true;
-  form.maxFileSize = 50 * 1024 * 1024; // 5MB
-  form.uploadDir = uploadFolder;
-  const body = await doSomethingWithNodeRequest(req);
+        await Post.updateMany(
+          { "author._id": req.params.id },
+          { $set: { "author.avatar_url": result.secure_url } }
+        );
 
-  const timestamp = Date.now();
-  const ref = `${timestamp}-${body.newFilename}.webp`;
-  const buffer = fs.readFileSync(body.image._writeStream.path);
-  await sharp(buffer)
-    .webp({ quality: 20 })
-    .toFile("./public/uploads/" + ref);
+        await Comment.updateMany(
+          { "author._id": req.params.id },
+          { $set: { "author.avatar_url": result.secure_url } }
+        );
 
-  user.avatar_url = ref;
-
-  await user.save();
-
-  await Post.updateMany(
-    { "author._id": req.params.id },
-    { $set: { "author.avatar_url": ref } }
-  );
-
-  await Comment.updateMany(
-    { "author._id": req.params.id },
-    { $set: { "author.avatar_url": ref } }
-  );
-
-  res
-    .status(200)
-    .json({ message: "Successfully changed avatar", avatar_url: ref });
+        return res.status(200).json({
+          message: "Successfully changed avatar",
+          avatar_url: result.secure_url,
+        });
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "An unexpected error occurred" });
+  }
 };
 
 const photo = (req, res, next) => {

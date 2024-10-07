@@ -177,9 +177,7 @@ export default function SingleComment({
       <br />
       <ListItem>
         <ListItemAvatar>
-          <Avatar
-            src={`${process.env.REACT_APP_API}/${comment.author.avatar_url}`}
-          />
+          <Avatar src={comment.author.avatar_url} />
         </ListItemAvatar>
         <ListItemText
           primary={

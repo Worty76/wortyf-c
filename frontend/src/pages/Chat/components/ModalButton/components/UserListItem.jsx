@@ -19,9 +19,9 @@ const UserListItem = ({ handleFunction, user }) => {
       }}
     >
       <Avatar
-        src={`${process.env.REACT_APP_API}/${user.avatar_url}`}
-        alt={`${user.username}'s avatar`} // Added alt text for accessibility
-        sx={{ width: 48, height: 48, marginRight: 2 }} // Adjusted size and margin
+        src={user.avatar_url}
+        alt={`${user.username}'s avatar`}
+        sx={{ width: 48, height: 48, marginRight: 2 }}
       />
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <Typography

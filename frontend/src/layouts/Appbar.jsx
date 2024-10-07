@@ -289,13 +289,7 @@ export const Appbar = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open options">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  {user ? (
-                    <Avatar
-                      src={`${process.env.REACT_APP_API}/${user.avatar_url}`}
-                    />
-                  ) : (
-                    <Avatar />
-                  )}
+                  {user ? <Avatar src={user.avatar_url} /> : <Avatar />}
                 </IconButton>
               </Tooltip>
 

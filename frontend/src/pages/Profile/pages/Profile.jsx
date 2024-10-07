@@ -214,11 +214,7 @@ export const Profile = () => {
               <ListItem sx={{ display: "flex", justifyContent: "center" }}>
                 <ListItemAvatar>
                   <Avatar
-                    src={
-                      image
-                        ? URL.createObjectURL(image)
-                        : `${process.env.REACT_APP_API}/${user.avatar_url}`
-                    }
+                    src={image ? URL.createObjectURL(image) : user.avatar_url}
                     className={classes.avatar}
                   />
                 </ListItemAvatar>
