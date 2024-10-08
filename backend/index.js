@@ -83,11 +83,13 @@ const server = app.listen(PORT, () => {
 
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
-  transports: ["websocket", "polling"],
   cors: {
     origin: process.env.API,
     credentials: true,
+    methods: ["GET", "POST"],
+    transports: ["websocket", "polling"],
   },
+  allowEIO3: true,
 });
 
 io.on("connection", (socket) => {
