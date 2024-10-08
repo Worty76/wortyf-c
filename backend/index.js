@@ -21,14 +21,21 @@ const ratingRouter = require("./src/routes/ratingRouter");
 // PORT
 const PORT = process.env.PORT;
 
-// Connection Config
 try {
+  const start = new Date();
   mongoose
     .connect(process.env.DB_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
-    .then(() => console.log("Successfully connected to MongoDB"));
+    .then(() => {
+      const now = new Date();
+      console.log(
+        "Successfully connected to MongoDB after",
+        now.getTime() - start.getTime(),
+        "ms"
+      );
+    });
 } catch (error) {
   console.error("Failed to connect to mongoDB");
 }

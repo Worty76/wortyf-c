@@ -11,7 +11,6 @@ const sharp = require("sharp");
 
 const getApprovedPosts = async (req, res) => {
   try {
-    // the 2nd argument is removing fields that you don't want to fetch
     const posts = await Post.find({ approved: true }).populate("topic");
 
     if (posts)
