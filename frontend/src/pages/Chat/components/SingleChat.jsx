@@ -26,7 +26,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
 
   useEffect(() => {
     const x = auth.isAuthenticated().user;
-    socket = io(ENDPOINT, { transports: ["websocket"] });
+    socket = io(ENDPOINT);
     socket.emit("setup", x);
     socket.on("connected", () => setSocketConnected(true));
   }, []);
