@@ -87,7 +87,7 @@ const io = require("socket.io")(server, {
     origin: process.env.API,
     credentials: true,
     methods: ["GET", "POST"],
-    transports: ["websocket", "polling"],
+    transports: ["polling", "websocket"],
   },
   allowEIO3: true,
 });
