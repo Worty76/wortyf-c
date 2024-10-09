@@ -316,15 +316,10 @@ export const Discussion = () => {
           >
             <ListItem disablePadding>
               <ListItemIcon>
-                <CheckCircleIcon sx={{ color: post.sold ? "green" : "gray" }} />
+                <CheckCircleIcon
+                  sx={{ color: post.sold ? "#008000" : "gray" }}
+                />
               </ListItemIcon>
-              <ListItemText
-                primary={
-                  <Typography variant="h6" sx={{}}>
-                    Sold
-                  </Typography>
-                }
-              />
             </ListItem>
           </Box>
 
@@ -403,7 +398,9 @@ export const Discussion = () => {
                     </Menu>
                   </>
                 ) : null}
-                {auth.isAuthenticated().user &&
+                {post &&
+                  !post.sold &&
+                  auth.isAuthenticated().user &&
                   auth.isAuthenticated().user._id !== user._id && (
                     <Button
                       variant="contained"
@@ -484,7 +481,7 @@ export const Discussion = () => {
                           </IconButton>
                         ) : (
                           <IconButton onClick={debouncedOnCreateLike}>
-                            <FavoriteIcon sx={{ color: "lightblue" }} />
+                            <FavoriteIcon />
                           </IconButton>
                         )
                       ) : (

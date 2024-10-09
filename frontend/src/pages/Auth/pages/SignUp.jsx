@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -12,7 +12,6 @@ import {
   styled,
   Paper,
 } from "@mui/material";
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signUp } from "../api/authApi";
 import auth from "../../../helpers/Auth";
@@ -63,7 +62,7 @@ export const SignUp = () => {
   const [values, setValues] = useState({
     username: "",
     age: "",
-    gender: false,
+    gender: "false",
     email: "",
     from: "",
     password: "",
@@ -71,20 +70,42 @@ export const SignUp = () => {
     error: "",
     redirect: false,
   });
+  const [errors, setErrors] = useState({});
   const { redirect } = values;
 
   const handleChange = (name) => (event) => {
     setValues({ ...values, [name]: event.target.value });
-    console.log(values);
   };
 
-  // const renderError = () => {
-  //   return (
-  //     <div style={{ width: "100%", textAlign: "center" }}>{values.error}</div>
-  //   );
-  // };
+  const validate = () => {
+    let tempErrors = {};
+    tempErrors.username = values.username ? "" : "Username is required.";
+    tempErrors.username =
+      values.username.length > 15 || values.username.length < 6
+        ? "Username must be more than 6 characters and less than 15 characters."
+        : "";
+    tempErrors.age =
+      values.age && values.age > 0
+        ? ""
+        : "Age is required and must be a positive number.";
+    tempErrors.email = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(values.email)
+      ? ""
+      : "Email is not valid.";
+    tempErrors.password = values.password ? "" : "Password is required.";
+    tempErrors.passwordConfirmed =
+      values.passwordConfirmed === values.password
+        ? ""
+        : "Passwords do not match.";
+
+    setErrors({ ...tempErrors });
+    return Object.values(tempErrors).every((x) => x === "");
+  };
+
+  console.log(values);
 
   const onSignUp = () => {
+    if (!validate()) return; // Prevent submission if validation fails
+
     let user = new FormData();
     values.username && user.append("username", values.username);
     values.age && user.append("age", values.age);
@@ -92,14 +113,6 @@ export const SignUp = () => {
     values.email && user.append("email", values.email);
     values.from && user.append("from", values.from);
     values.password && user.append("password", values.password);
-
-    if (values.password !== values.passwordConfirmed) {
-      setValues({
-        ...values,
-        error: "Password and PasswordConfirmed is not match!",
-        redirect: false,
-      });
-    }
 
     signUp(user).then((data) => {
       if (data.stack) {
@@ -152,6 +165,8 @@ export const SignUp = () => {
                     label="Username"
                     name="username"
                     onChange={handleChange("username")}
+                    error={!!errors.username}
+                    helperText={errors.username}
                     autoFocus
                   />
                 </Grid>
@@ -162,17 +177,24 @@ export const SignUp = () => {
                     fullWidth
                     id="age"
                     onChange={handleChange("age")}
+                    error={!!errors.age}
+                    helperText={errors.age}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <FormControl>
+                  <FormControl fullWidth error={!!errors.gender}>
                     <Select
                       value={values.gender}
                       onChange={handleChange("gender")}
                     >
-                      <MenuItem value="true">Male</MenuItem>
-                      <MenuItem value="false">Female</MenuItem>
+                      <MenuItem value={"true"}>Male</MenuItem>
+                      <MenuItem value={"false"}>Female</MenuItem>
                     </Select>
+                    {errors.gender && (
+                      <Typography color="error" variant="caption">
+                        {errors.gender}
+                      </Typography>
+                    )}
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
@@ -183,6 +205,8 @@ export const SignUp = () => {
                     label="Email Address"
                     name="email"
                     onChange={handleChange("email")}
+                    error={!!errors.email}
+                    helperText={errors.email}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -203,6 +227,8 @@ export const SignUp = () => {
                     type="password"
                     id="password"
                     onChange={handleChange("password")}
+                    error={!!errors.password}
+                    helperText={errors.password}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -214,9 +240,14 @@ export const SignUp = () => {
                     type="password"
                     id="re-password"
                     onChange={handleChange("passwordConfirmed")}
+                    error={!!errors.passwordConfirmed}
+                    helperText={errors.passwordConfirmed}
                   />
                 </Grid>
               </Grid>
+              <Typography sx={{ color: "red", textAlign: "center" }}>
+                {values.error && values.error}
+              </Typography>
               <Button
                 fullWidth
                 variant="contained"

@@ -36,7 +36,7 @@ export const DataTable = () => {
     },
   ];
 
-  const paginationModel = { page: 0, pageSize: 10 };
+  const paginationModel = { page: 0, pageSize: 15 };
   const [users, setUsers] = useState([]);
 
   const getUsers = async (signal) => {
@@ -109,7 +109,7 @@ export const DataTable = () => {
         columns={columns}
         getRowId={(row) => row._id}
         initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[10, 15, 20]}
+        pageSizeOptions={[15, 20, 25]}
         sx={{ border: 0 }}
       />
     </Paper>

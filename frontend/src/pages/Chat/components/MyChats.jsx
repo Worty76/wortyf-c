@@ -161,17 +161,17 @@ function MyChats({ fetchAgain }) {
         >
           My Chats
           <div style={{ display: "flex" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ marginRight: 1 }}
+              onClick={toggleDrawer(true)}
+              startIcon={<SearchIcon />}
+            >
+              Search User
+            </Button>
             {auth.isAuthenticated().user.role === "guardian" && (
               <>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ marginRight: 1 }}
-                  onClick={toggleDrawer(true)}
-                  startIcon={<SearchIcon />}
-                >
-                  Search User
-                </Button>
                 <GroupChatModal />
               </>
             )}

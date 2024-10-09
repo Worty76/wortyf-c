@@ -13,14 +13,6 @@ export const Home = () => {
   const classes = useStyles();
 
   const [posts, setPosts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage] = useState(5);
-
-  const indexOfLastRecord = currentPage * recordsPerPage;
-  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const paginatedPosts =
-    posts && posts.slice(indexOfFirstRecord, indexOfLastRecord);
-  const nPages = Math.ceil(posts.length / recordsPerPage);
 
   const getPosts = async (signal) => {
     try {
@@ -53,13 +45,7 @@ export const Home = () => {
 
   return (
     <div className={classes.root}>
-      <Discussions
-        posts={paginatedPosts}
-        setPosts={setPosts}
-        nPages={nPages}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-      />
+      <Discussions posts={posts} setPosts={setPosts} />
     </div>
   );
 };

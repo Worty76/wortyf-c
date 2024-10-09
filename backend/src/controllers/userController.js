@@ -48,6 +48,7 @@ const login = async (req, res) => {
 
 // Register
 const register = async (req, res) => {
+  console.log(req.body);
   try {
     const newEmail = await User.findOne({ email: req.body.email });
     // Checking if the email is existed or not

@@ -31,6 +31,7 @@ import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import { debounce } from "lodash";
 import { Topic } from "../components/Topic";
+import { Markup } from "interweave";
 
 const useStyles = makeStyles({
   leftContainer: {
@@ -88,15 +89,19 @@ const useStyles = makeStyles({
   },
 });
 
-export const Discussions = ({
-  posts,
-  setPosts,
-  nPages,
-  currentPage,
-  setCurrentPage,
-}) => {
+export const Discussions = ({ posts, setPosts }) => {
   const classes = useStyles();
   const navigate = useNavigate();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [recordsPerPage] = useState(5);
+
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const paginatedPosts =
+    posts && posts.slice(indexOfFirstRecord, indexOfLastRecord);
+  const nPages = Math.ceil(posts.length / recordsPerPage);
+
   const [option, setOption] = useState("");
   const [topics, setTopics] = useState([]);
 
@@ -109,11 +114,11 @@ export const Discussions = ({
     if (currentPage !== 1) setCurrentPage(currentPage - 1);
   };
 
-  console.log(posts);
-
   const handleOpen = () => {
     navigate("/home/create");
   };
+
+  console.log(posts);
 
   const sortBy = (option) => {
     switch (option) {
@@ -175,7 +180,6 @@ export const Discussions = ({
       .get(`${process.env.REACT_APP_API}/api/post/search?text=${key}`)
       .then((res) => setPosts(res.data.data));
   };
-
   // eslint-disable-next-line
   const debounceSearchPosts = useCallback(
     debounce((nextValue) => searchPosts(nextValue), 1000),
@@ -185,7 +189,6 @@ export const Discussions = ({
   const handleSearchPosts = (event) => {
     let { value } = event.target;
 
-    // Handle encoding special characters
     if (value.includes("&")) {
       value = value.replace("&", "%26");
     }
@@ -206,11 +209,8 @@ export const Discussions = ({
 
   return (
     <Paper sx={{ display: "flex" }} elevation={0}>
-      {/* Left Container */}
       <Box className={classes.leftContainer}>
-        {/* Toolbar */}
         <Toolbar disableGutters>
-          {/* Left component */}
           <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
             <FormControl>
               <Select
@@ -229,12 +229,34 @@ export const Discussions = ({
             <SearchIcon sx={{ marginLeft: "10px" }} />
             <TextField
               type="search"
-              label="Search posts"
+              label="Search posts with name or tags... e.g. [Electronics] post name..."
               variant="outlined"
               size="small"
               onChange={handleSearchPosts}
               sx={{ marginLeft: "10px", width: "80%" }}
             />
+            {/* <Popover
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              sx={{ pointerEvents: "none" }}
+            >
+              <Box p={2} maxWidth={300}>
+                <Typography variant="h8">Search Tips:</Typography>
+                <Typography variant="body2">
+                  - Use [tag] to search within tags.
+                  <br />
+                  - Use "exact phrase" for specific terms.
+                  <br />
+                  - Search by user with user:1234.
+                  <br />- Use score:3 to find posts with 3+ votes.
+                </Typography>
+              </Box>
+            </Popover> */}
           </Box>
           {/* Right component */}
           <Box sx={{ flexGrow: 0 }}>
@@ -255,8 +277,8 @@ export const Discussions = ({
         <Divider />
 
         {/* Posts */}
-        {posts &&
-          posts.map((post) => (
+        {paginatedPosts &&
+          paginatedPosts.map((post) => (
             <div key={post._id} style={{ paddingBottom: "20px" }}>
               <Link
                 to={"/discussions/" + post._id}
@@ -266,7 +288,7 @@ export const Discussions = ({
                   className={classes.post}
                   sx={{
                     position: "relative",
-                    // border: post.solved ? "1px #38E54D solid" : "none",
+
                     transition: "all 0.3s",
                     "&:hover": {
                       boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
@@ -280,7 +302,7 @@ export const Discussions = ({
                         position: "absolute",
                         top: "10px",
                         right: "10px",
-                        backgroundColor: "#31d631",
+                        backgroundColor: "#008000",
                         color: "white",
                         padding: "2px 6px",
                         borderRadius: "4px",
@@ -315,16 +337,14 @@ export const Discussions = ({
                       />
                     </ListItem>
                     <ListItem>
-                      <ListItemText
-                        primary={
-                          <Typography
-                            variant="h8"
-                            className={classes.ContentMultiLineEllipsis}
-                          >
-                            {post.content}
-                          </Typography>
-                        }
-                      />
+                      <Typography
+                        variant="h8"
+                        className={classes.ContentMultiLineEllipsis}
+                        component="div"
+                        sx={{ textDecoration: "none" }}
+                      >
+                        <Markup content={post.content} />
+                      </Typography>
                     </ListItem>
                     <ListItem>
                       {post.topic.map((topic, id) => (
@@ -409,7 +429,7 @@ export const Discussions = ({
                   sx={{ backgroundColor: "#3c52b2", color: "#fff" }}
                   onClick={handleOpen}
                 >
-                  Start a new discussion
+                  Create a new post
                 </Button>
               ) : (
                 <Button

@@ -23,6 +23,7 @@ import auth from "../../../helpers/Auth";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import TextEditor from "../components/TextEditor";
+import { Topic } from "../components/Topic";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -162,8 +163,7 @@ export const CreatePost = () => {
     if (!values.name) errors.name = "Name is required.";
     if (values.name.length < 11 || values.name.length > 50)
       errors.name = "Name should be more than 10 or less than 50 characters.";
-    if (!values.price) errors.description = "Price is required.";
-    if (!values.content) errors.content = "Content is required.";
+    if (!values.price) errors.price = "Price is required.";
     return errors;
   };
 
@@ -230,7 +230,6 @@ export const CreatePost = () => {
               aria-label="Name"
             />
           </Grid>
-
           <Grid item xs={12} className={classes.formItem}>
             <TextField
               label="Price"
@@ -239,13 +238,11 @@ export const CreatePost = () => {
               onChange={handleChange("price")}
               value={values.price}
               placeholder="Your price"
-              multiline
               error={!!errorMessages.price}
               helperText={errorMessages.price || "Required field"}
-              aria-label="Description"
+              aria-label="Price"
             />
           </Grid>
-
           <Grid item xs={12} className={classes.formItem}>
             <TextEditor
               placeholder={"Write your content here..."}
@@ -253,7 +250,21 @@ export const CreatePost = () => {
               editorRef={editorRef}
             />
           </Grid>
-
+          <Grid item sx={{ display: "flex" }} className={classes.formItem}>
+            {selectTopics !== "" &&
+              topics.map((topic, id) =>
+                selectTopics.includes(topic.name) ? (
+                  <Topic
+                    key={id}
+                    name={topic.name}
+                    color={topic.color}
+                    id={topic._id}
+                  />
+                ) : (
+                  ""
+                )
+              )}
+          </Grid>
           <Grid item xs={12} className={classes.formItem}>
             <FormControl fullWidth>
               <InputLabel>Topics</InputLabel>
@@ -272,7 +283,6 @@ export const CreatePost = () => {
               </Select>
             </FormControl>
           </Grid>
-
           <Grid item xs={12} className={classes.formItem}>
             <input
               style={{ display: "none" }}
@@ -288,7 +298,6 @@ export const CreatePost = () => {
               </Button>
             </label>
           </Grid>
-
           <Grid item xs={12} sx={{}}>
             <div
               style={{
@@ -313,7 +322,6 @@ export const CreatePost = () => {
                 ))}
             </div>
           </Grid>
-
           <Grid item xs={12} className={classes.submitButton}>
             {loading ? (
               <Box className={classes.loadingSpinner}>
@@ -326,7 +334,7 @@ export const CreatePost = () => {
                 onClick={onSubmit}
                 fullWidth
               >
-                Submit Post
+                Post
               </Button>
             )}
           </Grid>

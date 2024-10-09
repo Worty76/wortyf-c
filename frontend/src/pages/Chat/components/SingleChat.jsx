@@ -165,7 +165,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                     alignItems: "center",
                   }}
                 >
-                  {selectedChat.post.images && (
+                  {selectedChat.post.images.length > 0 && (
                     <div style={{ width: "100px", height: "100px" }}>
                       <img
                         alt=""
@@ -207,7 +207,9 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                       >
                         {selectedChat.post.name}
                       </Typography>
-                      <Typography sx={{ color: "red" }}>10000$</Typography>
+                      <Typography sx={{ color: "red" }}>
+                        {selectedChat.post.price}
+                      </Typography>
                     </div>
                     <div>
                       {auth.isAuthenticated().user._id ===
