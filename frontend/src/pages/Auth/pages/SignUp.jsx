@@ -62,7 +62,7 @@ export const SignUp = () => {
   const [values, setValues] = useState({
     username: "",
     age: "",
-    gender: "false",
+    gender: "male",
     email: "",
     from: "",
     password: "",
@@ -187,8 +187,9 @@ export const SignUp = () => {
                       value={values.gender}
                       onChange={handleChange("gender")}
                     >
-                      <MenuItem value={"true"}>Male</MenuItem>
-                      <MenuItem value={"false"}>Female</MenuItem>
+                      <MenuItem value={"male"}>Male</MenuItem>
+                      <MenuItem value={"female"}>Female</MenuItem>
+                      <MenuItem value={"other"}>Other</MenuItem>
                     </Select>
                     {errors.gender && (
                       <Typography color="error" variant="caption">
@@ -269,6 +270,7 @@ export const SignUp = () => {
                         color: "gray",
                       },
                       transition: "ease 0.2s",
+                      fontWeight: "bold",
                     }}
                   >
                     Already have an account? Sign in

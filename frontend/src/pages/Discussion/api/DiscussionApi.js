@@ -196,6 +196,25 @@ const updateReply = async (params, credentials, commentData) => {
   }
 };
 
+const createNotification = async (credentials, body) => {
+  try {
+    let response = await axios.post(
+      `${process.env.REACT_APP_API}/api/notification/create`,
+      body,
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + credentials.t,
+        },
+      }
+    );
+    return JSON.stringify(response.data.data);
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   createComment,
   createReply,
@@ -207,4 +226,5 @@ export {
   updateComment,
   updateReply,
   deleteLike,
+  createNotification,
 };

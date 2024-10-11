@@ -36,7 +36,7 @@ function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/chat/:chatId" element={<Chat />} />
         <Route path="/profile/:id" element={<Profile />} />
-        <Route path="/discussions/:id" element={<Discussion />} />
+        <Route path="/post/:id" element={<Discussion />} />
 
         {/* Admin route */}
         <Route

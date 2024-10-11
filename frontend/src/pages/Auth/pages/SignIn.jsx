@@ -126,7 +126,7 @@ export const SignIn = () => {
             fontWeight="bold"
             color="primary"
           >
-            Welcome to WortyF-C
+            Welcome to WortyF
           </Typography>
           <Typography
             variant="body1"
@@ -188,6 +188,7 @@ export const SignIn = () => {
                     color: "gray",
                   },
                   transition: "ease 0.2s",
+                  fontWeight: "bold",
                 }}
               >
                 Don't have an account?

@@ -16,6 +16,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useNavigate } from "react-router-dom";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import MessageIcon from "@mui/icons-material/Message";
 import auth from "../helpers/Auth";
 import { ChatState } from "../context/ChatProvider";
 import { getSender } from "../logic/ChatLogics";
@@ -25,10 +26,16 @@ export const Appbar = () => {
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElMessage, setAnchorElMessage] = useState(null);
+  const [anchorElNoti, setAnchorElNoti] = useState(null);
   // eslint-disable-next-line
-  const { setSelectedChat, notification, setNotification, setIsLoggedIn } =
-    ChatState();
+  const {
+    setSelectedChat,
+    messageNotification,
+    setMessageNotification,
+    setIsLoggedIn,
+    notification,
+  } = ChatState();
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
@@ -47,12 +54,20 @@ export const Appbar = () => {
     setAnchorElUser(null);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleCloseMessage = () => {
+    setAnchorElMessage(null);
   };
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleCloseNoti = () => {
+    setAnchorElNoti(null);
+  };
+
+  const handleClickMessage = (event) => {
+    setAnchorElMessage(event.currentTarget);
+  };
+
+  const handleClickNoti = (event) => {
+    setAnchorElNoti(event.currentTarget);
   };
 
   const pages = {
@@ -76,6 +91,10 @@ export const Appbar = () => {
       { name: "Chat", URL: "chat" },
       { name: "In approval", URL: "moderator/approve" },
     ],
+  };
+
+  const notificationLength = (notification) => {
+    return notification.filter((noti) => noti.isRead === false).length;
   };
 
   return (
@@ -241,15 +260,38 @@ export const Appbar = () => {
 
             {/* Notification Icon */}
             <div style={{ padding: 10 }}>
-              <IconButton size="small" color="inherit" onClick={handleClick}>
-                <Badge badgeContent={notification.length} color="error">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
+              <div>
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  onClick={handleClickMessage}
+                >
+                  <Badge
+                    badgeContent={messageNotification.length}
+                    color="error"
+                  >
+                    <MessageIcon />
+                  </Badge>
+                </IconButton>
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  onClick={handleClickNoti}
+                >
+                  <Badge
+                    badgeContent={
+                      notification && notificationLength(notification)
+                    }
+                    color="error"
+                  >
+                    <NotificationsIcon />
+                  </Badge>
+                </IconButton>
+              </div>
               <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
+                anchorEl={anchorElMessage}
+                open={Boolean(anchorElMessage)}
+                onClose={handleCloseMessage}
                 PaperProps={{
                   style: {
                     maxHeight: 400,
@@ -261,14 +303,14 @@ export const Appbar = () => {
                   <b>New Messages</b>
                 </div>
                 <div style={{ padding: 5 }}>
-                  {!notification.length && "No New Messages"}
-                  {notification?.map((noti, index) => (
+                  {!messageNotification.length && "No new messages"}
+                  {messageNotification?.map((noti, index) => (
                     <MenuItem
                       key={index}
                       onClick={() => {
                         setSelectedChat(noti.chat);
-                        setNotification(
-                          notification.filter(
+                        setMessageNotification(
+                          messageNotification.filter(
                             (n) => n.chat._id !== noti.chat._id
                           )
                         );
@@ -276,13 +318,44 @@ export const Appbar = () => {
                       }}
                     >
                       {noti.chat.isGroupChat
-                        ? `New Message in ${noti.chat.chatName}`
-                        : `New Message from ${getSender(
+                        ? `New message in ${noti.chat.chatName}`
+                        : `New message from ${getSender(
                             user,
                             noti.chat.users
-                          )}`}
+                          )}: ${noti.content}`}
                     </MenuItem>
                   ))}
+                </div>
+              </Menu>
+              <Menu
+                anchorEl={anchorElNoti}
+                open={Boolean(anchorElNoti)}
+                onClose={handleCloseNoti}
+                PaperProps={{
+                  style: {
+                    maxHeight: 400,
+                    width: 300,
+                  },
+                }}
+              >
+                <div style={{ padding: 5 }}>
+                  <b>New Notifications</b>
+                </div>
+                <div style={{ padding: 5 }}>
+                  {!notification.length && "No new "}
+                  {notification &&
+                    notification.map((noti, index) => (
+                      <MenuItem
+                        key={index}
+                        onClick={() => {
+                          navigate(noti.redirectUrl);
+                        }}
+                      >
+                        {noti.type === "comment"
+                          ? `New comment in ${noti.postId.name}`
+                          : ""}
+                      </MenuItem>
+                    ))}
                 </div>
               </Menu>
             </div>

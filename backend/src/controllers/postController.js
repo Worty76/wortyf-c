@@ -11,7 +11,9 @@ const sharp = require("sharp");
 
 const getApprovedPosts = async (req, res) => {
   try {
-    const posts = await Post.find({ approved: true }).populate("topic");
+    const posts = await Post.find({ approved: true })
+      .populate("topic")
+      .sort({ _id: -1 });
 
     if (posts)
       return res

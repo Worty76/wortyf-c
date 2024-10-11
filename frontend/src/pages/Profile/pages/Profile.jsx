@@ -321,7 +321,7 @@ export const Profile = () => {
             usersPosts.map((post) => (
               <Link
                 key={post._id}
-                to={`/discussions/${post._id}`}
+                to={`/post/${post._id}`}
                 style={{ textDecoration: "none" }}
               >
                 <Paper className={classes.post}>

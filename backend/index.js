@@ -17,6 +17,7 @@ const topicRouter = require("./src/routes/topicRouter");
 const chatRouter = require("./src/routes/chatRouter");
 const messageRouter = require("./src/routes/messageRouter");
 const ratingRouter = require("./src/routes/ratingRouter");
+const notificationRouter = require("./src/routes/notificationRouter");
 
 // PORT
 const PORT = process.env.PORT;
@@ -72,6 +73,7 @@ app.use("/api/topic", topicRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api/rating", ratingRouter);
+app.use("/api/notification", notificationRouter);
 
 app.use("/", (req, res) => {
   res.send("Hello to WortyF-c project's backend");

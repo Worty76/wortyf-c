@@ -280,10 +280,7 @@ export const Discussions = ({ posts, setPosts }) => {
         {paginatedPosts &&
           paginatedPosts.map((post) => (
             <div key={post._id} style={{ paddingBottom: "20px" }}>
-              <Link
-                to={"/discussions/" + post._id}
-                style={{ textDecoration: "none" }}
-              >
+              <Link to={"/post/" + post._id} style={{ textDecoration: "none" }}>
                 <Paper
                   className={classes.post}
                   sx={{

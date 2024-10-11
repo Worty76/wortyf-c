@@ -28,6 +28,7 @@ import axios from "axios";
 import {
   createComment,
   createLike,
+  createNotification,
   deleteLike,
   deletePost,
   updatePost,
@@ -255,6 +256,24 @@ export const Discussion = () => {
         handleVariant("success");
         editorRef.current.setContent("");
       }
+    });
+
+    createNotification(
+      {
+        t: JSON.parse(auth.isAuthenticated().token),
+      },
+      {
+        recipientId: post.author._id,
+        postId: post._id,
+        redirectUrl: `/post/${post._id}`,
+        type: "comment",
+      }
+    ).then((data) => {
+      console.log(data);
+      // if (data.stack) {
+      //   console.log(data);
+      // } else {
+      // }
     });
   };
 

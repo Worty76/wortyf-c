@@ -22,7 +22,8 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   const [socketConnected, setSocketConnected] = useState(false);
   const navigate = useNavigate();
 
-  const { selectedChat, notification, setNotification } = ChatState();
+  const { selectedChat, messageNotification, setMessageNotification } =
+    ChatState();
 
   useEffect(() => {
     const x = auth.isAuthenticated().user;
@@ -120,8 +121,8 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageReceived.chat._id
       ) {
-        if (!notification.includes(newMessageReceived)) {
-          setNotification([newMessageReceived, ...notification]);
+        if (!messageNotification.includes(newMessageReceived)) {
+          setMessageNotification([newMessageReceived, ...messageNotification]);
           setFetchAgain(!fetchAgain);
         }
       } else {
@@ -203,7 +204,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                           transition: "0.2s ease",
                         }}
                         component={Link}
-                        to={`/discussions/${selectedChat.post._id}`}
+                        to={`/post/${selectedChat.post._id}`}
                       >
                         {selectedChat.post.name}
                       </Typography>

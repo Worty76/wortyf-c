@@ -9,6 +9,7 @@ const ChatProvider = ({ children }) => {
   const [chats, setChats] = useState();
   const [notification, setNotification] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [messageNotification, setMessageNotification] = useState([]);
 
   useEffect(() => {
     if (isLoggedIn || auth.isAuthenticated()) {
@@ -19,11 +20,12 @@ const ChatProvider = ({ children }) => {
           },
         };
         try {
-          const { data } = await axios.get(
-            `${process.env.REACT_APP_API}/api/chat`,
+          const response = await axios.get(
+            `${process.env.REACT_APP_API}/api/notification`,
             config
           );
-          setChats(data);
+          setChats(response.data.chats);
+          setNotification(response.data.notifications);
         } catch (error) {
           console.log(error);
         }
@@ -44,6 +46,8 @@ const ChatProvider = ({ children }) => {
         notification,
         setNotification,
         setIsLoggedIn,
+        messageNotification,
+        setMessageNotification,
       }}
     >
       {children}
