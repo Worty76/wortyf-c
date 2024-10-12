@@ -9,5 +9,6 @@ router.post("/group", verifyToken, chatController.createGroupChat);
 router.put("/rename", verifyToken, chatController.renameGroup);
 router.put("/group-remove", verifyToken, chatController.removeFromGroup);
 router.put("/group-add", verifyToken, chatController.addToGroup);
+router.put("/delete", verifyToken, chatController.deleteChat);
 
 module.exports = router;

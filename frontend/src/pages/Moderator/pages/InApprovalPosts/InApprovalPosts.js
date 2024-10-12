@@ -13,6 +13,7 @@ import { VariantType, useSnackbar } from "notistack";
 import auth from "../../../../helpers/Auth";
 import { approve } from "../../api/moderatorApi";
 import { Markup } from "interweave";
+import { createNotification } from "../../../Discussion/api/DiscussionApi";
 
 const useStyles = makeStyles({
   root: {
@@ -37,15 +38,13 @@ export const InApprovalPosts = () => {
         headers: {
           Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
         },
+        cancelToken: signal,
       };
 
       await axios
         .get(
           `${process.env.REACT_APP_API}/api/post/moderator/in-approval-posts`,
-          config,
-          {
-            cancelToken: signal,
-          }
+          config
         )
         .then((response) => {
           console.log(response.data.data);
@@ -61,11 +60,11 @@ export const InApprovalPosts = () => {
     }
   };
 
-  const handleApprovePost = (postId) => {
+  const handleApprovePost = (post) => {
     let approvePost = new FormData();
 
     approve(
-      { postId: postId },
+      { postId: post._id },
       { t: JSON.parse(auth.isAuthenticated().token) },
       approvePost
     ).then((data) => {
@@ -74,6 +73,24 @@ export const InApprovalPosts = () => {
         handleVariant("success");
         setPosts(data);
       }
+    });
+
+    createNotification(
+      {
+        t: JSON.parse(auth.isAuthenticated().token),
+      },
+      {
+        recipientId: post.author._id,
+        postId: post._id,
+        redirectUrl: `/post/${post._id}`,
+        type: "approvedPost",
+      }
+    ).then((data) => {
+      console.log(data);
+      // if (data.stack) {
+      //   console.log(data);
+      // } else {
+      // }
     });
   };
 
@@ -137,7 +154,7 @@ export const InApprovalPosts = () => {
                     <Button
                       variant="contained"
                       color="success"
-                      onClick={() => handleApprovePost(post._id)}
+                      onClick={() => handleApprovePost(post)}
                     >
                       Approve
                     </Button>

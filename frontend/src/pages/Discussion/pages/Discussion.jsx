@@ -313,7 +313,7 @@ export const Discussion = () => {
         setChats([data, ...chats]);
       }
       setSelectedChat(data);
-      navigate("/chat");
+      navigate(`/chat/${data._id}`);
     } catch (error) {}
   };
 

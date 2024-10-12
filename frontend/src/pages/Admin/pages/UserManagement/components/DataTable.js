@@ -45,11 +45,10 @@ export const DataTable = () => {
         headers: {
           Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
         },
+        cancelToken: signal,
       };
       await axios
-        .get(`${process.env.REACT_APP_API}/api/user/admin/get-users`, config, {
-          cancelToken: signal,
-        })
+        .get(`${process.env.REACT_APP_API}/api/user/admin/get-users`, config)
         .then((response) => {
           setUsers(response.data.data);
         })

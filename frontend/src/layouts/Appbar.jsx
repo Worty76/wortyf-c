@@ -354,6 +354,9 @@ export const Appbar = () => {
                         {noti.type === "comment"
                           ? `New comment in ${noti.postId.name}`
                           : ""}
+                        {noti.type === "approvedPost"
+                          ? `Your post is approved, check ${noti.postId.name}`
+                          : ""}
                       </MenuItem>
                     ))}
                 </div>

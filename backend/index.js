@@ -118,6 +118,11 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("sold", (buyerId) => {
+    console.log("BuyerId" + buyerId);
+    socket.in(buyerId).emit("sold");
+  });
+
   socket.off("setup", () => {
     console.log("USER DISCONNECTED");
     socket.leave(userData._id);

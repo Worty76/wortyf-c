@@ -12,8 +12,11 @@ const ChatProvider = ({ children }) => {
   const [messageNotification, setMessageNotification] = useState([]);
 
   useEffect(() => {
+    const CancelToken = axios.CancelToken;
+    const source = CancelToken.source();
+
     if (isLoggedIn || auth.isAuthenticated()) {
-      const fetchChats = async () => {
+      const fetchChats = async (signal) => {
         const config = {
           headers: {
             Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
@@ -22,7 +25,10 @@ const ChatProvider = ({ children }) => {
         try {
           const response = await axios.get(
             `${process.env.REACT_APP_API}/api/notification`,
-            config
+            config,
+            {
+              cancelToken: signal,
+            }
           );
           setChats(response.data.chats);
           setNotification(response.data.notifications);
@@ -31,9 +37,11 @@ const ChatProvider = ({ children }) => {
         }
       };
 
-      fetchChats();
+      fetchChats(source.token);
     }
-    console.log("Chat's states are ready");
+    return () => {
+      source.cancel("Component unmounted, cancelling axios requests");
+    };
   }, [isLoggedIn]);
 
   return (

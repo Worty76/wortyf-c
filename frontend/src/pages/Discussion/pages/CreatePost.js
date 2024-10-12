@@ -194,7 +194,7 @@ export const CreatePost = () => {
         console.log(data);
       } else {
         const postId = JSON.parse(data)._id;
-        navigate(`/discussions/${postId}`);
+        navigate(`/post/${postId}`);
         enqueueSnackbar("Successfully created a post", { variant: "success" });
       }
     });

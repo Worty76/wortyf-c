@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Box,
@@ -48,6 +48,7 @@ function MyChats({ fetchAgain }) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [hasCalledEffect, setHasCalledEffect] = useState(false);
+  const isMounted = useRef(true);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -94,28 +95,48 @@ function MyChats({ fetchAgain }) {
     } catch (error) {}
   };
 
-  useEffect(() => {
-    const fetchChats = async () => {
+  const fetchChats = async (source) => {
+    try {
       setLoading(true);
       const config = {
         headers: {
           Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
         },
+        cancelToken: source.token,
       };
-      try {
-        const { data } = await axios.get(
-          `${process.env.REACT_APP_API}/api/chat`,
-          config
-        );
-        setChats(data);
-      } catch (error) {
-        console.log(error);
-      } finally {
+      await axios
+        .get(`${process.env.REACT_APP_API}/api/chat`, config)
+        .then((response) => {
+          console.log(response);
+          if (isMounted.current) {
+            setChats(response.data);
+          }
+        })
+        .catch(function (thrown) {
+          if (axios.isCancel(thrown)) {
+            console.log("Request canceled", thrown.message);
+          }
+        });
+
+      if (isMounted.current) {
         setLoading(false);
       }
-    };
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-    fetchChats();
+  useEffect(() => {
+    const CancelToken = axios.CancelToken;
+    const source = CancelToken.source();
+    isMounted.current = true;
+
+    fetchChats(source);
+    return () => {
+      isMounted.current = false;
+      setSelectedChat("");
+      source.cancel("Component unmounted, cancelling axios requests");
+    };
     // eslint-disable-next-line
   }, [fetchAgain]);
 
@@ -134,9 +155,7 @@ function MyChats({ fetchAgain }) {
       setHasCalledEffect(true);
     }
     // eslint-disable-next-line
-  }, [chatId, chats, hasCalledEffect]);
-
-  // console.log(chats);
+  }, [chatId, chats, hasCalledEffect, setSelectedChat]);
 
   return (
     <>
@@ -182,7 +201,7 @@ function MyChats({ fetchAgain }) {
             <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
               <CircularProgress />
             </Box>
-          ) : chats.length > 0 ? (
+          ) : chats?.length > 0 ? (
             chats.map((chat, id) => (
               <Box
                 key={id}

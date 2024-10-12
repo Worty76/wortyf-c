@@ -10,6 +10,7 @@ import {
   ListItemText,
   MenuItem,
   Paper,
+  CircularProgress,
   Select,
   Toolbar,
   Typography,
@@ -89,7 +90,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const Discussions = ({ posts, setPosts }) => {
+export const Discussions = ({ posts, setPosts, loading }) => {
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -330,7 +331,7 @@ export const Discussions = ({ posts, setPosts }) => {
                             {post.name}
                           </Typography>
                         }
-                        secondary={post.createdAt}
+                        secondary={new Date(post.createdAt).toLocaleString()}
                       />
                     </ListItem>
                     <ListItem>
@@ -386,7 +387,14 @@ export const Discussions = ({ posts, setPosts }) => {
               </Link>
             </div>
           ))}
-        {posts.length === 0 && <div>No posts found</div>}
+        {posts.length === 0 &&
+          (loading ? (
+            <div>
+              <CircularProgress />
+            </div>
+          ) : (
+            " "
+          ))}
         <div style={{ display: "flex" }}>
           <Button variant="contained" onClick={goToPrevPage}>
             Previous

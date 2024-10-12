@@ -1,5 +1,13 @@
-import { useEffect, useState } from "react";
-import { Box, Card, Button, Typography } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import {
+  Box,
+  Card,
+  Button,
+  Typography,
+  CircularProgress,
+  IconButton,
+  Badge,
+} from "@mui/material";
 import { ChatState } from "../../../context/ChatProvider";
 import { InputBase } from "@mui/material";
 import auth from "../../../helpers/Auth";
@@ -11,6 +19,7 @@ import { sold } from "../api/ChatApi";
 import { useNavigate } from "react-router-dom";
 import RateModalButton from "./RateModalButton/RateModalButton";
 import { debounce } from "lodash";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
 var socket, selectedChatCompare;
 const ENDPOINT = `${process.env.REACT_APP_API}`;
@@ -21,6 +30,8 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   // eslint-disable-next-line
   const [socketConnected, setSocketConnected] = useState(false);
   const navigate = useNavigate();
+  const isMounted = useRef(true);
+  const [uploading, setUploading] = useState(false);
 
   const { selectedChat, messageNotification, setMessageNotification } =
     ChatState();
@@ -30,10 +41,14 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
     socket = io(ENDPOINT, { transports: ["polling"] });
     socket.emit("setup", x);
     socket.on("connected", () => setSocketConnected(true));
+
+    return () => {
+      socket.off("connected");
+    };
   }, []);
 
   // Fetch messages
-  const fetchMessages = async () => {
+  const fetchMessages = async (source) => {
     if (!selectedChat) return;
 
     try {
@@ -41,6 +56,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
         headers: {
           Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
         },
+        cancelToken: source.token,
       };
 
       const { data } = await axios.get(
@@ -58,21 +74,20 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   // Handle sending message
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
+      const contentData = new FormData();
+      contentData.append("chatId", selectedChat._id);
+      contentData.append("content", newMessage);
+
       try {
         const config = {
           headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
           },
         };
-        setNewMessage("");
         const { data } = await axios.post(
           `${process.env.REACT_APP_API}/api/message`,
-          {
-            content: newMessage,
-            chatId: selectedChat,
-          },
+          contentData,
           config
         );
 
@@ -82,6 +97,41 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
       } catch (error) {
         console.log(error);
       }
+    }
+  };
+
+  const handleImage = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const imageData = new FormData();
+    imageData.append("image", file);
+    imageData.append("chatId", selectedChat._id);
+
+    setUploading(true);
+    console.log(selectedChat._id);
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
+        },
+      };
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API}/api/message`,
+        imageData,
+        config
+      );
+
+      console.log(data);
+      socket.emit("new message", data);
+      setNewMessage("");
+      setMessages([...messages, data]);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -96,6 +146,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
       if (data.stack) {
         console.log(data);
       } else {
+        socket.emit("sold", buyerId);
         navigate(0);
       }
     });
@@ -108,10 +159,18 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
     if (!selectedChat) {
       return;
     }
-    fetchMessages();
+    const CancelToken = axios.CancelToken;
+    const source = CancelToken.source();
+    isMounted.current = true;
+
+    fetchMessages(source);
 
     selectedChatCompare = selectedChat;
 
+    return () => {
+      isMounted.current = false;
+      source.cancel("Component unmounted, cancelling axios requests");
+    };
     // eslint-disable-next-line
   }, [selectedChat]);
 
@@ -129,6 +188,11 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
         setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
       }
     });
+
+    socket.on("sold", () => {
+      navigate(0);
+    });
+
     return () => {
       socket.off("message received");
     };
@@ -260,33 +324,59 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                 flex: 1,
               }}
             >
+              {uploading && (
+                <CircularProgress size={24} sx={{ marginLeft: 2 }} />
+              )}
               <ScrollableChat messages={messages} />
             </div>
           </div>
-          <InputBase
-            style={{
-              padding: "10px",
-              border: "2px solid #007bff",
-              borderRadius: "4px",
-              margin: "10px",
-              fontSize: "16px",
-              "&:focus": {
-                borderColor: "#0056b3",
-                outline: "none",
-              },
-            }}
-            placeholder="Enter a message.."
-            id="my-input"
-            aria-describedby="my-helper-text"
-            onChange={(e) => setNewMessage(e.target.value)}
-            value={newMessage}
-            onKeyDown={debouncedSendMessage}
-          />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div>
+              <form encType="multipart/form-data" method="POST">
+                <input
+                  style={{ display: "none" }}
+                  accept="image/*"
+                  type="file"
+                  onChange={handleImage}
+                  id="icon-button-file"
+                />
+                <IconButton size="small" color="inherit">
+                  <label htmlFor="icon-button-file">
+                    <Badge>
+                      <AddPhotoAlternateIcon />
+                    </Badge>
+                  </label>
+                </IconButton>
+              </form>
+            </div>
+            <InputBase
+              style={{
+                width: "100%",
+                padding: "10px",
+                border: "2px solid #4a4b4b",
+                borderRadius: "4px",
+                margin: "10px",
+                fontSize: "16px",
+                "&:focus": {
+                  borderColor: "#0056b3",
+                  outline: "none",
+                },
+              }}
+              placeholder="Enter a message.."
+              id="my-input"
+              aria-describedby="my-helper-text"
+              onChange={(e) => setNewMessage(e.target.value)}
+              value={newMessage}
+              onKeyDown={debouncedSendMessage}
+            />
+          </div>
         </>
       ) : selectedChat === "" ? (
         <Box sx={{ padding: 2 }}>Select a group chat to chat</Box>
       ) : (
-        <Box sx={{ padding: 2 }}>loading...</Box>
+        <Box sx={{ padding: 2 }}>
+          <CircularProgress />
+        </Box>
       )}
     </Box>
   );

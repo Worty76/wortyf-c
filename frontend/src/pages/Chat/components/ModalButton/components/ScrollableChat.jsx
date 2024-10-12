@@ -63,7 +63,19 @@ function ScrollableChat({ messages }) {
               }}
             >
               <Typography variant="body2" component="span">
-                {m.content}
+                {m.content && m.content}
+                {m.image && (
+                  <img
+                    alt=""
+                    style={{
+                      width: "150px",
+                      height: "150px",
+                      objectFit: "cover",
+                      borderRadius: "10px",
+                    }}
+                    src={m.image}
+                  />
+                )}
               </Typography>
             </Box>
           </Box>
