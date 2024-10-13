@@ -3,15 +3,12 @@ import {
   Badge,
   Button,
   Divider,
-  FormControl,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
-  MenuItem,
   Paper,
   CircularProgress,
-  Select,
   Toolbar,
   Typography,
   TextField,
@@ -33,6 +30,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { debounce } from "lodash";
 import { Topic } from "../components/Topic";
 import { Markup } from "interweave";
+import FilterOptions from "../components/FilterOptions";
 
 const useStyles = makeStyles({
   leftContainer: {
@@ -95,7 +93,7 @@ export const Discussions = ({ posts, setPosts, loading }) => {
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage] = useState(5);
+  const [recordsPerPage] = useState(10);
 
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
@@ -103,8 +101,8 @@ export const Discussions = ({ posts, setPosts, loading }) => {
     posts && posts.slice(indexOfFirstRecord, indexOfLastRecord);
   const nPages = Math.ceil(posts.length / recordsPerPage);
 
-  const [option, setOption] = useState("");
   const [topics, setTopics] = useState([]);
+  const [openFilter, setOpenFilter] = useState(false);
 
   const pageNumbers = [...Array(nPages + 1).keys()].slice(1);
 
@@ -119,40 +117,8 @@ export const Discussions = ({ posts, setPosts, loading }) => {
     navigate("/home/create");
   };
 
-  const sortBy = (option) => {
-    switch (option) {
-      case "Trending":
-        console.log("console option popular");
-        setPosts(
-          [...posts].sort(
-            (a, b) => Object.keys(b.likes).length - Object.keys(a.likes).length
-          )
-        );
-        break;
-      case "Recent":
-        console.log("console option recent");
-        setPosts(
-          [...posts].sort(
-            (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
-          )
-        );
-        break;
-      case "Older":
-        console.log("console option older");
-        setPosts(
-          [...posts].sort(
-            (a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt)
-          )
-        );
-        break;
-      default:
-        break;
-    }
-  };
-
-  const handleOption = (event: SelectChangeEvent) => {
-    setOption(event.target.value);
-    sortBy(event.target.value);
+  const handleFilter = () => {
+    setOpenFilter(!openFilter);
   };
 
   const getTopics = async (signal) => {
@@ -211,20 +177,9 @@ export const Discussions = ({ posts, setPosts, loading }) => {
       <Box className={classes.leftContainer}>
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
-            <FormControl>
-              <Select
-                value={option}
-                onChange={handleOption}
-                displayEmpty
-                sx={{ outline: "none" }}
-                size="small"
-              >
-                <MenuItem value="">None</MenuItem>
-                <MenuItem value={"Trending"}>Trending</MenuItem>
-                <MenuItem value={"Recent"}>Recent</MenuItem>
-                <MenuItem value={"Older"}>Older</MenuItem>
-              </Select>
-            </FormControl>
+            <Button variant="contained" onClick={handleFilter}>
+              Filter
+            </Button>
             <SearchIcon sx={{ marginLeft: "10px" }} />
             <TextField
               type="search"
@@ -274,8 +229,8 @@ export const Discussions = ({ posts, setPosts, loading }) => {
           </Box>
         </Toolbar>
         <Divider />
-
         {/* Posts */}
+        {openFilter && <FilterOptions open={openFilter} setPosts={setPosts} />}
         {paginatedPosts &&
           paginatedPosts.map((post) => (
             <div key={post._id} style={{ paddingBottom: "20px" }}>

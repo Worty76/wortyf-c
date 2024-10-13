@@ -348,18 +348,23 @@ export const Appbar = () => {
                 <div style={{ padding: 5 }}>
                   {!notification.length && "No new "}
                   {notification &&
+                    notification.length > 0 &&
                     notification.map((noti, index) => (
                       <MenuItem
                         key={index}
                         onClick={() => {
-                          navigate(noti.redirectUrl);
+                          navigate(
+                            noti?.postId?.name
+                              ? noti.redirectUrl
+                              : "404NotFound"
+                          );
                         }}
                       >
                         {noti.type === "comment"
-                          ? `New comment in ${noti.postId.name}`
+                          ? `New comment in ${noti?.postId?.name}`
                           : ""}
                         {noti.type === "approvedPost"
-                          ? `Your post is approved, check ${noti.postId.name}`
+                          ? `Your post is approved, check ${noti?.postId?.name}`
                           : ""}
                       </MenuItem>
                     ))}

@@ -10,6 +10,7 @@ const checkRole = require("../middlewares/checkRole");
 // Post
 router.get("/", postController.getApprovedPosts);
 router.get("/search", postController.searchPost);
+router.get("/home", postController.filterPost);
 router.get("/:id", postController.getSpecificPost);
 router.post("/create", verifyToken, postController.createPost);
 router.put("/:id/update", verifyToken, postController.updatePost);

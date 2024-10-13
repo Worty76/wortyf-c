@@ -1,6 +1,7 @@
 const Comment = require("../models/comment");
 const Post = require("../models/post");
 const User = require("../models/user");
+const Notification = require("../models/notification");
 // Read
 const readComment = async (req, res) => {
   try {
@@ -110,6 +111,11 @@ const deleteComment = async (req, res) => {
     await Comment.deleteMany({ comment_father: commentId, post_id: postId });
     post.comments = removeObjectWithId(post.comments, commentId);
     await Comment.findByIdAndDelete({ _id: commentId });
+    await Notification.deleteMany({
+      postId: postId,
+      senderId: userId,
+      type: "comment",
+    });
 
     const newPost = new Post(post);
     await newPost.save();

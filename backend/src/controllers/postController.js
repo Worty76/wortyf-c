@@ -258,6 +258,72 @@ const searchPost = async (req, res) => {
   }
 };
 
+const sortOptions = (option) => {
+  if (option === "Newest") {
+    return { _id: -1 };
+  }
+  if (option === "Oldest") {
+    return { _id: 1 };
+  }
+  if (option === "MostLikes") {
+    return {
+      likes: -1,
+    };
+  }
+  return {};
+};
+
+const filterOptions = (option) => {
+  if (option === "NotSold") {
+    return { sold: false };
+  }
+  if (option === "NoComments") {
+    return { comments: { $size: 0 } };
+  }
+  return {};
+};
+
+const filterPost = async (req, res) => {
+  try {
+    const { filters, tag, sort } = req.query;
+    console.log(req.query);
+
+    if (!filters && !tag && !sort) {
+      console.log("Hello");
+      const posts = await Post.find({ approved: true })
+        .populate("topic")
+        .sort({ _id: -1 });
+
+      return res
+        .status(200)
+        .json({ message: "Successfully filter posts", data: posts });
+    }
+
+    const sortedOptions = sortOptions(sort);
+    const filteredOptions = filterOptions(filters);
+
+    let query = { ...filteredOptions, approved: true };
+    if (tag) {
+      const topics = await Topic.find({
+        name: { $in: tag },
+      }).distinct("_id");
+
+      query = { ...query, topic: { $in: topics } };
+    }
+
+    const posts = await Post.find(query).sort(sortedOptions).populate("topic");
+
+    return res
+      .status(200)
+      .json({ message: "Successfully filter posts", data: posts });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .send({ message: "Internal server error", error: error.message });
+  }
+};
+
 const approvePost = async (req, res) => {
   console.log(req.params);
   try {
@@ -319,6 +385,7 @@ const postController = {
   getInApprovalPosts,
   approvePost,
   sold,
+  filterPost,
 };
 
 module.exports = postController;

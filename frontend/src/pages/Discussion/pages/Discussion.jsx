@@ -263,25 +263,25 @@ export const Discussion = () => {
         setText("");
         handleVariant("success");
         editorRef.current.setContent("");
-      }
-    });
 
-    createNotification(
-      {
-        t: JSON.parse(auth.isAuthenticated().token),
-      },
-      {
-        recipientId: post.author._id,
-        postId: post._id,
-        redirectUrl: `/post/${post._id}`,
-        type: "comment",
+        createNotification(
+          {
+            t: JSON.parse(auth.isAuthenticated().token),
+          },
+          {
+            recipientId: post.author._id,
+            postId: post._id,
+            redirectUrl: `/post/${post._id}`,
+            type: "comment",
+          }
+        ).then((data) => {
+          console.log(data);
+          // if (data.stack) {
+          //   console.log(data);
+          // } else {
+          // }
+        });
       }
-    ).then((data) => {
-      console.log(data);
-      // if (data.stack) {
-      //   console.log(data);
-      // } else {
-      // }
     });
   };
 

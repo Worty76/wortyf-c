@@ -15,6 +15,7 @@ import { AdminPrivateRoute } from "./helpers/AdminPrivateRoute";
 import { UserManagement } from "./pages/Admin";
 import { ModeratorPrivateRoute } from "./helpers/ModeratorPrivateRoute";
 import { InApprovalPosts } from "./pages/Moderator";
+import { NotFound } from "./pages/NotFound";
 // import { Footer } from "./layouts/Footer";
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
         <Route path="/chat/:chatId" element={<Chat />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/post/:id" element={<Discussion />} />
+        <Route path="*" element={<NotFound />} />
 
         {/* Admin route */}
         <Route
