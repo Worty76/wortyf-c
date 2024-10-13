@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const sold = async ({ postId, buyerId }, credentials, markAnswer) => {
+const sold = async ({ postId, buyerId, chatId }, credentials, markAnswer) => {
   try {
     let response = await axios.put(
       `${process.env.REACT_APP_API}/api/post/sold`,
-      { postId, buyerId },
+      { postId, buyerId, chatId },
       {
         headers: {
           Accept: "application/json",
@@ -14,7 +14,7 @@ const sold = async ({ postId, buyerId }, credentials, markAnswer) => {
       }
     );
     console.log(response);
-    return JSON.stringify(response.data.message);
+    return JSON.stringify(response.data.data);
   } catch (error) {
     return error;
   }

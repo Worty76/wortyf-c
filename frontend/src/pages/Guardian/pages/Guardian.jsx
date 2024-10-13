@@ -61,7 +61,7 @@ export const Guardian = () => {
                 </Typography>
               }
               secondary={
-                "If you wan't to be a guardian, contact lethanhdat762003@gmail.com and i'll give you permissions"
+                "If you want to be a guardian, contact lethanhdat762003@gmail.com and i'll give you permissions"
               }
             />
           </ListItem>

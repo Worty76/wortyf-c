@@ -15,6 +15,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { signUp } from "../api/authApi";
 import auth from "../../../helpers/Auth";
+import { ChatState } from "../../../context/ChatProvider";
 
 const BackgroundImage = styled(Box)(({ theme }) => ({
   backgroundImage:
@@ -73,6 +74,8 @@ export const SignUp = () => {
   const [errors, setErrors] = useState({});
   const { redirect } = values;
 
+  const { setIsLoggedIn } = ChatState();
+
   const handleChange = (name) => (event) => {
     setValues({ ...values, [name]: event.target.value });
   };
@@ -122,6 +125,7 @@ export const SignUp = () => {
         auth.authenticate(user, data.token, () => {
           setValues({ ...values, redirect: true });
         });
+        setIsLoggedIn(true);
       }
     });
   };

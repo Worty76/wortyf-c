@@ -42,6 +42,7 @@ import { Markup } from "interweave";
 
 import { Topic } from "../components/Topic";
 import { ChatState } from "../../../context/ChatProvider";
+import { useSocket } from "../../../context/SocketProvider";
 
 const useStyles = makeStyles({
   root: {
@@ -59,6 +60,7 @@ const useStyles = makeStyles({
 });
 
 export const Discussion = () => {
+  const { socket } = useSocket();
   const classes = useStyles();
   const params = useParams();
   const navigate = useNavigate();
@@ -71,7 +73,13 @@ export const Discussion = () => {
   const editorRef = useRef(null);
   const open = Boolean(anchorEl);
   const timeoutRef = useRef(null);
-  const { setSelectedChat, chats, setChats } = ChatState();
+  const {
+    messageNotification,
+    setMessageNotification,
+    setSelectedChat,
+    chats,
+    setChats,
+  } = ChatState();
 
   // Handle multiple clicks on Like/Unlike button
   const debouncedOnCreateLike = () => {
@@ -118,13 +126,13 @@ export const Discussion = () => {
 
   const getPost = async (signal) => {
     try {
+      console.log("IM CALLING");
       await axios
         .get(`${process.env.REACT_APP_API}/api/post/${params.id}`, {
           cancelToken: signal,
         })
         .then((response) => {
           const data = response.data;
-          console.log(data);
           setPost(data.post);
           setUser(data.author);
           setLikes(data.post.likes);
@@ -179,7 +187,7 @@ export const Discussion = () => {
       source.cancel("Operation canceled by the user.");
     };
     // eslint-disable-next-line
-  }, []);
+  }, [params.id]);
 
   const checkLiked = (likesProp) => {
     console.log(likesProp);
@@ -316,6 +324,21 @@ export const Discussion = () => {
       navigate(`/chat/${data._id}`);
     } catch (error) {}
   };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("message received", (newMessageReceived) => {
+        if (!messageNotification.includes(newMessageReceived)) {
+          console.log(newMessageReceived);
+          setMessageNotification([newMessageReceived, ...messageNotification]);
+        }
+      });
+
+      return () => {
+        socket.off("message received");
+      };
+    }
+  });
 
   return (
     <div className={classes.root}>

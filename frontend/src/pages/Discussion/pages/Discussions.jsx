@@ -329,7 +329,7 @@ export const Discussions = ({ posts, setPosts, loading }) => {
                             {post.name}
                           </Typography>
                         }
-                        secondary={new Date(post.createdAt).toLocaleString()}
+                        secondary={post.createdAt}
                       />
                     </ListItem>
                     <ListItem>
@@ -474,6 +474,21 @@ export const Discussions = ({ posts, setPosts, loading }) => {
                   </Typography>
                 </ListItem>
               ))}
+            <ListItem>
+              <Badge>
+                <CircleIcon sx={{ color: "grey" }} fontSize="small" />
+              </Badge>
+              <Typography
+                sx={{
+                  paddingLeft: "10px",
+                  cursor: "pointer",
+                  "&:hover": { color: "grey" },
+                  transition: "0.2s ease",
+                }}
+              >
+                Others
+              </Typography>
+            </ListItem>
           </List>
         </div>
       </Box>

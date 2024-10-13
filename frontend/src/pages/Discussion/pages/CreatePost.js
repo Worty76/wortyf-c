@@ -180,6 +180,8 @@ export const CreatePost = () => {
     values.name && postData.append("name", values.name);
     values.price && postData.append("price", values.price);
     values.content && postData.append("content", values.content);
+    const date = new Date().toLocaleString();
+    postData.append("date", date);
     images && images.forEach((image) => postData.append("images", image));
     selectTopics && postData.append("topic", selectTopics);
 

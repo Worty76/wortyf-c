@@ -8,6 +8,7 @@ const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
+const Message = require("../models/message");
 
 const getApprovedPosts = async (req, res) => {
   try {
@@ -131,7 +132,7 @@ const createPost = async (req, res) => {
       },
       topic: topicArray,
       images: imagesArray,
-      createdAt: new Date().toLocaleString(),
+      createdAt: body.date,
     });
 
     await post.save();
@@ -274,6 +275,40 @@ const approvePost = async (req, res) => {
   }
 };
 
+const sold = async (req, res) => {
+  try {
+    const { postId, buyerId, chatId } = req.body;
+    console.log(req.body);
+
+    const post = await Post.findById({ _id: postId });
+
+    if (!post)
+      return res.status(400).json({ message: "Failed to find the post!" });
+
+    if (post.sold === false) {
+      await Post.findByIdAndUpdate(
+        { _id: postId },
+        { sold: true, $set: { buyer: buyerId } },
+        {
+          new: true,
+        }
+      );
+
+      const messages = await Message.find({ chat: chatId })
+        .populate("sender", "username avatar_url email")
+        .populate("chat");
+
+      res
+        .status(200)
+        .json({ message: "Successfully sold to a person", data: messages });
+    } else {
+      res.status(400).json({ message: "Already sold" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Interval error", error: error });
+  }
+};
+
 const postController = {
   getApprovedPosts,
   createPost,
@@ -283,6 +318,7 @@ const postController = {
   searchPost,
   getInApprovalPosts,
   approvePost,
+  sold,
 };
 
 module.exports = postController;

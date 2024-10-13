@@ -27,9 +27,9 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   const { socket } = useSocket();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const navigate = useNavigate();
   const isMounted = useRef(true);
   const [uploading, setUploading] = useState(false);
+  const navigate = useNavigate();
 
   const { selectedChat, messageNotification, setMessageNotification } =
     ChatState();
@@ -123,11 +123,11 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
     }
   };
 
-  const soldPost = (postId, buyerId) => {
+  const soldPost = (postId, buyerId, chatId) => {
     let soldPost = new FormData();
 
     sold(
-      { postId: postId, buyerId: buyerId },
+      { postId: postId, buyerId: buyerId, chatId: chatId },
       { t: JSON.parse(auth.isAuthenticated().token) },
       soldPost
     ).then((data) => {
@@ -281,7 +281,8 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                                 selectedChat.users[0]?._id ===
                                   auth.isAuthenticated().user?._id
                                   ? selectedChat.users[1]._id
-                                  : selectedChat.users[0]._id
+                                  : selectedChat.users[0]._id,
+                                selectedChat._id
                               )
                             }
                           >

@@ -14,7 +14,7 @@ router.get("/:id", postController.getSpecificPost);
 router.post("/create", verifyToken, postController.createPost);
 router.put("/:id/update", verifyToken, postController.updatePost);
 router.delete("/:id/delete", verifyToken, postController.deletePost);
-router.put("/sold", verifyToken, commentController.sold);
+router.put("/sold", verifyToken, postController.sold);
 
 // Moderator
 router.get(

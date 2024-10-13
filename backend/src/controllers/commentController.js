@@ -126,29 +126,6 @@ const deleteComment = async (req, res) => {
   }
 };
 
-const sold = async (req, res) => {
-  try {
-    const { postId, buyerId } = req.body;
-
-    const post = await Post.findById({ _id: postId });
-
-    if (!post)
-      return res.status(400).json({ message: "Failed to find the post!" });
-
-    if (post.sold === false) {
-      await Post.findByIdAndUpdate(
-        { _id: postId },
-        { sold: true, $set: { buyer: buyerId } }
-      );
-      res.status(200).json({ message: "Successfully sold to a person" });
-    } else {
-      res.status(400).json({ message: "Already sold" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: "Interval error", error: error });
-  }
-};
-
 //------------------------------------------------------------ REPLY -------------------------------------------------------------------------//
 // Create
 const createReply = async (req, res) => {
@@ -327,7 +304,6 @@ const commentController = {
   createReply,
   updateReply,
   deleteReply,
-  sold,
 };
 
 module.exports = commentController;

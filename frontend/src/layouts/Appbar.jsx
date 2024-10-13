@@ -313,15 +313,20 @@ export const Appbar = () => {
                             (n) => n.chat._id !== noti.chat._id
                           )
                         );
-                        navigate("/chat");
+                        navigate(`/chat/${noti.chat._id}`);
                       }}
                     >
                       {noti.chat.isGroupChat
                         ? `New message in ${noti.chat.chatName}`
+                        : noti.content
+                        ? `New message from ${getSender(
+                            user,
+                            noti.chat.users
+                          )}: ${noti.content}`
                         : `New message from ${getSender(
                             user,
                             noti.chat.users
-                          )}: ${noti.content}`}
+                          )} send an image`}
                     </MenuItem>
                   ))}
                 </div>
