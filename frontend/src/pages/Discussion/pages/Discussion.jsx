@@ -319,10 +319,8 @@ export const Discussion = () => {
 
   return (
     <div className={classes.root}>
-      {/* <CssBaseline /> */}
       <Paper className={classes.paper} elevation={3}>
         <Grid display="flex">
-          {/* Left container */}
           <Box
             sx={{
               display: "flex",
@@ -335,14 +333,17 @@ export const Discussion = () => {
           >
             <ListItem disablePadding>
               <ListItemIcon>
-                <CheckCircleIcon
-                  sx={{ color: post.sold ? "#008000" : "gray" }}
-                />
+                {post.approved ? (
+                  <CheckCircleIcon
+                    sx={{ color: post.sold ? "#008000" : "gray" }}
+                  />
+                ) : (
+                  <CheckCircleIcon sx={{ color: "orange" }} />
+                )}
               </ListItemIcon>
             </ListItem>
           </Box>
 
-          {/* Right container */}
           <Box sx={{ width: "100%" }}>
             <div
               sx={{
@@ -351,7 +352,6 @@ export const Discussion = () => {
               }}
               className={classes.postDetails}
             >
-              {/* Post's content */}
               {openEditing ? (
                 <TextField
                   value={valuesEditing.name}
@@ -558,27 +558,25 @@ export const Discussion = () => {
               {/* Comment section */}
               <List>
                 <ListItem>
-                  {/* <TextField
-                    sx={{ width: "100%" }}
-                    label={"Your answer"}
-                    onChange={(event) => {
-                      setText(event.target.value);
-                    }}
-                  /> */}
-                  <div
-                    style={{
-                      width: "100%",
-                    }}
-                  >
-                    <TextEditor setText={setText} editorRef={editorRef} />
-                  </div>
-                  <Button
-                    sx={{ margin: 2 }}
-                    variant="contained"
-                    onClick={onCreateComment}
-                  >
-                    Send
-                  </Button>
+                  {post.approved && (
+                    <>
+                      {" "}
+                      <div
+                        style={{
+                          width: "100%",
+                        }}
+                      >
+                        <TextEditor setText={setText} editorRef={editorRef} />
+                      </div>
+                      <Button
+                        sx={{ margin: 2 }}
+                        variant="contained"
+                        onClick={onCreateComment}
+                      >
+                        Send
+                      </Button>
+                    </>
+                  )}
                 </ListItem>
               </List>
               {comments &&

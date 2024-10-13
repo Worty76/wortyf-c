@@ -12,7 +12,6 @@ import { ChatState } from "../../../context/ChatProvider";
 import { InputBase } from "@mui/material";
 import auth from "../../../helpers/Auth";
 import axios from "axios";
-import io from "socket.io-client";
 import ScrollableChat from "./ModalButton/components/ScrollableChat";
 import { Link } from "react-router-dom";
 import { sold } from "../api/ChatApi";
@@ -20,32 +19,20 @@ import { useNavigate } from "react-router-dom";
 import RateModalButton from "./RateModalButton/RateModalButton";
 import { debounce } from "lodash";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { useSocket } from "../../../context/SocketProvider";
 
-var socket, selectedChatCompare;
-const ENDPOINT = `${process.env.REACT_APP_API}`;
+var selectedChatCompare;
 
 function SingleChat({ fetchAgain, setFetchAgain }) {
+  const { socket } = useSocket();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  // eslint-disable-next-line
-  const [socketConnected, setSocketConnected] = useState(false);
   const navigate = useNavigate();
   const isMounted = useRef(true);
   const [uploading, setUploading] = useState(false);
 
   const { selectedChat, messageNotification, setMessageNotification } =
     ChatState();
-
-  useEffect(() => {
-    const x = auth.isAuthenticated().user;
-    socket = io(ENDPOINT, { transports: ["polling"] });
-    socket.emit("setup", x);
-    socket.on("connected", () => setSocketConnected(true));
-
-    return () => {
-      socket.off("connected");
-    };
-  }, []);
 
   // Fetch messages
   const fetchMessages = async (source) => {
@@ -65,6 +52,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
       );
       setMessages(data);
 
+      console.log(selectedChat);
       socket.emit("join chat", selectedChat._id);
     } catch (error) {
       console.log(error);
@@ -175,27 +163,32 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   }, [selectedChat]);
 
   useEffect(() => {
-    socket.on("message received", (newMessageReceived) => {
-      if (
-        !selectedChatCompare ||
-        selectedChatCompare._id !== newMessageReceived.chat._id
-      ) {
-        if (!messageNotification.includes(newMessageReceived)) {
-          setMessageNotification([newMessageReceived, ...messageNotification]);
-          setFetchAgain(!fetchAgain);
+    if (socket) {
+      socket.on("message received", (newMessageReceived) => {
+        if (
+          !selectedChatCompare ||
+          selectedChatCompare._id !== newMessageReceived.chat._id
+        ) {
+          if (!messageNotification.includes(newMessageReceived)) {
+            console.log(newMessageReceived);
+            setMessageNotification([
+              newMessageReceived,
+              ...messageNotification,
+            ]);
+            setFetchAgain(!fetchAgain);
+          }
+        } else {
+          setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
         }
-      } else {
-        setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
-      }
-    });
+      });
 
-    socket.on("sold", () => {
-      navigate(0);
-    });
-
-    return () => {
-      socket.off("message received");
-    };
+      socket.on("sold", () => {
+        navigate(0);
+      });
+      return () => {
+        socket.off("message received");
+      };
+    }
   });
 
   return (

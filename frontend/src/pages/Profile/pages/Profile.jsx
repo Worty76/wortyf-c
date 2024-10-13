@@ -31,6 +31,7 @@ import { ChatState } from "../../../context/ChatProvider";
 import { useNavigate } from "react-router-dom";
 import { Topic } from "../../Discussion/components/Topic";
 import { Stars } from "../components/Stars";
+import { Markup } from "interweave";
 
 const useStyles = makeStyles({
   root: {
@@ -344,8 +345,9 @@ export const Profile = () => {
                         <Typography
                           variant="body1"
                           className={classes.multiLineEllipsis}
+                          component="div"
                         >
-                          {post.content}
+                          <Markup content={post.content} />
                         </Typography>
                       }
                     />

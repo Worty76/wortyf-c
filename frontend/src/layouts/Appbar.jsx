@@ -28,7 +28,6 @@ export const Appbar = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorElMessage, setAnchorElMessage] = useState(null);
   const [anchorElNoti, setAnchorElNoti] = useState(null);
-  // eslint-disable-next-line
   const {
     setSelectedChat,
     messageNotification,

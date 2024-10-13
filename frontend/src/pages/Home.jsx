@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Discussions } from "./Discussion";
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
+import { useSocket } from "../context/SocketProvider";
+import { ChatState } from "../context/ChatProvider";
 
 const useStyles = makeStyles({
   root: {
@@ -10,11 +12,13 @@ const useStyles = makeStyles({
 });
 
 export const Home = () => {
+  const { socket } = useSocket();
   const classes = useStyles();
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const isMounted = useRef(false);
+  const { messageNotification, setMessageNotification } = ChatState();
 
   const getPosts = async (signal) => {
     try {
@@ -36,23 +40,11 @@ export const Home = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      if (isMounted.current) {
+        setLoading(false);
+      }
     }
   };
-
-  // useEffect(() => {
-  //   if (auth.isAuthenticated()) {
-  //     socket.on("message received", (newMessageReceived) => {
-  //       if (!messageNotification.includes(newMessageReceived)) {
-  //         setMessageNotification([newMessageReceived, ...messageNotification]);
-  //       }
-  //     });
-
-  //     return () => {
-  //       socket.off("message received");
-  //     };
-  //   }
-  // });
 
   useEffect(() => {
     const CancelToken = axios.CancelToken;
@@ -66,6 +58,21 @@ export const Home = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("message received", (newMessageReceived) => {
+        if (!messageNotification.includes(newMessageReceived)) {
+          console.log(newMessageReceived);
+          setMessageNotification([newMessageReceived, ...messageNotification]);
+        }
+      });
+
+      return () => {
+        socket.off("message received");
+      };
+    }
+  });
 
   return (
     <div className={classes.root}>

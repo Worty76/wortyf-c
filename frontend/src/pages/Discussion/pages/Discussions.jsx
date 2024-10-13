@@ -119,8 +119,6 @@ export const Discussions = ({ posts, setPosts, loading }) => {
     navigate("/home/create");
   };
 
-  console.log(posts);
-
   const sortBy = (option) => {
     switch (option) {
       case "Trending":

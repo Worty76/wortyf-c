@@ -8,6 +8,7 @@ import { render } from "react-dom";
 import theme from "./theme";
 import { SnackbarProvider } from "notistack";
 import ChatProvider from "./context/ChatProvider";
+import { SocketProvider } from "./context/SocketProvider";
 
 const root = document.getElementById("root");
 render(
@@ -16,7 +17,9 @@ render(
       <SnackbarProvider maxSnack={3}>
         <BrowserRouter>
           <ChatProvider>
-            <App />
+            <SocketProvider>
+              <App />
+            </SocketProvider>
           </ChatProvider>
         </BrowserRouter>
       </SnackbarProvider>

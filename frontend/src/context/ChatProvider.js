@@ -52,6 +52,7 @@ const ChatProvider = ({ children }) => {
         chats,
         setChats,
         notification,
+        isLoggedIn,
         setNotification,
         setIsLoggedIn,
         messageNotification,

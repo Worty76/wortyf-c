@@ -75,12 +75,11 @@ const fetchChats = async (req, res) => {
     await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
       .populate("users", "-password")
       .populate("groupAdmin", "-password")
-      .populate("latestMessage")
       .populate({
         path: "post",
         populate: { path: "buyer", select: "username email avatar_url" },
       })
-      .populate("post.buyer")
+      .populate("latestMessage")
       .sort({ updatedAt: -1 })
       .then(async (results) => {
         results = await User.populate(results, {
