@@ -14,7 +14,6 @@ const useStyles = makeStyles({
 export const Home = () => {
   const { socket } = useSocket();
   const classes = useStyles();
-
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const isMounted = useRef(false);
@@ -24,14 +23,37 @@ export const Home = () => {
     setNotification,
     notification,
   } = ChatState();
+  const search = window.location.search;
+  const params = new URLSearchParams(search);
+  const filters = params.get("filters");
+  const sort = params.get("sort");
+  const tag = params.get("tag");
+  let searchParams = `${tag !== null ? `tag=${tag}` : ""}${
+    filters !== null
+      ? tag === null
+        ? `filters=${filters}`
+        : `&filters=${filters}`
+      : ""
+  }${
+    sort !== null
+      ? tag !== null || filters !== null
+        ? `&sort=${sort}`
+        : `sort=${sort}`
+      : ""
+  }`;
 
   const getPosts = async (signal) => {
     try {
       setLoading(true);
       await axios
-        .get(`${process.env.REACT_APP_API}/api/post`, {
-          cancelToken: signal,
-        })
+        .get(
+          `${process.env.REACT_APP_API}/api/post${
+            searchParams ? `/home?${searchParams}` : ""
+          }`,
+          {
+            cancelToken: signal,
+          }
+        )
         .then((response) => {
           if (isMounted.current) {
             setPosts(response.data.data);

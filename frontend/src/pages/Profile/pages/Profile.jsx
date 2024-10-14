@@ -336,7 +336,7 @@ export const Profile = () => {
                           ) : null}
                         </Typography>
                       }
-                      secondary={new Date(post.createdAt).toLocaleDateString()}
+                      secondary={post.createdAt}
                     />
                   </ListItem>
                   <ListItem>

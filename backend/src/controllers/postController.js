@@ -3,6 +3,7 @@ const User = require("../models/user");
 const Topic = require("../models/topic");
 const Comment = require("../models/comment");
 const Like = require("../models/like");
+const Chat = require("../models/chat");
 const formidable = require("formidable");
 const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
@@ -360,13 +361,22 @@ const sold = async (req, res) => {
         }
       );
 
-      const messages = await Message.find({ chat: chatId })
-        .populate("sender", "username avatar_url email")
-        .populate("chat");
-
-      res
-        .status(200)
-        .json({ message: "Successfully sold to a person", data: messages });
+      const chat = await Chat.findOne({ _id: chatId })
+        .populate("users", "-password")
+        .populate("groupAdmin", "-password")
+        .populate({
+          path: "post",
+          populate: { path: "buyer", select: "username email avatar_url" },
+        })
+        .populate("latestMessage")
+        .sort({ updatedAt: -1 })
+        .then(async (results) => {
+          results = await User.populate(results, {
+            path: "latestMessage.sender",
+            select: "username avatar_url email",
+          });
+          res.status(200).send(results);
+        });
     } else {
       res.status(400).json({ message: "Already sold" });
     }

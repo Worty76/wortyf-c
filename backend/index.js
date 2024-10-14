@@ -118,9 +118,8 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("sold", (buyerId) => {
-    console.log("BuyerId" + buyerId);
-    socket.in(buyerId).emit("sold");
+  socket.on("sold", (chat) => {
+    socket.in(chat.post.buyer._id).emit("sold", chat);
   });
 
   socket.on("notification", (notification) => {

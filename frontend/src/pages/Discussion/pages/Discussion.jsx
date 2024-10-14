@@ -39,7 +39,7 @@ import auth from "../../../helpers/Auth";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import TextEditor from "../components/TextEditor";
 import { Markup } from "interweave";
-
+import ChatIcon from "@mui/icons-material/Chat";
 import { Topic } from "../components/Topic";
 import { ChatState } from "../../../context/ChatProvider";
 import { useSocket } from "../../../context/SocketProvider";
@@ -460,7 +460,7 @@ export const Discussion = () => {
                       variant="contained"
                       onClick={() => accessChat(user._id, post._id)}
                     >
-                      Chat
+                      <ChatIcon /> Chat
                     </Button>
                   )}
               </ListItem>

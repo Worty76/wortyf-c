@@ -15,7 +15,6 @@ import axios from "axios";
 import ScrollableChat from "./ModalButton/components/ScrollableChat";
 import { Link } from "react-router-dom";
 import { sold } from "../api/ChatApi";
-import { useNavigate } from "react-router-dom";
 import RateModalButton from "./RateModalButton/RateModalButton";
 import { debounce } from "lodash";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
@@ -29,14 +28,16 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   const [newMessage, setNewMessage] = useState("");
   const isMounted = useRef(true);
   const [uploading, setUploading] = useState(false);
-  const navigate = useNavigate();
 
   const {
     selectedChat,
     messageNotification,
     setMessageNotification,
     setNotification,
+    setSelectedChat,
     notification,
+    setChats,
+    chats,
   } = ChatState();
 
   // Fetch messages
@@ -129,22 +130,21 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   };
 
   const soldPost = (postId, buyerId, chatId) => {
-    let soldPost = new FormData();
-
     sold(
       { postId: postId, buyerId: buyerId, chatId: chatId },
-      { t: JSON.parse(auth.isAuthenticated().token) },
-      soldPost
+      { t: JSON.parse(auth.isAuthenticated().token) }
     ).then((data) => {
-      if (data.stack) {
-        console.log(data);
-      } else {
-        socket.emit("sold", buyerId);
-        navigate(0);
-      }
+      console.log(JSON.parse(data));
+      const chat = JSON.parse(data);
+      setChats((prevChat) =>
+        prevChat.map((c) => (c._id === chat._id ? chat : c))
+      );
+      setSelectedChat(chat);
+      socket.emit("sold", chat);
     });
   };
 
+  console.log(chats);
   const debouncedSendMessage = debounce(sendMessage, 200);
 
   useEffect(() => {
@@ -187,8 +187,11 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
         }
       });
 
-      socket.on("sold", () => {
-        navigate(0);
+      socket.on("sold", (chat) => {
+        setChats((prevChat) =>
+          prevChat.map((c) => (c._id === chat._id ? chat : c))
+        );
+        setSelectedChat(chat);
       });
 
       socket.on("notification", (noti) => {
@@ -199,6 +202,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
       return () => {
         socket.off("message received");
         socket.off("notification");
+        socket.off("sold");
       };
     }
   });
@@ -235,7 +239,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                     alignItems: "center",
                   }}
                 >
-                  {selectedChat.post.images.length > 0 && (
+                  {selectedChat.post?.images?.length > 0 && (
                     <div style={{ width: "100px", height: "100px" }}>
                       <img
                         alt=""
@@ -247,7 +251,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                           width: "auto",
                           display: "block",
                         }}
-                        src={selectedChat.post.images[0]}
+                        src={selectedChat.post?.images[0]}
                       />
                     </div>
                   )}
@@ -308,9 +312,12 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                       {auth.isAuthenticated().user._id ===
                         selectedChat.post.buyer?._id &&
                         (selectedChat.post.rated ? (
-                          <Typography sx={{ color: "green" }}>
-                            You already rated, you can see your rating at the
-                            author's profile
+                          <Typography
+                            sx={{ color: "green", textDecoration: "none" }}
+                            component={Link}
+                            to={`/profile/${selectedChat.post.author._id}`}
+                          >
+                            You already rated, click here to see
                           </Typography>
                         ) : (
                           <RateModalButton chat={selectedChat} />
