@@ -79,6 +79,8 @@ export const Discussion = () => {
     setSelectedChat,
     chats,
     setChats,
+    setNotification,
+    notification,
   } = ChatState();
 
   // Handle multiple clicks on Like/Unlike button
@@ -264,23 +266,27 @@ export const Discussion = () => {
         handleVariant("success");
         editorRef.current.setContent("");
 
-        createNotification(
-          {
-            t: JSON.parse(auth.isAuthenticated().token),
-          },
-          {
-            recipientId: post.author._id,
-            postId: post._id,
-            redirectUrl: `/post/${post._id}`,
-            type: "comment",
-          }
-        ).then((data) => {
-          console.log(data);
-          // if (data.stack) {
-          //   console.log(data);
-          // } else {
-          // }
-        });
+        if (auth.isAuthenticated().user._id !== post.author._id) {
+          createNotification(
+            {
+              t: JSON.parse(auth.isAuthenticated().token),
+            },
+            {
+              recipientId: post.author._id,
+              postId: post._id,
+              redirectUrl: `/post/${post._id}`,
+              type: "comment",
+            }
+          ).then((data) => {
+            if (data.stack) {
+              console.log(data);
+            }
+            console.log(data);
+            const notification = JSON.parse(data);
+
+            socket.emit("notification", notification);
+          });
+        }
       }
     });
   };
@@ -334,8 +340,14 @@ export const Discussion = () => {
         }
       });
 
+      socket.on("notification", (noti) => {
+        console.log(noti);
+        setNotification([noti, ...notification]);
+      });
+
       return () => {
         socket.off("message received");
+        socket.off("notification");
       };
     }
   });

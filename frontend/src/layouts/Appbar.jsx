@@ -20,6 +20,7 @@ import MessageIcon from "@mui/icons-material/Message";
 import auth from "../helpers/Auth";
 import { ChatState } from "../context/ChatProvider";
 import { getSender } from "../logic/ChatLogics";
+import axios from "axios";
 
 export const Appbar = () => {
   const user = auth.isAuthenticated().user;
@@ -33,6 +34,7 @@ export const Appbar = () => {
     messageNotification,
     setMessageNotification,
     setIsLoggedIn,
+    setNotification,
     notification,
   } = ChatState();
   const navigate = useNavigate();
@@ -94,6 +96,32 @@ export const Appbar = () => {
 
   const notificationLength = (notification) => {
     return notification.filter((noti) => noti.isRead === false).length;
+  };
+
+  const read = async (notification) => {
+    let config = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + JSON.parse(auth.isAuthenticated().token),
+      },
+    };
+    await axios
+      .put(
+        `${process.env.REACT_APP_API}/api/notification/read`,
+        {
+          notificationId: notification._id,
+        },
+        config
+      )
+      .then((data) => {
+        console.log(data);
+        setNotification((prevNotifications) =>
+          prevNotifications.map((n) =>
+            n._id === notification._id ? { ...n, isRead: true } : n
+          )
+        );
+      });
   };
 
   return (
@@ -352,7 +380,11 @@ export const Appbar = () => {
                     notification.map((noti, index) => (
                       <MenuItem
                         key={index}
+                        sx={{
+                          color: `${noti.isRead ? "grey" : "black"}`,
+                        }}
                         onClick={() => {
+                          read(noti);
                           navigate(
                             noti?.postId?.name
                               ? noti.redirectUrl

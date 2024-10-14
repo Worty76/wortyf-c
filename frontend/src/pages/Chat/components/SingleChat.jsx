@@ -31,8 +31,13 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
 
-  const { selectedChat, messageNotification, setMessageNotification } =
-    ChatState();
+  const {
+    selectedChat,
+    messageNotification,
+    setMessageNotification,
+    setNotification,
+    notification,
+  } = ChatState();
 
   // Fetch messages
   const fetchMessages = async (source) => {
@@ -185,8 +190,15 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
       socket.on("sold", () => {
         navigate(0);
       });
+
+      socket.on("notification", (noti) => {
+        console.log(noti);
+        setNotification([noti, ...notification]);
+      });
+
       return () => {
         socket.off("message received");
+        socket.off("notification");
       };
     }
   });

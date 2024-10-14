@@ -14,6 +14,7 @@ import auth from "../../../../helpers/Auth";
 import { approve } from "../../api/moderatorApi";
 import { Markup } from "interweave";
 import { createNotification } from "../../../Discussion/api/DiscussionApi";
+import { useSocket } from "../../../../context/SocketProvider";
 
 const useStyles = makeStyles({
   root: {
@@ -24,6 +25,7 @@ const useStyles = makeStyles({
 });
 
 export const InApprovalPosts = () => {
+  const { socket } = useSocket();
   const classes = useStyles();
   const [posts, setPosts] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
@@ -75,23 +77,27 @@ export const InApprovalPosts = () => {
       }
     });
 
-    createNotification(
-      {
-        t: JSON.parse(auth.isAuthenticated().token),
-      },
-      {
-        recipientId: post.author._id,
-        postId: post._id,
-        redirectUrl: `/post/${post._id}`,
-        type: "approvedPost",
-      }
-    ).then((data) => {
-      console.log(data);
-      // if (data.stack) {
-      //   console.log(data);
-      // } else {
-      // }
-    });
+    if (auth.isAuthenticated().user._id !== post.author._id) {
+      createNotification(
+        {
+          t: JSON.parse(auth.isAuthenticated().token),
+        },
+        {
+          recipientId: post.author._id,
+          postId: post._id,
+          redirectUrl: `/post/${post._id}`,
+          type: "approvedPost",
+        }
+      ).then((data) => {
+        if (data.stack) {
+          console.log(data);
+        }
+        console.log(data);
+        const notification = JSON.parse(data);
+
+        socket.emit("notification", notification);
+      });
+    }
   };
 
   // const handleRejectPost = (postId) => {

@@ -18,7 +18,12 @@ export const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const isMounted = useRef(false);
-  const { messageNotification, setMessageNotification } = ChatState();
+  const {
+    messageNotification,
+    setMessageNotification,
+    setNotification,
+    notification,
+  } = ChatState();
 
   const getPosts = async (signal) => {
     try {
@@ -68,8 +73,14 @@ export const Home = () => {
         }
       });
 
+      socket.on("notification", (noti) => {
+        console.log(noti);
+        setNotification([noti, ...notification]);
+      });
+
       return () => {
         socket.off("message received");
+        socket.off("notification");
       };
     }
   });

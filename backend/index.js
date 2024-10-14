@@ -123,6 +123,11 @@ io.on("connection", (socket) => {
     socket.in(buyerId).emit("sold");
   });
 
+  socket.on("notification", (notification) => {
+    console.log(notification);
+    socket.in(notification.recipientId).emit("notification", notification);
+  });
+
   socket.off("setup", () => {
     console.log("USER DISCONNECTED");
     socket.leave(userData._id);

@@ -5,15 +5,17 @@ const User = require("../models/user");
 
 const readNotification = async (req, res) => {
   try {
-    const { postId, type } = req.body;
+    const { notificationId } = req.body;
 
-    await Notification.updateMany(
-      { postId: postId, type: type },
-      { $set: { isRead: true } }
+    const notification = await Notification.findByIdAndUpdate(
+      { _id: notificationId },
+      { $set: { isRead: true } },
+      { new: true }
     );
 
     return res.status(200).send({
       message: "Successfully read notifications",
+      data: notification,
     });
   } catch (error) {
     return res.status(500).send({ message: "Failed to read notifications" });
@@ -24,9 +26,6 @@ const create = async (req, res) => {
   try {
     const { recipientId, postId, redirectUrl, type } = req.body;
     const { _id } = req.user;
-
-    console.log(_id);
-    console.log(req.body);
 
     const post = await Post.findOne({ _id: postId });
 
@@ -39,11 +38,14 @@ const create = async (req, res) => {
       redirectUrl: redirectUrl,
       type: type,
     });
-    notification.save();
+    await notification.save();
 
+    const newNotification = await Notification.findOne({
+      _id: notification._id,
+    }).populate("postId", "name");
     return res.status(200).send({
       message: "Successfully create notification",
-      data: notification,
+      data: newNotification,
     });
   } catch (error) {
     return res.status(500).send({ message: "Failed to create notification" });
@@ -90,6 +92,7 @@ const fetchNotifications = async (req, res) => {
 const notificationController = {
   create,
   fetchNotifications,
+  readNotification,
 };
 
 module.exports = notificationController;

@@ -31,6 +31,7 @@ import { debounce } from "lodash";
 import { Topic } from "../components/Topic";
 import { Markup } from "interweave";
 import FilterOptions from "../components/FilterOptions";
+import FilterListIcon from "@mui/icons-material/FilterList";
 
 const useStyles = makeStyles({
   leftContainer: {
@@ -177,7 +178,12 @@ export const Discussions = ({ posts, setPosts, loading }) => {
       <Box className={classes.leftContainer}>
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
-            <Button variant="contained" onClick={handleFilter}>
+            <Button
+              variant="contained"
+              onClick={handleFilter}
+              sx={{ alignItems: "center" }}
+            >
+              <FilterListIcon />
               Filter
             </Button>
             <SearchIcon sx={{ marginLeft: "10px" }} />
