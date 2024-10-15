@@ -43,7 +43,9 @@ const FilterOptions = ({ open, searchParams, setPosts }) => {
 
   const handleSearch = async () => {
     let searchParams;
-    searchParams = `${tag !== "" ? `tag=${tag}` : ""}${
+    searchParams = `${
+      tag !== "" ? `tag=${encodeURIComponent(tag.trim())}` : ""
+    }${
       filterBy[filterOption] !== undefined
         ? tag === ""
           ? `filters=${filterBy[filterOption].value}`

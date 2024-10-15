@@ -37,7 +37,6 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
     setSelectedChat,
     notification,
     setChats,
-    chats,
   } = ChatState();
 
   // Fetch messages
@@ -58,7 +57,6 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
       );
       setMessages(data);
 
-      console.log(selectedChat);
       socket.emit("join chat", selectedChat._id);
     } catch (error) {
       console.log(error);
@@ -144,7 +142,6 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
     });
   };
 
-  console.log(chats);
   const debouncedSendMessage = debounce(sendMessage, 200);
 
   useEffect(() => {

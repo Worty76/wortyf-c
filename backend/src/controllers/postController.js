@@ -203,42 +203,60 @@ const deletePost = async (req, res) => {
 
 const searchPost = async (req, res) => {
   try {
-    const searchQuery = req.query.text;
+    const searchQuery = decodeURIComponent(req.query.text);
 
     let searchCondition = {};
-
-    const tagPattern = /\[([^\]]*)\]/g;
     let tags = [];
-    let match;
+    let currentTag = "";
+    let cleanSearchQuery = "";
+    let inTag = false;
+    let bracketCount = 0;
 
-    if (searchQuery.includes("[")) {
-      if (!searchQuery.includes("]")) {
-        const cleanSearchQuery = searchQuery.replace("[", "").trim();
-        searchCondition.name = { $regex: cleanSearchQuery, $options: "i" };
-      } else {
-        while ((match = tagPattern.exec(searchQuery)) !== null) {
-          if (match[1].trim()) {
-            tags.push(match[1].trim());
+    for (let char of searchQuery) {
+      if (char === "[") {
+        if (inTag) {
+          currentTag += char;
+        } else {
+          inTag = true;
+        }
+        bracketCount++;
+      } else if (char === "]") {
+        bracketCount--;
+        if (bracketCount === 0 && inTag) {
+          if (currentTag.trim()) {
+            tags.push(currentTag.trim());
           }
+          currentTag = "";
+          inTag = false;
+        } else {
+          currentTag += char;
         }
-
-        const cleanSearchQuery = searchQuery.replace(tagPattern, "").trim();
-
-        let topics = [];
-        if (tags.length > 0) {
-          topics = await Topic.find({
-            name: { $in: tags },
-          }).distinct("_id", {});
-
-          searchCondition.topic = { $in: topics };
-        }
-
-        if (cleanSearchQuery) {
-          searchCondition.name = { $regex: cleanSearchQuery, $options: "i" };
+      } else {
+        if (inTag) {
+          currentTag += char;
+        } else {
+          cleanSearchQuery += char;
         }
       }
-    } else {
-      const cleanSearchQuery = searchQuery.trim();
+    }
+
+    if (currentTag.trim()) {
+      tags.push(currentTag.trim());
+    }
+
+    cleanSearchQuery = cleanSearchQuery.trim();
+
+    if (tags.length > 0) {
+      const topics = await Topic.find({
+        name: { $in: tags },
+      }).distinct("_id");
+
+      if (topics.length > 0) {
+        searchCondition.topic = { $in: topics };
+      }
+    }
+
+    if (cleanSearchQuery) {
       searchCondition.name = { $regex: cleanSearchQuery, $options: "i" };
     }
 
@@ -305,8 +323,13 @@ const filterPost = async (req, res) => {
 
     let query = { ...filteredOptions, approved: true };
     if (tag) {
+      const tagArray = decodeURIComponent(tag)
+        .split(",")
+        .map((t) => t.trim());
+      console.log("Tags to search:", tagArray);
+
       const topics = await Topic.find({
-        name: { $in: tag },
+        name: { $in: tagArray },
       }).distinct("_id");
 
       query = { ...query, topic: { $in: topics } };

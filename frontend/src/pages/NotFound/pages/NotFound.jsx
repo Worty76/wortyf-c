@@ -10,7 +10,7 @@ export const NotFound = () => {
         textAlign: "center",
       }}
     >
-      <div>This post is maybe deleted.</div>
+      <div>This page was maybe deleted.</div>
     </div>
   );
 };

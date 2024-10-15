@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 // eslint-disable-next-line
 import { SelectChangeEvent } from "@mui/material/Select";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
 import OutlinedFlagOutlinedIcon from "@mui/icons-material/OutlinedFlagOutlined";
@@ -27,11 +27,11 @@ import auth from "../../../helpers/Auth";
 import Crop169Icon from "@mui/icons-material/Crop169";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import { debounce } from "lodash";
 import { Topic } from "../components/Topic";
 import { Markup } from "interweave";
 import FilterOptions from "../components/FilterOptions";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import { useMemo } from "react";
 
 const useStyles = makeStyles({
   leftContainer: {
@@ -104,6 +104,10 @@ export const Discussions = ({ posts, setPosts, loading }) => {
 
   const [topics, setTopics] = useState([]);
   const [openFilter, setOpenFilter] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [clickedTags, setClickedTags] = useState([]);
+
+  const fireRef = useRef(false);
 
   const pageNumbers = [...Array(nPages + 1).keys()].slice(1);
 
@@ -143,24 +147,79 @@ export const Discussions = ({ posts, setPosts, loading }) => {
 
   const searchPosts = async (key) => {
     await axios
-      .get(`${process.env.REACT_APP_API}/api/post/search?text=${key}`)
+      .get(
+        `${process.env.REACT_APP_API}/api/post/search?text=${encodeURIComponent(
+          key
+        )}`
+      )
       .then((res) => setPosts(res.data.data));
   };
-  // eslint-disable-next-line
-  const debounceSearchPosts = useCallback(
-    debounce((nextValue) => searchPosts(nextValue), 1000),
-    []
-  );
+
+  const getTagFromUrl = useCallback(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tag = params.get("tag");
+    let newTag;
+    if (tag) {
+      newTag = tag.split(",");
+    }
+    return tag ? newTag.map((tag) => `[${tag.trim()}]`).join("") : null;
+    // eslint-disable-next-line
+  }, [window.location.search]);
+
+  useEffect(() => {
+    const urlTag = getTagFromUrl();
+    if (urlTag && !clickedTags.includes(urlTag)) {
+      setClickedTags([urlTag]);
+    }
+    // eslint-disable-next-line
+  }, [getTagFromUrl]);
+
+  const combinedSearchValue = useMemo(() => {
+    const tagsString = clickedTags.join("");
+    return tagsString + searchInput;
+  }, [clickedTags, searchInput]);
 
   const handleSearchPosts = (event) => {
-    let { value } = event.target;
+    if (event.target) {
+      setSearchInput(event.target.value);
+    } else {
+      const value = `[${event}]`;
+      setClickedTags((prevTags) => {
+        if (prevTags.includes(value)) {
+          return prevTags.filter((tag) => tag !== value);
+        } else {
+          return [...prevTags, value];
+        }
+      });
+    }
+  };
 
-    if (value.includes("&")) {
-      value = value.replace("&", "%26");
+  const handleInputChange = (event) => {
+    const inputValue = event.target.value;
+    const tagsString = clickedTags.join("");
+
+    if (inputValue.startsWith(tagsString)) {
+      setSearchInput(inputValue.slice(tagsString.length));
+    } else {
+      setClickedTags([]);
+      setSearchInput(inputValue);
+    }
+  };
+
+  useEffect(() => {
+    if (fireRef.current) {
+      if (combinedSearchValue || combinedSearchValue === "") {
+        const debounceTimer = setTimeout(() => {
+          searchPosts(combinedSearchValue);
+        }, 300);
+
+        return () => clearTimeout(debounceTimer);
+      }
     }
 
-    debounceSearchPosts(value);
-  };
+    fireRef.current = true;
+    // eslint-disable-next-line
+  }, [combinedSearchValue]);
 
   useEffect(() => {
     const CancelToken = axios.CancelToken;
@@ -192,7 +251,8 @@ export const Discussions = ({ posts, setPosts, loading }) => {
               label="Search posts with name or tags... e.g. [Electronics] post name..."
               variant="outlined"
               size="small"
-              onChange={handleSearchPosts}
+              value={combinedSearchValue}
+              onChange={handleInputChange}
               sx={{ marginLeft: "10px", width: "80%" }}
             />
             {/* <Popover
@@ -424,7 +484,12 @@ export const Discussions = ({ posts, setPosts, loading }) => {
                     />
                   </Badge>
                   <Typography
+                    onClick={() => {
+                      handleSearchPosts(topic.name);
+                    }}
                     sx={{
+                      textDecoration: "none",
+                      color: "black",
                       paddingLeft: "10px",
                       cursor: "pointer",
                       "&:hover": { color: "grey" },

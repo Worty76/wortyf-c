@@ -28,7 +28,7 @@ export const Home = () => {
   const filters = params.get("filters");
   const sort = params.get("sort");
   const tag = params.get("tag");
-  let searchParams = `${tag !== null ? `tag=${tag}` : ""}${
+  let searchParams = `${tag !== null ? `tag=${encodeURIComponent(tag)}` : ""}${
     filters !== null
       ? tag === null
         ? `filters=${filters}`
