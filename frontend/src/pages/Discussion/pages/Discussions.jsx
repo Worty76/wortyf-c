@@ -11,11 +11,10 @@ import {
   CircularProgress,
   Toolbar,
   Typography,
-  TextField,
 } from "@mui/material";
 // eslint-disable-next-line
 import { SelectChangeEvent } from "@mui/material/Select";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
 import OutlinedFlagOutlinedIcon from "@mui/icons-material/OutlinedFlagOutlined";
@@ -26,12 +25,13 @@ import auth from "../../../helpers/Auth";
 // eslint-disable-next-line
 import Crop169Icon from "@mui/icons-material/Crop169";
 import { useNavigate } from "react-router-dom";
-import SearchIcon from "@mui/icons-material/Search";
+// import SearchIcon from "@mui/icons-material/Search";
 import { Topic } from "../components/Topic";
 import { Markup } from "interweave";
 import FilterOptions from "../components/FilterOptions";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { useMemo } from "react";
+// import { useMemo } from "react";
+import Pagination from "../components/Pagination";
 
 const useStyles = makeStyles({
   leftContainer: {
@@ -89,34 +89,24 @@ const useStyles = makeStyles({
   },
 });
 
-export const Discussions = ({ posts, setPosts, loading }) => {
+export const Discussions = ({
+  posts,
+  setPosts,
+  loading,
+  pageNumbers,
+  currentPage,
+  pages,
+  setCurrentPage,
+  setPageNumbers,
+  handlePageChange,
+}) => {
   const classes = useStyles();
   const navigate = useNavigate();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage] = useState(10);
-
-  const indexOfLastRecord = currentPage * recordsPerPage;
-  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const paginatedPosts =
-    posts && posts.slice(indexOfFirstRecord, indexOfLastRecord);
-  const nPages = Math.ceil(posts.length / recordsPerPage);
-
   const [topics, setTopics] = useState([]);
   const [openFilter, setOpenFilter] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
-  const [clickedTags, setClickedTags] = useState([]);
-
-  const fireRef = useRef(false);
-
-  const pageNumbers = [...Array(nPages + 1).keys()].slice(1);
-
-  const goToNextPage = () => {
-    if (currentPage !== nPages) setCurrentPage(currentPage + 1);
-  };
-  const goToPrevPage = () => {
-    if (currentPage !== 1) setCurrentPage(currentPage - 1);
-  };
+  // const [searchInput, setSearchInput] = useState("");
+  // const [clickedTags, setClickedTags] = useState([]);
 
   const handleOpen = () => {
     navigate("/home/create");
@@ -145,81 +135,81 @@ export const Discussions = ({ posts, setPosts, loading }) => {
     }
   };
 
-  const searchPosts = async (key) => {
-    await axios
-      .get(
-        `${process.env.REACT_APP_API}/api/post/search?text=${encodeURIComponent(
-          key
-        )}`
-      )
-      .then((res) => setPosts(res.data.data));
-  };
+  // const searchPosts = async (key) => {
+  //   await axios
+  //     .get(
+  //       `${process.env.REACT_APP_API}/api/post/search?text=${encodeURIComponent(
+  //         key
+  //       )}`
+  //     )
+  //     .then((res) => setPosts(res.data.data));
+  // };
 
-  const getTagFromUrl = useCallback(() => {
-    const params = new URLSearchParams(window.location.search);
-    const tag = params.get("tag");
-    let newTag;
-    if (tag) {
-      newTag = tag.split(",");
-    }
-    return tag ? newTag.map((tag) => `[${tag.trim()}]`).join("") : null;
-    // eslint-disable-next-line
-  }, [window.location.search]);
+  // const getTagFromUrl = useCallback(() => {
+  //   const params = new URLSearchParams(window.location.search);
+  //   const tag = params.get("tag");
+  //   let newTag;
+  //   if (tag) {
+  //     newTag = tag.split(",");
+  //   }
+  //   return tag ? newTag.map((tag) => `[${tag.trim()}]`).join("") : null;
+  //   // eslint-disable-next-line
+  // }, [window.location.search]);
 
-  useEffect(() => {
-    const urlTag = getTagFromUrl();
-    if (urlTag && !clickedTags.includes(urlTag)) {
-      setClickedTags([urlTag]);
-    }
-    // eslint-disable-next-line
-  }, [getTagFromUrl]);
+  // useEffect(() => {
+  //   const urlTag = getTagFromUrl();
+  //   if (urlTag && !clickedTags.includes(urlTag)) {
+  //     setClickedTags([urlTag]);
+  //   }
+  //   // eslint-disable-next-line
+  // }, [getTagFromUrl]);
 
-  const combinedSearchValue = useMemo(() => {
-    const tagsString = clickedTags.join("");
-    return tagsString + searchInput;
-  }, [clickedTags, searchInput]);
+  // const combinedSearchValue = useMemo(() => {
+  //   const tagsString = clickedTags.join("");
+  //   return tagsString + searchInput;
+  // }, [clickedTags, searchInput]);
 
-  const handleSearchPosts = (event) => {
-    if (event.target) {
-      setSearchInput(event.target.value);
-    } else {
-      const value = `[${event}]`;
-      setClickedTags((prevTags) => {
-        if (prevTags.includes(value)) {
-          return prevTags.filter((tag) => tag !== value);
-        } else {
-          return [...prevTags, value];
-        }
-      });
-    }
-  };
+  // const handleSearchPosts = (event) => {
+  //   if (event.target) {
+  //     setSearchInput(event.target.value);
+  //   } else {
+  //     const value = `[${event}]`;
+  //     setClickedTags((prevTags) => {
+  //       if (prevTags.includes(value)) {
+  //         return prevTags.filter((tag) => tag !== value);
+  //       } else {
+  //         return [...prevTags, value];
+  //       }
+  //     });
+  //   }
+  // };
 
-  const handleInputChange = (event) => {
-    const inputValue = event.target.value;
-    const tagsString = clickedTags.join("");
+  // const handleInputChange = (event) => {
+  //   const inputValue = event.target.value;
+  //   const tagsString = clickedTags.join("");
 
-    if (inputValue.startsWith(tagsString)) {
-      setSearchInput(inputValue.slice(tagsString.length));
-    } else {
-      setClickedTags([]);
-      setSearchInput(inputValue);
-    }
-  };
+  //   if (inputValue.startsWith(tagsString)) {
+  //     setSearchInput(inputValue.slice(tagsString.length));
+  //   } else {
+  //     setClickedTags([]);
+  //     setSearchInput(inputValue);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (fireRef.current) {
-      if (combinedSearchValue || combinedSearchValue === "") {
-        const debounceTimer = setTimeout(() => {
-          searchPosts(combinedSearchValue);
-        }, 300);
+  // useEffect(() => {
+  //   if (fireRef.current) {
+  //     if (combinedSearchValue || combinedSearchValue === "") {
+  //       const debounceTimer = setTimeout(() => {
+  //         searchPosts(combinedSearchValue);
+  //       }, 300);
 
-        return () => clearTimeout(debounceTimer);
-      }
-    }
+  //       return () => clearTimeout(debounceTimer);
+  //     }
+  //   }
 
-    fireRef.current = true;
-    // eslint-disable-next-line
-  }, [combinedSearchValue]);
+  //   fireRef.current = true;
+  //   // eslint-disable-next-line
+  // }, [combinedSearchValue]);
 
   useEffect(() => {
     const CancelToken = axios.CancelToken;
@@ -245,7 +235,7 @@ export const Discussions = ({ posts, setPosts, loading }) => {
               <FilterListIcon />
               Filter
             </Button>
-            <SearchIcon sx={{ marginLeft: "10px" }} />
+            {/* <SearchIcon sx={{ marginLeft: "10px" }} />
             <TextField
               type="search"
               label="Search posts with name or tags... e.g. [Electronics] post name..."
@@ -254,7 +244,7 @@ export const Discussions = ({ posts, setPosts, loading }) => {
               value={combinedSearchValue}
               onChange={handleInputChange}
               sx={{ marginLeft: "10px", width: "80%" }}
-            />
+            /> */}
             {/* <Popover
               open={open}
               anchorEl={anchorEl}
@@ -296,9 +286,16 @@ export const Discussions = ({ posts, setPosts, loading }) => {
         </Toolbar>
         <Divider />
         {/* Posts */}
-        {openFilter && <FilterOptions open={openFilter} setPosts={setPosts} />}
-        {paginatedPosts &&
-          paginatedPosts.map((post) => (
+        {openFilter && (
+          <FilterOptions
+            open={openFilter}
+            setPosts={setPosts}
+            setCurrentPage={setCurrentPage}
+            setPageNumbers={setPageNumbers}
+          />
+        )}
+        {posts &&
+          posts.map((post) => (
             <div key={post._id} style={{ paddingBottom: "20px" }}>
               <Link to={"/post/" + post._id} style={{ textDecoration: "none" }}>
                 <Paper
@@ -415,29 +412,11 @@ export const Discussions = ({ posts, setPosts, loading }) => {
             " "
           ))}
         <div style={{ display: "flex" }}>
-          <Button variant="contained" onClick={goToPrevPage}>
-            Previous
-          </Button>
-          {pageNumbers.map((pgNumber) => (
-            <div
-              key={pgNumber}
-              style={{ paddingLeft: "2px", paddingRight: "2px" }}
-            >
-              <Button
-                style={{
-                  backgroundColor:
-                    currentPage === pgNumber ? "#24292F" : "lightgrey",
-                  color: currentPage === pgNumber ? "white" : "",
-                }}
-                onClick={() => setCurrentPage(pgNumber)}
-              >
-                {pgNumber}
-              </Button>
-            </div>
-          ))}
-          <Button variant="contained" onClick={goToNextPage}>
-            Next
-          </Button>
+          <Pagination
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+            totalPages={pageNumbers}
+          />
         </div>
       </Box>
 
@@ -485,7 +464,7 @@ export const Discussions = ({ posts, setPosts, loading }) => {
                   </Badge>
                   <Typography
                     onClick={() => {
-                      handleSearchPosts(topic.name);
+                      navigate(`/tag/${topic._id}`);
                     }}
                     sx={{
                       textDecoration: "none",

@@ -8,15 +8,23 @@ import {
   FormControlLabel,
   Checkbox,
   Grid,
+  ListItem,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
-const FilterOptions = ({ open, searchParams, setPosts }) => {
+const FilterOptions = ({
+  open,
+  searchParams,
+  setPosts,
+  setCurrentPage,
+  setPageNumbers,
+}) => {
   const [filterOption, setFilterOption] = useState(null);
   const [sortedOption, setSortedOption] = useState(null);
   const [tag, setTag] = useState("");
+  const [name, setName] = useState("");
   const navigate = useNavigate();
 
   const filterBy = [
@@ -41,6 +49,10 @@ const FilterOptions = ({ open, searchParams, setPosts }) => {
     setTag(e.target.value);
   };
 
+  const handleName = (e) => {
+    setName(e.target.value);
+  };
+
   const handleSearch = async () => {
     let searchParams;
     searchParams = `${
@@ -57,11 +69,24 @@ const FilterOptions = ({ open, searchParams, setPosts }) => {
           ? `&sort=${sortedBy[sortedOption].value}`
           : `sort=${sortedBy[sortedOption].value}`
         : ""
+    }${
+      name !== ""
+        ? tag !== "" ||
+          filterBy[filterOption] !== undefined ||
+          sortedBy[sortedOption] !== undefined
+          ? `&name=${encodeURIComponent(name)}`
+          : `name=${encodeURIComponent(name)}`
+        : ``
     }`;
     navigate(`/home?${searchParams}`);
     await axios
       .get(`${process.env.REACT_APP_API}/api/post/home?${searchParams}`)
-      .then((res) => setPosts(res.data.data));
+      .then((res) => {
+        console.log(res);
+        setCurrentPage(res.data.current);
+        setPageNumbers(res.data.pages);
+        setPosts(res.data.data);
+      });
   };
 
   return (
@@ -114,14 +139,26 @@ const FilterOptions = ({ open, searchParams, setPosts }) => {
 
         <Grid container spacing={2} alignItems="center" sx={{ padding: 2 }}>
           <Grid item xs={12} sm={8}>
-            <TextField
-              type="search"
-              label="Search (e.g. fashion or phone)"
-              variant="outlined"
-              size="small"
-              fullWidth
-              onChange={(e) => handleTag(e)}
-            />
+            <ListItem>
+              <TextField
+                type="search"
+                label="Search (e.g. fashion, phone)"
+                variant="outlined"
+                size="small"
+                fullWidth
+                onChange={(e) => handleTag(e)}
+              />
+            </ListItem>
+            <ListItem>
+              <TextField
+                type="search"
+                label="Search name"
+                variant="outlined"
+                size="small"
+                fullWidth
+                onChange={(e) => handleName(e)}
+              />
+            </ListItem>
           </Grid>
 
           <Grid item xs={12} sm={4}>

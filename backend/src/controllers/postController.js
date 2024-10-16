@@ -13,16 +13,27 @@ const Message = require("../models/message");
 
 const getApprovedPosts = async (req, res) => {
   try {
+    let perPage = 5;
+    let page = Number(req.query.page) || 1;
+
     const posts = await Post.find({ approved: true })
       .populate("topic")
-      .sort({ _id: -1 });
-
-    if (posts)
-      return res
-        .status(200)
-        .send({ message: "Successfully get posts", data: posts });
-
-    return res.status(400).send({ message: "Failed to get posts" });
+      .sort({ _id: -1 })
+      .skip(perPage * page - perPage)
+      .limit(perPage)
+      .exec((err, posts) => {
+        Post.countDocuments((err, count) => {
+          if (err) {
+            console.log(err);
+          }
+          res.send({
+            message: "Successfully get posts",
+            data: posts,
+            pages: Math.ceil(count / perPage),
+            current: page,
+          });
+        });
+      });
   } catch (error) {
     res.status(500).send({ message: "Interval error", error: error });
   }
@@ -277,69 +288,74 @@ const searchPost = async (req, res) => {
   }
 };
 
-const sortOptions = (option) => {
-  if (option === "Newest") {
-    return { _id: -1 };
+const getSortOptions = (option) => {
+  switch (option) {
+    case "Newest":
+      return { _id: -1 };
+    case "Oldest":
+      return { _id: 1 };
+    case "MostLikes":
+      return { likes: -1 };
+    default:
+      return { _id: -1 };
   }
-  if (option === "Oldest") {
-    return { _id: 1 };
-  }
-  if (option === "MostLikes") {
-    return {
-      likes: -1,
-    };
-  }
-  return {};
 };
 
-const filterOptions = (option) => {
-  if (option === "NotSold") {
-    return { sold: false };
+const getFilterOptions = (option) => {
+  switch (option) {
+    case "NotSold":
+      return { sold: false };
+    case "NoComments":
+      return { comments: { $size: 0 } };
+    default:
+      return {};
   }
-  if (option === "NoComments") {
-    return { comments: { $size: 0 } };
-  }
-  return {};
 };
 
 const filterPost = async (req, res) => {
   try {
-    const { filters, tag, sort } = req.query;
-    console.log(req.query);
+    const { filters, tag, sort, name, page = 1 } = req.query;
+    const perPage = 5;
 
-    if (!filters && !tag && !sort) {
-      console.log("Hello");
-      const posts = await Post.find({ approved: true })
-        .populate("topic")
-        .sort({ _id: -1 });
-
-      return res
-        .status(200)
-        .json({ message: "Successfully filter posts", data: posts });
+    let query = { approved: true };
+    let sortCriteria = { _id: -1 };
+    if (filters) {
+      query = { ...query, ...getFilterOptions(filters) };
     }
 
-    const sortedOptions = sortOptions(sort);
-    const filteredOptions = filterOptions(filters);
-
-    let query = { ...filteredOptions, approved: true };
     if (tag) {
       const tagArray = decodeURIComponent(tag)
         .split(",")
         .map((t) => t.trim());
-      console.log("Tags to search:", tagArray);
-
+      const tagRegexPatterns = tagArray.map((tag) => new RegExp(tag, "i"));
       const topics = await Topic.find({
-        name: { $in: tagArray },
+        name: { $in: tagRegexPatterns },
       }).distinct("_id");
-
-      query = { ...query, topic: { $in: topics } };
+      query.topic = { $in: topics };
     }
 
-    const posts = await Post.find(query).sort(sortedOptions).populate("topic");
+    if (name) {
+      query.name = { $regex: decodeURIComponent(name), $options: "i" };
+    }
 
-    return res
-      .status(200)
-      .json({ message: "Successfully filter posts", data: posts });
+    if (sort) {
+      sortCriteria = getSortOptions(sort);
+    }
+
+    const posts = await Post.find(query)
+      .populate("topic")
+      .sort(sortCriteria)
+      .skip(perPage * (Number(page) - 1))
+      .limit(perPage);
+
+    const count = await Post.countDocuments(query);
+
+    res.send({
+      message: "Successfully get posts",
+      data: posts,
+      pages: Math.ceil(count / perPage),
+      current: Number(page),
+    });
   } catch (error) {
     console.error(error);
     res
