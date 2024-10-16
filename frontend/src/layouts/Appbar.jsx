@@ -91,6 +91,8 @@ export const Appbar = () => {
       { name: "Events", URL: "events" },
       { name: "Chat", URL: "chat" },
       { name: "In approval", URL: "moderator/approve" },
+      { name: "Reports", URL: "moderator/report" },
+      { name: "Tags", URL: "tags" },
     ],
   };
 

@@ -489,7 +489,11 @@ export const Discussions = ({
                   cursor: "pointer",
                   "&:hover": { color: "grey" },
                   transition: "0.2s ease",
+                  textDecoration: "none",
+                  color: "black"
                 }}
+                component={Link}
+                to="/tags"
               >
                 Others
               </Typography>

@@ -17,6 +17,7 @@ import { ModeratorPrivateRoute } from "./helpers/ModeratorPrivateRoute";
 import { InApprovalPosts } from "./pages/Moderator";
 import { NotFound } from "./pages/NotFound";
 import { Tag } from "./pages/Tag";
+import { Tags } from "./pages/Tag";
 // import { Footer } from "./layouts/Footer";
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/post/:id" element={<Discussion />} />
         <Route path="/tag/:id" element={<Tag />} />
+        <Route path="/tags/" element={<Tags />} />
         <Route path="*" element={<NotFound />} />
 
         {/* Admin route */}

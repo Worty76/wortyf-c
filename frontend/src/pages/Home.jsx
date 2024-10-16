@@ -27,6 +27,7 @@ export const Home = () => {
     notification,
   } = ChatState();
   const navigate = useNavigate();
+
   const search = window.location.search;
   const params = new URLSearchParams(search);
   const filters = params.get("filters");
