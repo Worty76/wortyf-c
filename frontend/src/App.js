@@ -14,10 +14,11 @@ import "./App.css";
 import { AdminPrivateRoute } from "./helpers/AdminPrivateRoute";
 import { UserManagement } from "./pages/Admin";
 import { ModeratorPrivateRoute } from "./helpers/ModeratorPrivateRoute";
-import { InApprovalPosts } from "./pages/Moderator";
+import { InApprovalPosts } from "./pages/Moderator/pages";
 import { NotFound } from "./pages/NotFound";
 import { Tag } from "./pages/Tag";
 import { Tags } from "./pages/Tag";
+import { Reports } from "./pages/Moderator/pages";
 // import { Footer } from "./layouts/Footer";
 
 function App() {
@@ -60,6 +61,14 @@ function App() {
           element={
             <ModeratorPrivateRoute>
               <InApprovalPosts />
+            </ModeratorPrivateRoute>
+          }
+        />
+        <Route
+          path="/moderator/report"
+          element={
+            <ModeratorPrivateRoute>
+              <Reports />
             </ModeratorPrivateRoute>
           }
         />

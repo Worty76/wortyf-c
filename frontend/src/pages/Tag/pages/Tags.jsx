@@ -44,9 +44,17 @@ export const Tags = () => {
 
   const createTag = async () => {
     try {
+      let config = {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + JSON.parse(auth.isAuthenticated().token),
+        },
+      };
       const response = await axios.post(
         `${process.env.REACT_APP_API}/api/topic/create`,
-        newTag
+        newTag,
+        config
       );
       setTags([...tags, response.data.data]);
       setNewTag({ name: "", color: "#000000" });
@@ -57,9 +65,18 @@ export const Tags = () => {
 
   const updateTag = async () => {
     try {
+      let config = {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + JSON.parse(auth.isAuthenticated().token),
+        },
+      };
+
       const response = await axios.put(
         `${process.env.REACT_APP_API}/api/topic/update/${editTag._id}`,
-        editTag
+        editTag,
+        config
       );
       setTags(
         tags.map((tag) => (tag._id === editTag._id ? response.data.data : tag))
@@ -73,7 +90,17 @@ export const Tags = () => {
 
   const deleteTag = async (id) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_API}/api/topic/delete/${id}`);
+      let config = {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + JSON.parse(auth.isAuthenticated().token),
+        },
+      };
+      await axios.delete(
+        `${process.env.REACT_APP_API}/api/topic/delete/${id}`,
+        config
+      );
       setTags(tags.filter((tag) => tag._id !== id));
     } catch (error) {
       console.error(error);
@@ -101,7 +128,7 @@ export const Tags = () => {
         Tags
       </Typography>
 
-      {user.role === "moderator" ? (
+      {user && user.role === "moderator" ? (
         <Grid container spacing={2} sx={{ marginBottom: 2 }}>
           <Grid item xs={12} md={5}>
             <TextField
@@ -143,7 +170,7 @@ export const Tags = () => {
                 clickable
                 variant="outlined"
               />
-              {user.role === "moderator" ? (
+              {user && user.role === "moderator" ? (
                 <>
                   {" "}
                   <IconButton

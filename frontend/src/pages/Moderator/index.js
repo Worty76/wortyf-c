@@ -1,1 +1,1 @@
-export * from "./pages/InApprovalPosts";
+export * from "./pages";

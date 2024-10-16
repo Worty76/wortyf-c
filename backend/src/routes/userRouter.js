@@ -9,6 +9,7 @@ router.get("/", verifyToken, userController.searchUsers);
 router.post("/login", userController.login);
 router.post("/register", userController.register);
 router.get("/guardians", userController.getGuardians);
+router.put("/update", verifyToken, userController.updateUser);
 router.get("/:id", userController.getUser);
 router.get("/:id/photo", userController.photo);
 router.put("/:id/change-avatar", verifyToken, userController.changeAvatar);

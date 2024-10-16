@@ -161,6 +161,28 @@ const getUser = async (req, res) => {
   });
 };
 
+const updateUser = async (req, res) => {
+  try {
+    console.log("im running");
+    const { bio, from } = req.body;
+    const user = await User.findById({ _id: req.user._id });
+
+    if (!user)
+      return res.status(400).send({ message: "Could not get any user" });
+
+    const newUser = await User.findByIdAndUpdate(
+      { _id: req.user._id },
+      { $set: { bio: bio, from: from } },
+      { new: true }
+    );
+    res
+      .status(200)
+      .send({ message: "Successfully updated an user's bio", data: newUser });
+  } catch (error) {
+    res.status(500).send({ message: "Interval error", error: error });
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
     const user = await User.findById({ _id: req.params.id });
@@ -269,6 +291,7 @@ const userController = {
   getUser,
   changeAvatar,
   photo,
+  updateUser,
   getGuardians,
   changeRole,
   searchUsers,

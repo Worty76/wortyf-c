@@ -21,6 +21,7 @@ import {
   CircularProgress,
   Snackbar,
   IconButton,
+  TextField,
 } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -32,6 +33,7 @@ import { useNavigate } from "react-router-dom";
 import { Topic } from "../../Discussion/components/Topic";
 import { Stars } from "../components/Stars";
 import { Markup } from "interweave";
+import { updateBio } from "../api/profileApi";
 
 const useStyles = makeStyles({
   root: {
@@ -42,7 +44,7 @@ const useStyles = makeStyles({
   avatarSection: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center", // Center the content horizontally
+    alignItems: "center",
     marginBottom: "20px",
   },
   avatar: {
@@ -86,6 +88,12 @@ export const Profile = () => {
   const [uploadError, setUploadError] = useState(null);
   const { setSelectedChat, chats, setChats } = ChatState();
   const [avgRatings, setAvgRatings] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
+  const [updatedFields, setUpdatedFields] = useState({
+    bio: user.bio || "",
+    from: user.from || "",
+  });
+
   const navigate = useNavigate();
   const params = useParams();
 
@@ -110,6 +118,39 @@ export const Profile = () => {
         console.error(error);
       }
     }
+  };
+
+  const handleEdit = () => {
+    setUpdatedFields({
+      bio: user.bio || "",
+      from: user.from || "",
+    });
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    console.log(updatedFields);
+    updateBio(
+      { t: JSON.parse(auth.isAuthenticated().token) },
+      updatedFields
+    ).then((data) => setUser(JSON.parse(data)));
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    setUpdatedFields({
+      bio: user.bio || "",
+      from: user.from || "",
+    });
+    setIsEditing(false);
+  };
+
+  const handleFieldChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedFields((prevFields) => ({
+      ...prevFields,
+      [name]: value,
+    }));
   };
 
   const handleImage = async (e) => {
@@ -266,7 +307,19 @@ export const Profile = () => {
                 <ListItemText
                   primary={
                     <Typography variant="body1">
-                      Bio: {user.bio ? user.bio : "No bio available"}
+                      Bio:{" "}
+                      {isEditing ? (
+                        <TextField
+                          name="bio"
+                          value={updatedFields.bio}
+                          onChange={handleFieldChange}
+                          variant="outlined"
+                          size="small"
+                          fullWidth
+                        />
+                      ) : (
+                        user.bio || "No bio available"
+                      )}
                     </Typography>
                   }
                 />
@@ -285,7 +338,19 @@ export const Profile = () => {
                 <ListItemText
                   primary={
                     <Typography variant="body1">
-                      From: {user.from ? user.from : "Unknown"}
+                      From:{" "}
+                      {isEditing ? (
+                        <TextField
+                          name="from"
+                          value={updatedFields.from}
+                          onChange={handleFieldChange}
+                          variant="outlined"
+                          size="small"
+                          fullWidth
+                        />
+                      ) : (
+                        user.from || "Unknown"
+                      )}
                     </Typography>
                   }
                 />
@@ -306,6 +371,48 @@ export const Profile = () => {
                     </Typography>
                   }
                 />
+                {isEditing ? (
+                  <div
+                    style={{
+                      textAlign: "center",
+                    }}
+                  >
+                    <Button
+                      onClick={handleSave}
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      sx={{ margin: 1 }}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      onClick={handleCancelEdit}
+                      variant="outlined"
+                      color="secondary"
+                      size="small"
+                      sx={{ margin: 1 }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Button
+                      onClick={handleEdit}
+                      variant="outlined"
+                      color="primary"
+                      size="small"
+                    >
+                      Update Profile
+                    </Button>
+                  </div>
+                )}
               </List>
             </CardContent>
           </Card>
