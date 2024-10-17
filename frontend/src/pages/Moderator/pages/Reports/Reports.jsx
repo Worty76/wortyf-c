@@ -96,7 +96,7 @@ export const Reports = () => {
   return (
     <div className={classes.root}>
       <List className={classes.reportList}>
-        {reports.length === 0 ? (
+        {reports && reports.length === 0 ? (
           <Typography className={classes.noReports}>
             No reports available.
           </Typography>
@@ -105,12 +105,16 @@ export const Reports = () => {
             <Box
               key={report._id}
               sx={{ cursor: "pointer" }}
-              onClick={() => navigate(`/post/${report.postId._id}`)}
+              onClick={() => {
+                if (report.postId) {
+                  navigate(`/post/${report.postId?._id}`);
+                }
+              }}
             >
               <Paper className={classes.reportCard} elevation={3}>
                 <Avatar
                   className={classes.avatar}
-                  src={report.author.avatar_url}
+                  src={report.author?.avatar_url}
                 >
                   <PersonIcon />
                 </Avatar>
@@ -124,7 +128,7 @@ export const Reports = () => {
                   </Typography>
                   <Typography variant="body2">
                     <PostIcon fontSize="small" /> Post name:{" "}
-                    {report.postId.name}
+                    {report.postId?.name}
                   </Typography>
                 </CardContent>
               </Paper>

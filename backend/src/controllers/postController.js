@@ -10,6 +10,7 @@ const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
 const Message = require("../models/message");
+const Report = require("../models/report");
 
 const getApprovedPosts = async (req, res) => {
   try {
@@ -205,6 +206,7 @@ const deletePost = async (req, res) => {
     await Post.findByIdAndDelete({ _id: req.params.id });
     await Comment.deleteMany({ post_id: req.params.id });
     await Like.deleteMany({ post_id: req.params.id });
+    await Report.deleteMany({ postId: req.params.id });
 
     res.status(200).json({ message: "Successfully deleted a post" });
   } catch (error) {
