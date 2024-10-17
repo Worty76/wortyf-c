@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const ReportSchema = new Schema(
   {
-    comment: {
+    message: {
       type: String,
     },
     author: {

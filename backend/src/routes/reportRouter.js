@@ -3,7 +3,7 @@ const router = express.Router();
 const reportController = require("../controllers/reportController");
 const verifyToken = require("../middlewares/verifyToken");
 
-router.get("/", verifyToken, reportController.read);
-router.post("/", reportController.create);
+router.get("/", reportController.read);
+router.post("/create/:id", verifyToken, reportController.create);
 
 module.exports = router;

@@ -19,6 +19,10 @@ import {
   ListItemAvatar,
   Menu,
   MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -31,6 +35,7 @@ import {
   createNotification,
   deleteLike,
   deletePost,
+  reportPost,
   updatePost,
 } from "../api/DiscussionApi";
 import { VariantType, useSnackbar } from "notistack";
@@ -72,7 +77,9 @@ export const Discussion = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const editorRef = useRef(null);
   const open = Boolean(anchorEl);
+  const [openReportDialog, setOpenReportDialog] = useState(false);
   const timeoutRef = useRef(null);
+  const [message, setMessage] = useState("");
   const {
     messageNotification,
     setMessageNotification,
@@ -110,6 +117,14 @@ export const Discussion = () => {
 
   const handleCloseOptions = () => {
     setAnchorEl(null);
+  };
+
+  const handleOpenReportDialog = () => {
+    setOpenReportDialog(true);
+  };
+
+  const handleCloseReportDialog = () => {
+    setOpenReportDialog(false);
   };
 
   const [openEditing, setOpenEditing] = useState(false);
@@ -176,6 +191,27 @@ export const Discussion = () => {
       } else {
         navigate(0);
         handleVariant("success");
+      }
+    });
+  };
+
+  const report = () => {
+    let report = new FormData();
+    message && report.append("message", message);
+
+    reportPost(
+      { id: params.id },
+      {
+        t: JSON.parse(auth.isAuthenticated().token),
+      },
+      report
+    ).then((data) => {
+      if (data.stack) {
+        console.log(data);
+      } else {
+        handleVariant("success");
+        setOpenReportDialog(false);
+        setMessage("");
       }
     });
   };
@@ -575,7 +611,7 @@ export const Discussion = () => {
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>
                   <ListItem>
-                    <IconButton>
+                    <IconButton onClick={handleOpenReportDialog}>
                       <ErrorOutlineIcon />
                     </IconButton>
                     <ListItemText primary="Report this topic" />
@@ -589,6 +625,38 @@ export const Discussion = () => {
               </Typography>
               <br />
               <Divider />
+              <Dialog
+                open={openReportDialog}
+                onClose={handleCloseReportDialog}
+                aria-labelledby="report-dialog-title"
+              >
+                <DialogTitle id="report-dialog-title">
+                  Report This Topic
+                </DialogTitle>
+                <DialogContent>
+                  <Typography>
+                    Please describe why you want to report this topic:
+                  </Typography>
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    id="reportReason"
+                    label="Reason"
+                    onChange={(e) => setMessage(e.target.value)}
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCloseReportDialog} color="secondary">
+                    Cancel
+                  </Button>
+                  <Button color="primary" onClick={report}>
+                    Submit Report
+                  </Button>
+                </DialogActions>
+              </Dialog>
 
               {/* Comment section */}
               <List>

@@ -157,6 +157,25 @@ const updatePost = async (params, credentials, post) => {
   }
 };
 
+const reportPost = async (params, credentials, report) => {
+  try {
+    let response = await axios.post(
+      `${process.env.REACT_APP_API}/api/report/create/${params.id}`,
+      report,
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + credentials.t,
+        },
+      }
+    );
+    return JSON.stringify(response.data);
+  } catch (error) {
+    return error;
+  }
+};
+
 const updateComment = async (params, credentials, commentData) => {
   try {
     let response = await axios.put(
@@ -219,6 +238,7 @@ export {
   createComment,
   createReply,
   createLike,
+  reportPost,
   deletePost,
   deleteComment,
   deleteReply,
