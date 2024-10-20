@@ -44,19 +44,92 @@ const getAllTopics = async (req, res) => {
   }
 };
 
+const getSortOptions = (option) => {
+  switch (option) {
+    case "Newest":
+      return { _id: -1 };
+    case "Oldest":
+      return { _id: 1 };
+    case "MostLikes":
+      return { likes: -1 };
+    default:
+      return { _id: -1 };
+  }
+};
+
+const getFilterOptions = (option) => {
+  switch (option) {
+    case "NotSold":
+      return { sold: false };
+    case "NoComments":
+      return { comments: { $size: 0 } };
+    default:
+      return {};
+  }
+};
+
 const getTopic = async (req, res) => {
   try {
-    const { id } = req.params;
-    const topic = await Topic.findOne({ _id: id });
-    const posts = await Post.find({ topic: { $in: id } }).populate("topic");
+    console.log("runnnig");
+    console.log(req.params);
+    console.log(req.query);
 
-    return res
-      .status(200)
-      .send({ message: "Successfully get topics", topic: topic, posts: posts });
+    const { id } = req.params;
+    const { filters, tag, sort, name, page = 1 } = req.query;
+    const perPage = 9;
+
+    const topic = await Topic.findOne({ _id: id });
+    if (!topic) {
+      return res.status(400).send({ message: "Topic not found" });
+    }
+
+    let query = { approved: true, topic: topic._id };
+    let sortCriteria = { _id: -1 };
+
+    if (filters) {
+      query = { ...query, ...getFilterOptions(filters) };
+    }
+
+    if (tag) {
+      const tagArray = decodeURIComponent(tag)
+        .split(",")
+        .map((t) => t.trim());
+      const tagRegexPatterns = tagArray.map((tag) => new RegExp(tag, "i"));
+
+      const topics = await Topic.find({
+        name: { $in: tagRegexPatterns },
+      }).distinct("_id");
+
+      query.topic = { $all: [topic._id, ...topics] };
+    }
+
+    if (name) {
+      query.name = { $regex: decodeURIComponent(name), $options: "i" };
+    }
+
+    if (sort) {
+      sortCriteria = getSortOptions(sort);
+    }
+
+    const posts = await Post.find(query)
+      .populate("topic")
+      .sort(sortCriteria)
+      .skip(perPage * (Number(page) - 1))
+      .limit(perPage);
+
+    const count = await Post.countDocuments(query);
+
+    res.send({
+      message: "Successfully get posts",
+      posts: posts,
+      topic: topic,
+      pages: Math.ceil(count / perPage),
+      current: Number(page),
+    });
   } catch (error) {
     return res
       .status(500)
-      .send({ message: "Failed to get topics", error: error });
+      .send({ message: "Failed to get topics", error: error.message });
   }
 };
 

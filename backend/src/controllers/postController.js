@@ -333,7 +333,7 @@ const filterPost = async (req, res) => {
       const topics = await Topic.find({
         name: { $in: tagRegexPatterns },
       }).distinct("_id");
-      query.topic = { $in: topics };
+      query.topic = { $all: topics };
     }
 
     if (name) {

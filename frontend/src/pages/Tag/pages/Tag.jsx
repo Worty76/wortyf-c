@@ -1,214 +1,198 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import {
   Typography,
-  ListItem,
-  Badge,
-  Box,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
-  Paper,
-} from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import CircleIcon from "@mui/icons-material/Circle";
-import { Link } from "react-router-dom";
-import { Markup } from "interweave";
-import { Topic } from "../../Discussion/components/Topic";
-
-const useStyles = makeStyles({
-  root: {
-    padding: "1%",
-  },
-  post: {
-    display: "flex",
-  },
-  TitleMultiLineEllipsis: {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    "-webkit-line-clamp": 1,
-    "-webkit-box-orient": "vertical",
-  },
-  ContentMultiLineEllipsis: {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    "-webkit-line-clamp": 2,
-    "-webkit-box-orient": "vertical",
-  },
-});
+  CardBody,
+  Button,
+  IconButton,
+} from "@material-tailwind/react";
+import {
+  ArrowRightIcon,
+  ArrowLeftIcon,
+  AdjustmentsHorizontalIcon,
+} from "@heroicons/react/24/solid";
+import { Post } from "../../Discussion/components/Post";
+import FilterOptions from "../components/FilterOptions";
 
 export const Tag = () => {
   const { id } = useParams();
-  const classes = useStyles();
   const [tag, setTag] = useState({});
   const [posts, setPosts] = useState([]);
+  const [pageNumbers, setPageNumbers] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [openFilter, setOpenFilter] = useState(false);
+  const navigate = useNavigate();
 
-  const getTag = async (signal) => {
+  const search = window.location.search;
+  const params = new URLSearchParams(search);
+  const filters = params.get("filters");
+  const sort = params.get("sort");
+  const tagParams = params.get("tag");
+  const name = params.get("name");
+  let searchParams = `${
+    tagParams !== null ? `tag=${encodeURIComponent(tagParams)}` : ""
+  }${
+    filters !== null
+      ? tagParams === null
+        ? `filters=${filters}`
+        : `&filters=${filters}`
+      : ""
+  }${
+    sort !== null
+      ? tagParams !== null || filters !== null
+        ? `&sort=${sort}`
+        : `sort=${sort}`
+      : ""
+  }${
+    name !== null
+      ? tagParams !== "" || filters !== undefined || sort !== undefined
+        ? `&name=${encodeURIComponent(name)}`
+        : `name=${encodeURIComponent(name)}`
+      : ``
+  }`;
+
+  const handleFilter = () => {
+    setOpenFilter(!openFilter);
+  };
+
+  const getTag = async (page, signal) => {
     try {
-      await axios
-        .get(`${process.env.REACT_APP_API}/api/topic/${id}`, {
+      const pageParam = currentPage ? `&page=${currentPage}` : "";
+      const response = await axios.get(
+        `${process.env.REACT_APP_API}/api/topic/${id}?${searchParams}${pageParam}`,
+        {
           cancelToken: signal,
-        })
-        .then((response) => {
-          console.log(response);
-          setTag(response.data.topic);
-          setPosts(response.data.posts);
-        })
-        .catch(function (thrown) {
-          if (axios.isCancel(thrown)) {
-            console.log("Request canceled", thrown.message);
-          }
-        });
+        }
+      );
+      console.log(response.data);
+      setTag(response.data.topic);
+      setPosts(response.data.posts);
+      setPageNumbers(response.data.pages);
+      setCurrentPage(response.data.current);
     } catch (error) {
-      console.error(error);
+      if (axios.isCancel(error)) {
+        console.log("Request canceled", error.message);
+      } else {
+        console.error(error);
+      }
     }
   };
 
   useEffect(() => {
+    const pageFromUrl = params.get("page");
+    if (pageFromUrl) {
+      setCurrentPage(parseInt(pageFromUrl, 10));
+    }
+
     const CancelToken = axios.CancelToken;
     const source = CancelToken.source();
 
-    getTag(source.token);
+    getTag(currentPage, source.token);
     return () => {
       source.cancel("Operation canceled by the user.");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentPage]);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    navigate({
+      pathname: `/tag/${id}`,
+      search: `?page=${newPage}${searchParams ? `&${searchParams}` : ""}`,
+    });
+  };
+
+  const nextPage = () => {
+    if (currentPage < pageNumbers) {
+      handlePageChange(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      handlePageChange(currentPage - 1);
+    }
+  };
 
   return (
-    <div className={classes.root}>
-      <ListItem>
-        <Badge>
-          <CircleIcon sx={{ color: `${tag.color}` }} fontSize="medium" />
-        </Badge>
-        <Typography
-          sx={{
-            textDecoration: "none",
-            color: "black",
-            paddingLeft: "10px",
-            cursor: "pointer",
-            "&:hover": { color: "grey" },
-            transition: "0.2s ease",
-          }}
-          variant="h6"
-        >
-          {tag.name} ({Object.keys(posts).length})
+    <section className="p-8">
+      <div className="mx-auto max-w-screen-lg">
+        <Typography variant="h4">{tag.name}</Typography>
+        <Typography variant="h6" className="font-normal">
+          {tag.description}
         </Typography>
-      </ListItem>
-      <Box>
-        {posts &&
-          posts.map((post) => (
-            <div key={post._id} style={{ paddingBottom: "20px" }}>
-              <Link to={"/post/" + post._id} style={{ textDecoration: "none" }}>
-                <Paper
-                  className={classes.post}
-                  sx={{
-                    position: "relative",
+        <div className="gap-2 my-6">
+          <Button
+            className="text-white rounded-md flex items-center gap-2"
+            size="sm"
+            onClick={handleFilter}
+          >
+            <AdjustmentsHorizontalIcon strokeWidth={2} className="h-6 w-6 " />
+            Filter
+          </Button>
+        </div>
 
-                    transition: "all 0.3s",
-                    "&:hover": {
-                      boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
-                      transform: "scale(1.02)",
-                    },
-                  }}
-                >
-                  {post.sold && (
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: "10px",
-                        right: "10px",
-                        backgroundColor: "#008000",
-                        color: "white",
-                        padding: "2px 6px",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      Sold
-                    </Box>
-                  )}
-                  <Box sx={{ flexGrow: 0, display: "flex" }}>
-                    <ListItem>
-                      <ListItemAvatar>
-                        <Avatar
-                          alt={post.author.username}
-                          src={post?.author?.avatar_url}
-                          sx={{ height: "70px", width: "70px" }}
-                        />
-                      </ListItemAvatar>
-                    </ListItem>
-                  </Box>
-                  <Box sx={{ flexGrow: 1 }}>
-                    <ListItem>
-                      <ListItemText
-                        primary={
-                          <Typography
-                            variant="h6"
-                            className={classes.TitleMultiLineEllipsis}
-                          >
-                            {post.name}
-                          </Typography>
-                        }
-                        secondary={post.createdAt}
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <Typography
-                        variant="h8"
-                        className={classes.ContentMultiLineEllipsis}
-                        component="div"
-                        sx={{ textDecoration: "none" }}
-                      >
-                        <Markup content={post.content} />
-                      </Typography>
-                    </ListItem>
-                    <ListItem>
-                      {post.topic.map((topic, id) => (
-                        <Topic
-                          key={id}
-                          name={topic.name}
-                          color={topic.color}
-                          id={id}
-                        />
-                      ))}
-                    </ListItem>
-                  </Box>
+        {openFilter && (
+          <FilterOptions
+            open={openFilter}
+            setPosts={setPosts}
+            setCurrentPage={setCurrentPage}
+            setPageNumbers={setPageNumbers}
+            id={id}
+          />
+        )}
 
-                  <Box
-                    sx={{
-                      flexGrow: 0,
-                      alignItems: "center",
-                      minWidth: "210px",
-                      display: {
-                        xs: "none",
-                        md: "flex",
-                      },
-                    }}
-                  >
-                    <div style={{ width: "150px", height: "150px" }}>
-                      <img
-                        alt=""
-                        style={{
-                          objectFit: "cover",
-                          borderRadius: "10px",
-                          maxWidth: "100%",
-                          height: "100%",
-                          width: "auto",
-                          display: "block",
-                          margin: "0 auto",
-                        }}
-                        src={post.images[0]}
-                      />
-                    </div>
-                  </Box>
-                </Paper>
-              </Link>
-            </div>
+        <CardBody className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8">
+          {posts.map((post, key) => (
+            <Post
+              key={key}
+              id={post._id}
+              name={post.name}
+              date={post.createdAt}
+              authorName={post.author.username}
+              imgs={post.images}
+              profileImg={post.author.avatar_url}
+            />
           ))}
-      </Box>
-    </div>
+        </CardBody>
+
+        <div className="flex items-center justify-between gap-4 mt-8">
+          <Button
+            variant="text"
+            className="flex items-center gap-2"
+            onClick={prevPage}
+            disabled={currentPage === 1}
+          >
+            <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" /> Previous
+          </Button>
+
+          <div className="flex items-center gap-2">
+            {Array.from({ length: pageNumbers }, (_, index) => index + 1).map(
+              (page) => (
+                <IconButton
+                  key={page}
+                  variant={currentPage === page ? "filled" : "text"}
+                  color={currentPage === page ? "blue" : "gray"}
+                  onClick={() => handlePageChange(page)}
+                >
+                  {page}
+                </IconButton>
+              )
+            )}
+          </div>
+
+          <Button
+            variant="text"
+            className="flex items-center gap-2"
+            onClick={nextPage}
+            disabled={currentPage === pageNumbers}
+          >
+            Next
+            <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </section>
   );
 };

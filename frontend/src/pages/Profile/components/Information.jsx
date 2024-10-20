@@ -89,7 +89,11 @@ function Information({
                 <Option value="other">Other</Option>
               </Select>
             ) : (
-              <Typography>{gender}</Typography>
+              <Typography>
+                {gender === "male" && "Male"}
+                {gender === "female" && "Female"}
+                {gender === "other" && "Other"}
+              </Typography>
             )}
           </div>
         </div>

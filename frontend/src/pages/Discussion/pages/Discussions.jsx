@@ -7,11 +7,20 @@ import { useNavigate } from "react-router-dom";
 import { Topic } from "../components/Topic";
 import { Markup } from "interweave";
 import FilterOptions from "../components/FilterOptions";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import Pagination from "../components/Pagination";
+import { FilterListIcon } from "@mui/icons-material/FilterList";
 import { Post } from "../components/Post";
-import { ChevronRightIcon } from "@heroicons/react/24/solid";
-import { CardBody, Typography, Button } from "@material-tailwind/react";
+import {
+  ChevronRightIcon,
+  AdjustmentsHorizontalIcon,
+  ArrowRightIcon,
+  ArrowLeftIcon,
+} from "@heroicons/react/24/solid";
+import {
+  CardBody,
+  Typography,
+  Button,
+  IconButton,
+} from "@material-tailwind/react";
 
 export const Discussions = ({
   posts,
@@ -28,6 +37,25 @@ export const Discussions = ({
 
   const [topics, setTopics] = useState([]);
   const [openFilter, setOpenFilter] = useState(false);
+  const [active, setActive] = React.useState(1);
+
+  const getItemProps = (index) => ({
+    variant: active === index ? "filled" : "text",
+    color: "gray",
+    onClick: () => setActive(index),
+  });
+
+  const next = () => {
+    if (currentPage < pageNumbers) {
+      handlePageChange(currentPage + 1);
+    }
+  };
+
+  const prev = () => {
+    if (currentPage > 1) {
+      handlePageChange(currentPage - 1);
+    }
+  };
 
   const handleOpen = () => {
     navigate("/home/create");
@@ -112,10 +140,11 @@ export const Discussions = ({
 
         <div className="flex justify-between items-center gap-2 my-6">
           <Button
-            className="text-white px-4 py-2 rounded-md"
+            className="text-white px-4 py-2 rounded-md flex items-center gap-2"
             onClick={handleFilter}
           >
-            <FilterListIcon /> Filter
+            <AdjustmentsHorizontalIcon strokeWidth={2} className="h-6 w-6 " />{" "}
+            Filter
           </Button>
           <Button
             className="bg-green-500 text-white px-4 py-2 rounded-md"
@@ -149,12 +178,39 @@ export const Discussions = ({
             />
           ))}
         </CardBody>
-
-        <Pagination
-          totalPages={pageNumbers}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-        />
+        <div className="flex items-center gap-4 justify-center">
+          <Button
+            variant="text"
+            className="flex items-center gap-2"
+            onClick={prev}
+            disabled={currentPage === 1}
+          >
+            <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" /> Previous
+          </Button>
+          <div className="flex items-center gap-2">
+            {Array.from({ length: pageNumbers }, (_, index) => index + 1).map(
+              (page) => (
+                <IconButton
+                  key={page}
+                  variant={currentPage === page ? "filled" : "text"}
+                  color={currentPage === page ? "blue" : "gray"}
+                  onClick={() => handlePageChange(page)}
+                >
+                  {page}
+                </IconButton>
+              )
+            )}
+          </div>
+          <Button
+            variant="text"
+            className="flex items-center gap-2"
+            onClick={next}
+            disabled={currentPage === pageNumbers}
+          >
+            Next
+            <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </section>
   );
