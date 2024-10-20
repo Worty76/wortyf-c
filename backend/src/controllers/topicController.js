@@ -3,11 +3,40 @@ const Post = require("../models/post");
 
 const getTopics = async (req, res) => {
   try {
-    const topics = await Topic.find({});
+    const topics = await Topic.find({}).limit(6);
 
     return res
       .status(200)
       .send({ message: "Successfully get topics", data: topics });
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ message: "Failed to get topics", error: error });
+  }
+};
+
+const getAllTopics = async (req, res) => {
+  try {
+    let perPage = 15;
+    let page = Number(req.query.page) || 1;
+
+    const topics = await Topic.find({})
+      .sort({ _id: -1 })
+      .skip(perPage * page - perPage)
+      .limit(perPage)
+      .exec((err, posts) => {
+        Post.countDocuments((err, count) => {
+          if (err) {
+            console.log(err);
+          }
+          res.send({
+            message: "Successfully get posts",
+            data: posts,
+            pages: Math.ceil(count / perPage),
+            current: page,
+          });
+        });
+      });
   } catch (error) {
     return res
       .status(500)
@@ -32,9 +61,9 @@ const getTopic = async (req, res) => {
 };
 
 const create = async (req, res) => {
-  const { name, color } = req.body;
+  const { name, description } = req.body;
 
-  if (!name || !color) {
+  if (!name || !description) {
     return res.status(400).json({ message: "Both value must be provided!" });
   }
 
@@ -48,7 +77,7 @@ const create = async (req, res) => {
 
   const newTopic = new Topic({
     name: name,
-    color: color,
+    description: description,
   });
   newTopic.save();
 
@@ -65,9 +94,9 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   const { id } = req.params;
-  const { name, color } = req.body;
+  const { name, description } = req.body;
 
-  if (!name || !color) {
+  if (!name || !description) {
     return res.status(400).json({ message: "Both value must be provided!" });
   }
 
@@ -79,7 +108,7 @@ const update = async (req, res) => {
 
   const newTopic = await Topic.findOneAndUpdate(
     { _id: id },
-    { $set: { name: name, color: color } },
+    { $set: { name: name, description: description } },
     { new: true }
   );
 
@@ -129,6 +158,7 @@ const searchTopic = async (req, res) => {
 
 const topicController = {
   getTopics,
+  getAllTopics,
   getTopic,
   create,
   update,

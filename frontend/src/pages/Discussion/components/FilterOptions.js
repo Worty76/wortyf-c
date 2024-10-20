@@ -1,18 +1,7 @@
-import {
-  Paper,
-  Button,
-  List,
-  TextField,
-  FormControl,
-  FormLabel,
-  FormControlLabel,
-  Checkbox,
-  Grid,
-  ListItem,
-} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { Input, Button } from "@material-tailwind/react";
 
 const FilterOptions = ({
   open,
@@ -90,85 +79,71 @@ const FilterOptions = ({
   };
 
   return (
-    <List>
-      <Paper
-        elevation={1}
-        sx={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Grid container spacing={2} sx={{ marginBottom: 2, padding: 2 }}>
-          <Grid item xs={12} md={6}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Filter By</FormLabel>
-              {filterBy.map((option, index) => (
-                <FormControlLabel
-                  key={index}
-                  control={
-                    <Checkbox
-                      checked={index === filterOption}
-                      onChange={() => handleFilterBy(index)}
-                    />
-                  }
-                  label={option.title}
+    <div className="w-full flex flex-col p-4 bg-white shadow-lg rounded-md">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <fieldset className="border-t border-gray-300">
+            <legend className="text-sm font-medium text-gray-700 mb-2">
+              Filter By
+            </legend>
+            {filterBy.map((option, index) => (
+              <div key={index} className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  checked={index === filterOption}
+                  onChange={() => handleFilterBy(index)}
+                  className="mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-              ))}
-            </FormControl>
-          </Grid>
+                <label className="text-gray-700">{option.title}</label>
+              </div>
+            ))}
+          </fieldset>
+        </div>
 
-          <Grid item xs={12} md={6}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Sort By</FormLabel>
-              {sortedBy.map((option, index) => (
-                <FormControlLabel
-                  key={index}
-                  control={
-                    <Checkbox
-                      checked={index === sortedOption}
-                      onChange={() => handleSortedBy(index)}
-                    />
-                  }
-                  label={option.title}
+        <div>
+          <fieldset className="border-t border-gray-300">
+            <legend className="text-sm font-medium text-gray-700 mb-2">
+              Sort By
+            </legend>
+            {sortedBy.map((option, index) => (
+              <div key={index} className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  checked={index === sortedOption}
+                  onChange={() => handleSortedBy(index)}
+                  className="mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-              ))}
-            </FormControl>
-          </Grid>
-        </Grid>
+                <label className="text-gray-700">{option.title}</label>
+              </div>
+            ))}
+          </fieldset>
+        </div>
+      </div>
 
-        <Grid container spacing={2} alignItems="center" sx={{ padding: 2 }}>
-          <Grid item xs={12} sm={8}>
-            <ListItem>
-              <TextField
-                type="search"
-                label="Search (e.g. fashion, phone)"
-                variant="outlined"
-                size="small"
-                fullWidth
-                onChange={(e) => handleTag(e)}
-              />
-            </ListItem>
-            <ListItem>
-              <TextField
-                type="search"
-                label="Search name"
-                variant="outlined"
-                size="small"
-                fullWidth
-                onChange={(e) => handleName(e)}
-              />
-            </ListItem>
-          </Grid>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+        <div className="flex flex-col gap-2">
+          <Input
+            type="search"
+            label="Search (e.g. fashion, phone)"
+            className="w-full p-2 border rounded-md border-gray-300 "
+            onChange={handleTag}
+          />
+          <Input
+            type="search"
+            label="Search name (e.g. iphone16, laptop...)"
+            className="w-full p-2 border rounded-md border-gray-300"
+            onChange={handleName}
+          />
+        </div>
 
-          <Grid item xs={12} sm={4}>
-            <Button variant="contained" fullWidth onClick={handleSearch}>
-              Find
-            </Button>
-          </Grid>
-        </Grid>
-      </Paper>
-    </List>
+        <Button
+          className="text-white py-2 px-4 rounded-md w-full"
+          onClick={handleSearch}
+        >
+          Find
+        </Button>
+      </div>
+    </div>
   );
 };
 

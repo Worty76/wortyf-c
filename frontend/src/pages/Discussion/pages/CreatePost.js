@@ -1,22 +1,4 @@
 import { useEffect, useState, useRef } from "react";
-import {
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Paper,
-  Select,
-  TextField,
-  Grid,
-  Typography,
-  Stepper,
-  Step,
-  StepLabel,
-  CircularProgress,
-  Box,
-} from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import axios from "axios";
 import { create } from "../api/DiscussionsApi";
 import auth from "../../../helpers/Auth";
@@ -24,41 +6,15 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import TextEditor from "../components/TextEditor";
 import { Topic } from "../components/Topic";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(3),
-    maxWidth: 900,
-    margin: "0 auto",
-  },
-  formItem: {
-    marginBottom: theme.spacing(2),
-  },
-  submitButton: {
-    display: "flex",
-    justifyContent: "center",
-    marginTop: theme.spacing(3),
-  },
-  card: {
-    marginTop: theme.spacing(2),
-  },
-  stepper: {
-    paddingBottom: theme.spacing(3),
-  },
-  section: {
-    marginBottom: theme.spacing(3),
-    padding: theme.spacing(3),
-  },
-  loadingSpinner: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: theme.spacing(2),
-  },
-}));
+import {
+  Input,
+  Button,
+  Select,
+  Option,
+  Spinner,
+} from "@material-tailwind/react";
 
 export const CreatePost = () => {
-  const classes = useStyles();
   const [values, setValues] = useState({
     name: "",
     price: "",
@@ -72,14 +28,8 @@ export const CreatePost = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState({});
   const editorRef = useRef(null);
+  const fileInputRef = useRef(null);
   const navigate = useNavigate();
-
-  const steps = [
-    "Summarize your problem in one line",
-    "Describe your problem in more detail",
-    "Add tags and images",
-    "Submit your post",
-  ];
 
   const handleChange = (name) => (input) => {
     let value;
@@ -142,10 +92,14 @@ export const CreatePost = () => {
   };
 
   const handleSelectingOptions = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setSelectTopics(typeof value === "string" ? value.split(",") : value);
+    const value = event;
+    if (selectTopics.includes(value)) {
+      setSelectTopics((prevState) =>
+        prevState.filter((state) => state !== value)
+      );
+    } else {
+      setSelectTopics([...selectTopics, value]);
+    }
   };
 
   useEffect(() => {
@@ -180,7 +134,7 @@ export const CreatePost = () => {
     values.name && postData.append("name", values.name);
     values.price && postData.append("price", values.price);
     values.content && postData.append("content", values.content);
-    const date = new Date().toLocaleString();
+    const date = new Date();
     postData.append("date", date);
     images && images.forEach((image) => postData.append("images", image));
     selectTopics && postData.append("topic", selectTopics);
@@ -201,58 +155,61 @@ export const CreatePost = () => {
       }
     });
   };
+
+  const handleAddImagesClick = () => {
+    fileInputRef.current.click();
+  };
+
   return (
-    <div className={classes.root}>
-      {/* Stepper at the top to guide user */}
-      <Stepper className={classes.stepper} activeStep={-1}>
-        {steps.map((label, index) => (
-          <Step key={index}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+    <div className="max-w-3xl mx-auto p-6">
+      <div className="p-6 rounded-lg bg-white">
+        <h2 className="text-2xl font-semibold mb-6">Create a New Post</h2>
 
-      {/* Post Creation Form */}
-      <Paper className={classes.section} elevation={2}>
-        <Typography variant="h5" gutterBottom>
-          Create a New Discussion Post
-        </Typography>
-
-        <Grid container spacing={2}>
-          <Grid item xs={12} className={classes.formItem}>
-            <TextField
-              label="Name"
-              variant="outlined"
-              fullWidth
+        <div className="grid gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1" htmlFor="name">
+              Name
+            </label>
+            <Input
+              type="text"
+              id="name"
+              className="input input-bordered w-full"
+              placeholder="Summarize your problem in one line"
               onChange={handleChange("name")}
               value={values.name}
-              placeholder="Summarize your problem in one line"
-              error={!!errorMessages.name}
-              helperText={errorMessages.name || "Required field"}
               aria-label="Name"
             />
-          </Grid>
-          <Grid item xs={12} className={classes.formItem}>
-            <TextField
-              label="Price"
-              variant="outlined"
-              fullWidth
+            {errorMessages.name && (
+              <p className="text-red-500">{errorMessages.name}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1" htmlFor="price">
+              Price
+            </label>
+            <Input
+              type="text"
+              id="price"
+              className="input input-bordered w-full"
+              placeholder="Your price"
               onChange={handleChange("price")}
               value={values.price}
-              placeholder="Your price"
-              error={!!errorMessages.price}
-              helperText={errorMessages.price || "Required field"}
               aria-label="Price"
             />
-          </Grid>
-          <Grid item xs={12} className={classes.formItem}>
+            {errorMessages.price && (
+              <p className="text-red-500">{errorMessages.price}</p>
+            )}
+          </div>
+
+          <div>
             <TextEditor
               placeholder={"Write your content here..."}
               setText={handleChange("content")}
               editorRef={editorRef}
             />
-          </Grid>
-          <Grid item sx={{ display: "flex" }} className={classes.formItem}>
+          </div>
+          <div className="flex">
             {selectTopics !== "" &&
               topics.map((topic, id) =>
                 selectTopics.includes(topic.name) ? (
@@ -266,82 +223,67 @@ export const CreatePost = () => {
                   ""
                 )
               )}
-          </Grid>
-          <Grid item xs={12} className={classes.formItem}>
-            <FormControl fullWidth>
-              <InputLabel>Topics</InputLabel>
-              <Select
-                multiple
-                value={selectTopics}
-                onChange={handleSelectingOptions}
-                input={<OutlinedInput label="Topics" />}
-                aria-label="Topics"
-              >
-                {topics.map((topic, id) => (
-                  <MenuItem key={id} value={topic.name}>
-                    {topic.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} className={classes.formItem}>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Topics</label>
+            <Select
+              multiple
+              className="select select-bordered w-full"
+              onChange={handleSelectingOptions}
+              value={selectTopics}
+            >
+              {topics.map((topic, id) => (
+                <Option key={id} value={topic.name}>
+                  {topic.name}
+                </Option>
+              ))}
+            </Select>
+          </div>
+
+          <div>
             <input
-              style={{ display: "none" }}
+              ref={fileInputRef}
+              className="hidden"
+              type="file"
+              id="image-upload"
               accept="image/*"
               multiple
               onChange={handleImage}
-              type="file"
-              id="icon-button-file"
             />
-            <label htmlFor="icon-button-file">
-              <Button variant="contained" component="span">
-                Add Images
-              </Button>
-            </label>
-          </Grid>
-          <Grid item xs={12} sx={{}}>
-            <div
-              style={{
-                alignItems: "center",
-                flexFlow: "row wrap",
-                display: "flex",
-              }}
+            <Button
+              onClick={handleAddImagesClick}
+              htmlFor="image-upload"
+              className="btn btn-primary"
             >
-              {images &&
-                images.map((img, id) => (
-                  <img
-                    key={id}
-                    alt="img"
-                    style={{
-                      width: "280px",
-                      minHeight: "100%",
-                      objectFit: "contain",
-                      padding: 2,
-                    }}
-                    src={img.preview}
-                  />
-                ))}
-            </div>
-          </Grid>
-          <Grid item xs={12} className={classes.submitButton}>
+              Add Images
+            </Button>
+          </div>
+
+          <div className="columns-4 gap-5">
+            {images &&
+              images.map((img, id) => (
+                <img
+                  key={id}
+                  alt="img"
+                  className="w-44 h-auto object-contain rounded-md"
+                  src={img.preview}
+                />
+              ))}
+          </div>
+
+          <div className="mt-6">
             {loading ? (
-              <Box className={classes.loadingSpinner}>
-                <CircularProgress />
-              </Box>
+              <div className="flex justify-center items-center">
+                <Spinner className="h-8 w-8" />
+              </div>
             ) : (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={onSubmit}
-                fullWidth
-              >
+              <Button className="btn btn-primary w-full" onClick={onSubmit}>
                 Post
               </Button>
             )}
-          </Grid>
-        </Grid>
-      </Paper>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,93 +1,17 @@
-import {
-  Avatar,
-  Badge,
-  Button,
-  Divider,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Paper,
-  CircularProgress,
-  Toolbar,
-  Typography,
-} from "@mui/material";
 // eslint-disable-next-line
 import { SelectChangeEvent } from "@mui/material/Select";
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@mui/styles";
-import { Box } from "@mui/system";
-import OutlinedFlagOutlinedIcon from "@mui/icons-material/OutlinedFlagOutlined";
-import { Link } from "react-router-dom";
 import axios from "axios";
-import CircleIcon from "@mui/icons-material/Circle";
 import auth from "../../../helpers/Auth";
-// eslint-disable-next-line
-import Crop169Icon from "@mui/icons-material/Crop169";
 import { useNavigate } from "react-router-dom";
-// import SearchIcon from "@mui/icons-material/Search";
 import { Topic } from "../components/Topic";
 import { Markup } from "interweave";
 import FilterOptions from "../components/FilterOptions";
 import FilterListIcon from "@mui/icons-material/FilterList";
-// import { useMemo } from "react";
 import Pagination from "../components/Pagination";
-
-const useStyles = makeStyles({
-  leftContainer: {
-    flexGrow: 4,
-    minWidth: "75%",
-    maxWidth: "75%",
-  },
-  rightContainer: {
-    flexGrow: 1,
-    display: "flex",
-    justifyContent: "center",
-  },
-  icon: {
-    display: "flex",
-    justifyContent: "center",
-  },
-  post: {
-    display: "flex",
-  },
-  TitleMultiLineEllipsis: {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    "-webkit-line-clamp": 1,
-    "-webkit-box-orient": "vertical",
-  },
-  ContentMultiLineEllipsis: {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    "-webkit-line-clamp": 2,
-    "-webkit-box-orient": "vertical",
-  },
-  button: {
-    "&:hover": {
-      backgroundColor: "#fff",
-      color: "#3c52b2",
-    },
-  },
-  modal: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "60%",
-    height: "60%",
-    backgroundColor: "white",
-    border: "1px solid #111",
-    boxShadow: 24,
-    p: 4,
-    outline: "none",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+import { Post } from "../components/Post";
+import { ChevronRightIcon } from "@heroicons/react/24/solid";
+import { CardBody, Typography, Button } from "@material-tailwind/react";
 
 export const Discussions = ({
   posts,
@@ -100,13 +24,10 @@ export const Discussions = ({
   setPageNumbers,
   handlePageChange,
 }) => {
-  const classes = useStyles();
   const navigate = useNavigate();
 
   const [topics, setTopics] = useState([]);
   const [openFilter, setOpenFilter] = useState(false);
-  // const [searchInput, setSearchInput] = useState("");
-  // const [clickedTags, setClickedTags] = useState([]);
 
   const handleOpen = () => {
     navigate("/home/create");
@@ -135,82 +56,6 @@ export const Discussions = ({
     }
   };
 
-  // const searchPosts = async (key) => {
-  //   await axios
-  //     .get(
-  //       `${process.env.REACT_APP_API}/api/post/search?text=${encodeURIComponent(
-  //         key
-  //       )}`
-  //     )
-  //     .then((res) => setPosts(res.data.data));
-  // };
-
-  // const getTagFromUrl = useCallback(() => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   const tag = params.get("tag");
-  //   let newTag;
-  //   if (tag) {
-  //     newTag = tag.split(",");
-  //   }
-  //   return tag ? newTag.map((tag) => `[${tag.trim()}]`).join("") : null;
-  //   // eslint-disable-next-line
-  // }, [window.location.search]);
-
-  // useEffect(() => {
-  //   const urlTag = getTagFromUrl();
-  //   if (urlTag && !clickedTags.includes(urlTag)) {
-  //     setClickedTags([urlTag]);
-  //   }
-  //   // eslint-disable-next-line
-  // }, [getTagFromUrl]);
-
-  // const combinedSearchValue = useMemo(() => {
-  //   const tagsString = clickedTags.join("");
-  //   return tagsString + searchInput;
-  // }, [clickedTags, searchInput]);
-
-  // const handleSearchPosts = (event) => {
-  //   if (event.target) {
-  //     setSearchInput(event.target.value);
-  //   } else {
-  //     const value = `[${event}]`;
-  //     setClickedTags((prevTags) => {
-  //       if (prevTags.includes(value)) {
-  //         return prevTags.filter((tag) => tag !== value);
-  //       } else {
-  //         return [...prevTags, value];
-  //       }
-  //     });
-  //   }
-  // };
-
-  // const handleInputChange = (event) => {
-  //   const inputValue = event.target.value;
-  //   const tagsString = clickedTags.join("");
-
-  //   if (inputValue.startsWith(tagsString)) {
-  //     setSearchInput(inputValue.slice(tagsString.length));
-  //   } else {
-  //     setClickedTags([]);
-  //     setSearchInput(inputValue);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (fireRef.current) {
-  //     if (combinedSearchValue || combinedSearchValue === "") {
-  //       const debounceTimer = setTimeout(() => {
-  //         searchPosts(combinedSearchValue);
-  //       }, 300);
-
-  //       return () => clearTimeout(debounceTimer);
-  //     }
-  //   }
-
-  //   fireRef.current = true;
-  //   // eslint-disable-next-line
-  // }, [combinedSearchValue]);
-
   useEffect(() => {
     const CancelToken = axios.CancelToken;
     const source = CancelToken.source();
@@ -223,284 +68,94 @@ export const Discussions = ({
   }, []);
 
   return (
-    <Paper sx={{ display: "flex" }} elevation={0}>
-      <Box className={classes.leftContainer}>
-        <Toolbar disableGutters>
-          <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
-            <Button
-              variant="contained"
-              onClick={handleFilter}
-              sx={{ alignItems: "center" }}
-            >
-              <FilterListIcon />
-              Filter
-            </Button>
-            {/* <SearchIcon sx={{ marginLeft: "10px" }} />
-            <TextField
-              type="search"
-              label="Search posts with name or tags... e.g. [Electronics] post name..."
-              variant="outlined"
-              size="small"
-              value={combinedSearchValue}
-              onChange={handleInputChange}
-              sx={{ marginLeft: "10px", width: "80%" }}
-            /> */}
-            {/* <Popover
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              sx={{ pointerEvents: "none" }}
-            >
-              <Box p={2} maxWidth={300}>
-                <Typography variant="h8">Search Tips:</Typography>
-                <Typography variant="body2">
-                  - Use [tag] to search within tags.
-                  <br />
-                  - Use "exact phrase" for specific terms.
-                  <br />
-                  - Search by user with user:1234.
-                  <br />- Use score:3 to find posts with 3+ votes.
-                </Typography>
-              </Box>
-            </Popover> */}
-          </Box>
-          {/* Right component */}
-          <Box sx={{ flexGrow: 0 }}>
-            <ListItem>
-              <Badge>
-                <OutlinedFlagOutlinedIcon />
-              </Badge>
-              <ListItemText
-                primary={
-                  <Typography variant="h8">
-                    Let's build a strong community
-                  </Typography>
-                }
+    <section className="p-4">
+      <div className="mx-auto max-w-screen-lg">
+        <div className="my-4">
+          <img
+            className="h-96 w-full rounded-lg object-cover object-center"
+            src="https://images.unsplash.com/photo-1682407186023-12c70a4a35e0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2832&q=80"
+            alt="nature"
+          />
+        </div>
+
+        <div className="flex justify-between items-center mb-4">
+          <div className="space-y-2">
+            <Typography variant="h4">Our Product Categories</Typography>
+            <Typography className="text-gray-500 !text-base !font-normal">
+              Browse through our extensive selection and find exactly what
+              you're looking for.
+            </Typography>
+          </div>
+          <Button
+            variant="text"
+            className="flex items-center gap-2 p-2"
+            size="sm"
+            onClick={() => navigate(`/tags`)}
+          >
+            EXPLORE OTHER CATEGORIES
+            <ChevronRightIcon strokeWidth={2} className="h-5 w-5" />
+          </Button>
+        </div>
+
+        <CardBody className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+          {topics &&
+            topics.map((topic, index) => (
+              <Topic
+                color={topic.color}
+                description={topic.description}
+                name={topic.name}
+                key={index}
+                id={topic._id}
               />
-            </ListItem>
-          </Box>
-        </Toolbar>
-        <Divider />
-        {/* Posts */}
-        {openFilter && (
-          <FilterOptions
-            open={openFilter}
-            setPosts={setPosts}
-            setCurrentPage={setCurrentPage}
-            setPageNumbers={setPageNumbers}
-          />
-        )}
-        {posts &&
-          posts.map((post) => (
-            <div key={post._id} style={{ paddingBottom: "20px" }}>
-              <Link to={"/post/" + post._id} style={{ textDecoration: "none" }}>
-                <Paper
-                  className={classes.post}
-                  sx={{
-                    position: "relative",
+            ))}
+        </CardBody>
 
-                    transition: "all 0.3s",
-                    "&:hover": {
-                      boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
-                      transform: "scale(1.02)",
-                    },
-                  }}
-                >
-                  {post.sold && (
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: "10px",
-                        right: "10px",
-                        backgroundColor: "#008000",
-                        color: "white",
-                        padding: "2px 6px",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      Sold
-                    </Box>
-                  )}
-                  <Box sx={{ flexGrow: 0, display: "flex" }}>
-                    <ListItem>
-                      <ListItemAvatar>
-                        <Avatar
-                          alt={post.author.username}
-                          src={post?.author?.avatar_url}
-                          sx={{ height: "70px", width: "70px" }}
-                        />
-                      </ListItemAvatar>
-                    </ListItem>
-                  </Box>
-                  <Box sx={{ flexGrow: 1 }}>
-                    <ListItem>
-                      <ListItemText
-                        primary={
-                          <Typography
-                            variant="h6"
-                            className={classes.TitleMultiLineEllipsis}
-                          >
-                            {post.name}
-                          </Typography>
-                        }
-                        secondary={post.createdAt}
-                      />
-                    </ListItem>
-                    <ListItem>
-                      <Typography
-                        variant="h8"
-                        className={classes.ContentMultiLineEllipsis}
-                        component="div"
-                        sx={{ textDecoration: "none" }}
-                      >
-                        <Markup content={post.content} />
-                      </Typography>
-                    </ListItem>
-                    <ListItem>
-                      {post.topic.map((topic, id) => (
-                        <Topic
-                          key={id}
-                          name={topic.name}
-                          color={topic.color}
-                          id={id}
-                        />
-                      ))}
-                    </ListItem>
-                  </Box>
-
-                  <Box
-                    sx={{
-                      flexGrow: 0,
-                      alignItems: "center",
-                      minWidth: "210px",
-                      display: {
-                        xs: "none",
-                        md: "flex",
-                      },
-                    }}
-                  >
-                    <div style={{ width: "150px", height: "150px" }}>
-                      <img
-                        alt=""
-                        style={{
-                          objectFit: "cover",
-                          borderRadius: "10px",
-                          maxWidth: "100%",
-                          height: "100%",
-                          width: "auto",
-                          display: "block",
-                          margin: "0 auto",
-                        }}
-                        src={post.images[0]}
-                      />
-                    </div>
-                  </Box>
-                </Paper>
-              </Link>
-            </div>
-          ))}
-        {posts.length === 0 &&
-          (loading ? (
-            <div>
-              <CircularProgress />
-            </div>
-          ) : (
-            " "
-          ))}
-        <div style={{ display: "flex" }}>
-          <Pagination
-            currentPage={currentPage}
-            onPageChange={handlePageChange}
-            totalPages={pageNumbers}
-          />
+        <div className="flex justify-between items-center gap-2 my-6">
+          <Button
+            className="text-white px-4 py-2 rounded-md"
+            onClick={handleFilter}
+          >
+            <FilterListIcon /> Filter
+          </Button>
+          <Button
+            className="bg-green-500 text-white px-4 py-2 rounded-md"
+            onClick={handleOpen}
+          >
+            Create Post
+          </Button>
         </div>
-      </Box>
 
-      {/* Right Container */}
-      <Box className={classes.rightContainer}>
         <div>
-          <List>
-            <ListItem>
-              {auth.isAuthenticated().user ? (
-                <Button
-                  size="large"
-                  className={classes.button}
-                  sx={{ backgroundColor: "#3c52b2", color: "#fff" }}
-                  onClick={handleOpen}
-                >
-                  Create a new post
-                </Button>
-              ) : (
-                <Button
-                  size="large"
-                  className={classes.button}
-                  sx={{
-                    backgroundColor: "#3c52b2",
-                    color: "#fff",
-                    textAlign: "center",
-                  }}
-                  LinkComponent={Link}
-                  to={"/sign-in"}
-                >
-                  Sign in to create a post
-                </Button>
-              )}
-            </ListItem>
-          </List>
-          <Divider />
-          <List>
-            {topics &&
-              topics.map((topic, id) => (
-                <ListItem key={id}>
-                  <Badge>
-                    <CircleIcon
-                      sx={{ color: `${topic.color}` }}
-                      fontSize="small"
-                    />
-                  </Badge>
-                  <Typography
-                    onClick={() => {
-                      navigate(`/tag/${topic._id}`);
-                    }}
-                    sx={{
-                      textDecoration: "none",
-                      color: "black",
-                      paddingLeft: "10px",
-                      cursor: "pointer",
-                      "&:hover": { color: "grey" },
-                      transition: "0.2s ease",
-                    }}
-                  >
-                    {topic.name}
-                  </Typography>
-                </ListItem>
-              ))}
-            <ListItem>
-              <Badge>
-                <CircleIcon sx={{ color: "grey" }} fontSize="small" />
-              </Badge>
-              <Typography
-                sx={{
-                  paddingLeft: "10px",
-                  cursor: "pointer",
-                  "&:hover": { color: "grey" },
-                  transition: "0.2s ease",
-                  textDecoration: "none",
-                  color: "black"
-                }}
-                component={Link}
-                to="/tags"
-              >
-                Others
-              </Typography>
-            </ListItem>
-          </List>
+          {openFilter && (
+            <FilterOptions
+              open={openFilter}
+              setCurrentPage={setCurrentPage}
+              setPageNumbers={setPageNumbers}
+              setPosts={setPosts}
+            />
+          )}
         </div>
-      </Box>
-    </Paper>
+
+        <CardBody className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8">
+          {posts.map((post, key) => (
+            <Post
+              key={key}
+              id={post._id}
+              name={post.name}
+              date={post.createdAt}
+              authorName={post.author.username}
+              imgs={post.images}
+              profileImg={post.author.avatar_url}
+            />
+          ))}
+        </CardBody>
+
+        <Pagination
+          totalPages={pageNumbers}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      </div>
+    </section>
   );
 };

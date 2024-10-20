@@ -1,25 +1,23 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {
-  Chip,
-  Typography,
-  Grid,
-  Paper,
-  Button,
-  TextField,
-  IconButton,
   Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Input,
+  Button,
+  IconButton,
+  Card,
+  Typography,
+  CardBody,
+} from "@material-tailwind/react";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import auth from "../../../helpers/Auth";
 
 export const Tags = () => {
   const [tags, setTags] = useState([]);
-  const [newTag, setNewTag] = useState({ name: "", color: "#000000" });
+  const [newTag, setNewTag] = useState({ name: "", description: "" });
   const [editTag, setEditTag] = useState(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const user = auth.isAuthenticated().user;
@@ -27,7 +25,7 @@ export const Tags = () => {
   const getTags = async (signal) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API}/api/topic/`,
+        `${process.env.REACT_APP_API}/api/topic/all`,
         {
           cancelToken: signal,
         }
@@ -57,7 +55,7 @@ export const Tags = () => {
         config
       );
       setTags([...tags, response.data.data]);
-      setNewTag({ name: "", color: "#000000" });
+      setNewTag({ name: "", description: "" });
     } catch (error) {
       console.error(error);
     }
@@ -123,107 +121,128 @@ export const Tags = () => {
   };
 
   return (
-    <Paper elevation={0} sx={{ padding: 2, margin: 2 }}>
-      <Typography variant="h6" gutterBottom>
-        Tags
-      </Typography>
+    <section className="p-4">
+      <div className="mx-auto max-w-screen-lg">
+        <div className="bg-white shadow-none p-4 m-4">
+          <Typography variant="h4" className="text-xl mb-4">
+            Tags
+          </Typography>
 
-      {user && user.role === "moderator" ? (
-        <Grid container spacing={2} sx={{ marginBottom: 2 }}>
-          <Grid item xs={12} md={5}>
-            <TextField
-              label="Tag Name"
-              fullWidth
-              value={newTag.name}
-              onChange={(e) => setNewTag({ ...newTag, name: e.target.value })}
-            />
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <TextField
-              type="color"
-              label="Tag Color"
-              fullWidth
-              value={newTag.color}
-              onChange={(e) => setNewTag({ ...newTag, color: e.target.value })}
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              onClick={createTag}
-            >
-              Create Tag
-            </Button>
-          </Grid>
-        </Grid>
-      ) : null}
+          {user && user.role === "moderator" ? (
+            <div className="grid grid-cols-12 gap-4 mb-4">
+              <div className="col-span-12 md:col-span-5">
+                <Input
+                  label="Tag Name"
+                  type="text"
+                  value={newTag.name}
+                  onChange={(e) =>
+                    setNewTag({ ...newTag, name: e.target.value })
+                  }
+                  fullWidth
+                />
+              </div>
+              <div className="col-span-12 md:col-span-5">
+                <Input
+                  label="Tag Description"
+                  type="text"
+                  value={newTag.description}
+                  onChange={(e) =>
+                    setNewTag({ ...newTag, description: e.target.value })
+                  }
+                  fullWidth
+                />
+              </div>
+              <div className="col-span-12 md:col-span-2">
+                <Button fullWidth onClick={createTag} color="blue">
+                  Create Tag
+                </Button>
+              </div>
+            </div>
+          ) : null}
 
-      <Grid container spacing={2}>
-        {tags &&
-          tags.map((tag) => (
-            <Grid item key={tag._id}>
-              <Chip
-                label={tag.name}
-                style={{ backgroundColor: tag.color }}
-                clickable
-                variant="outlined"
-              />
-              {user && user.role === "moderator" ? (
-                <>
-                  {" "}
-                  <IconButton
-                    onClick={() => handleEditClick(tag)}
-                    size="small"
-                    color="primary"
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => deleteTag(tag._id)}
-                    size="small"
-                    color="secondary"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </>
-              ) : null}
-            </Grid>
-          ))}
-      </Grid>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+            {tags &&
+              tags.map((tag) => (
+                <div key={tag._id} className="col-span-auto">
+                  <Card className="border border-gray-300 overflow-hidden shadow-sm h-full cursor-pointer">
+                    <CardBody className="p-4 flex flex-col h-full">
+                      <div className="flex-grow">
+                        <Typography
+                          color="blue-gray"
+                          className="!text-base !font-semibold mb-1 flex justify-between"
+                        >
+                          {tag.name}
+                          {user && user.role === "moderator" && (
+                            <>
+                              <div className="flex gap-2">
+                                <IconButton
+                                  variant="text"
+                                  onClick={() => handleEditClick(tag)}
+                                  size="sm"
+                                  color="blue"
+                                >
+                                  <PencilIcon className="h-4 w-4" />
+                                </IconButton>
+                                <IconButton
+                                  onClick={() => deleteTag(tag._id)}
+                                  size="sm"
+                                  color="red"
+                                >
+                                  <TrashIcon className="h-4 w-4" />
+                                </IconButton>
+                              </div>
+                            </>
+                          )}
+                        </Typography>
+                        <Typography
+                          variant="small"
+                          color="gray"
+                          className="font-medium"
+                        >
+                          {tag.description}
+                        </Typography>
+                      </div>
+                    </CardBody>
+                  </Card>
+                </div>
+              ))}
+          </div>
 
-      {editTag && (
-        <Dialog open={isDialogOpen} onClose={() => setDialogOpen(false)}>
-          <DialogTitle>Edit Tag</DialogTitle>
-          <DialogContent>
-            <TextField
-              label="Tag Name"
-              fullWidth
-              value={editTag.name}
-              onChange={(e) => setEditTag({ ...editTag, name: e.target.value })}
-              sx={{ marginBottom: 2 }}
-            />
-            <TextField
-              type="color"
-              label="Tag Color"
-              fullWidth
-              value={editTag.color}
-              onChange={(e) =>
-                setEditTag({ ...editTag, color: e.target.value })
-              }
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setDialogOpen(false)} color="secondary">
-              Cancel
-            </Button>
-            <Button onClick={updateTag} color="primary">
-              Update
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
-    </Paper>
+          {editTag && (
+            <Dialog open={isDialogOpen} handler={() => setDialogOpen(false)}>
+              <DialogHeader>Edit Tag</DialogHeader>
+              <DialogBody className="flex flex-col gap-4">
+                <Input
+                  label="Tag Name"
+                  value={editTag.name}
+                  onChange={(e) =>
+                    setEditTag({ ...editTag, name: e.target.value })
+                  }
+                  className="mb-4"
+                  fullWidth
+                />
+                <Input
+                  label="Tag Description"
+                  type="text"
+                  value={editTag.description}
+                  onChange={(e) =>
+                    setEditTag({ ...editTag, description: e.target.value })
+                  }
+                  fullWidth
+                />
+              </DialogBody>
+              <DialogFooter className="flex gap-2">
+                <Button onClick={() => setDialogOpen(false)} color="red">
+                  Cancel
+                </Button>
+                <Button onClick={updateTag} color="blue">
+                  Update
+                </Button>
+              </DialogFooter>
+            </Dialog>
+          )}
+        </div>
+      </div>
+    </section>
   );
 };

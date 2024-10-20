@@ -5,6 +5,7 @@ const checkRole = require("../middlewares/checkRole");
 const router = express.Router();
 
 router.get("/", topicController.getTopics);
+router.get("/all", topicController.getAllTopics);
 router.get("/:id", topicController.getTopic);
 router.post(
   "/create",

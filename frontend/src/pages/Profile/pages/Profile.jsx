@@ -4,25 +4,18 @@ import { Link, useParams } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import {
   Avatar,
-  Badge,
-  Box,
   Button,
   Card,
-  CardContent,
-  Container,
-  Divider,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Paper,
-  Toolbar,
+  CardBody,
+  CardHeader,
+  Spinner,
   Typography,
-  CircularProgress,
-  Snackbar,
-  IconButton,
-  TextField,
-} from "@mui/material";
+  Tabs,
+  TabsHeader,
+  TabsBody,
+  Tab,
+  TabPanel,
+} from "@material-tailwind/react";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CloseIcon from "@mui/icons-material/Close";
@@ -34,51 +27,18 @@ import { Topic } from "../../Discussion/components/Topic";
 import { Stars } from "../components/Stars";
 import { Markup } from "interweave";
 import { updateBio } from "../api/profileApi";
+import { ArrowUpTrayIcon } from "@heroicons/react/24/solid";
+import { CardReview } from "../components/CardReview";
 
-const useStyles = makeStyles({
-  root: {
-    padding: "20px",
-    width: "90%",
-    margin: "20px auto",
-  },
-  avatarSection: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    marginBottom: "20px",
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-  },
-  buttonWrapper: {
-    display: "flex",
-    justifyContent: "center",
-    marginTop: "10px",
-  },
-  post: {
-    margin: "15px",
-    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-    transition: "box-shadow 0.3s ease",
-    "&:hover": {
-      boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.2)",
-    },
-  },
-  multiLineEllipsis: {
-    display: "-webkit-box",
-    WebkitBoxOrient: "vertical",
-    overflow: "hidden",
-    WebkitLineClamp: "3",
-  },
-  noPosts: {
-    textAlign: "center",
-    padding: "20px",
-  },
-});
+import {
+  StarIcon,
+  UserCircleIcon,
+  Cog6ToothIcon,
+} from "@heroicons/react/24/solid";
+import { Post } from "../../Discussion/components/Post";
+import Information from "../components/Information";
 
 export const Profile = () => {
-  const classes = useStyles();
-
   const [user, setUser] = useState({});
   const [usersPosts, setUsersPosts] = useState([]);
   const [image, setImage] = useState(null);
@@ -217,412 +177,173 @@ export const Profile = () => {
     // eslint-disable-next-line
   }, [params.id]);
 
+  const CONTENTS = [
+    {
+      title: "This tool has made my workflow seamless",
+      name: "Ryan Samuel",
+      feedback:
+        "I've been using this for a while now, and it's become an essential part of my daily routine. It's incredibly user-friendly and has greatly improved my productivity.",
+      date: "03 March 2024",
+    },
+    {
+      title: "It's made my job so much easier",
+      name: "Emma Roberts",
+      feedback:
+        "This tool has been a game-changer for me. From managing my tasks to collaborating with my team, it's made everything so much easier. Highly recommended!",
+      date: "14 February 2023",
+    },
+    {
+      title: "It's my go-to solution for staying organized.",
+      name: "Bruce Mars",
+      feedback:
+        "I've been using this for a while now, and it's become an essential part of my daily routine. It's incredibly user-friendly and has greatly improved my productivity.",
+      date: "10 February 2023",
+    },
+  ];
+
+  const data = [
+    {
+      label: "Ratings",
+      value: "ratings",
+      icon: StarIcon,
+      desc: (
+        <div className="mt-5">
+          {CONTENTS.map(({ name, feedback, title, date }, index) => (
+            <CardReview
+              key={index}
+              title={title}
+              name={name}
+              feedback={feedback}
+              date={date}
+            />
+          ))}
+        </div>
+      ),
+    },
+    {
+      label: "Posts",
+      value: "posts",
+      icon: UserCircleIcon,
+      desc: (
+        <CardBody className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8">
+          {usersPosts.map((post, key) => (
+            <Post
+              key={key}
+              id={post._id}
+              name={post.name}
+              date={post.createdAt}
+              authorName={post.author.username}
+              imgs={post.images}
+              profileImg={post.author.avatar_url}
+            />
+          ))}
+        </CardBody>
+      ),
+    },
+    {
+      label: "Information",
+      value: "information",
+      icon: UserCircleIcon,
+      desc: <Information />,
+    },
+  ];
+
   return (
-    <div className={classes.root}>
-      <Snackbar
-        open={uploadSuccess}
-        autoHideDuration={6000}
-        onClose={() => setUploadSuccess(false)}
-        message="Avatar updated!"
-        action={
-          <IconButton
-            size="small"
-            color="inherit"
-            onClick={() => setUploadSuccess(false)}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        }
-      />
-      <Snackbar
-        open={!!uploadError}
-        autoHideDuration={6000}
-        onClose={() => setUploadError(null)}
-        message={`Error: ${uploadError}`}
-        action={
-          <IconButton
-            size="small"
-            color="inherit"
-            onClick={() => setUploadError(null)}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        }
-      />
-      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
-        <Box className={classes.avatarSection} sx={{ flex: 1 }}>
-          <Card sx={{ maxWidth: "300px", minWidth: "250px" }}>
-            <CardContent>
-              <ListItem sx={{ display: "flex", justifyContent: "center" }}>
-                <ListItemAvatar>
-                  <Avatar
-                    src={image ? URL.createObjectURL(image) : user.avatar_url}
-                    className={classes.avatar}
+    <section className="p-8">
+      <div className="container mx-auto max-w-screen-lg">
+        <Card shadow={false} className="border border-gray-300 rounded-2xl">
+          <CardBody>
+            <div className="flex lg:gap-0 gap-6 flex-wrap justify-between items-center">
+              <div className="flex items-center gap-3">
+                <Avatar src={user.avatar_url} alt="avatar" variant="rounded" />
+                <div>
+                  <Typography color="blue-gray" variant="h6">
+                    {user.username}
+                  </Typography>
+                  <Typography
+                    variant="small"
+                    className="font-normal text-gray-600"
+                  >
+                    {user.email}
+                  </Typography>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <form encType="multipart/form-data" method="POST">
+                  <input
+                    style={{ display: "none" }}
+                    accept="image/*"
+                    onChange={handleImage}
+                    type="file"
+                    id="icon-button-file"
                   />
-                </ListItemAvatar>
-              </ListItem>
-              <ListItem sx={{ display: "flex", justifyContent: "center" }}>
-                <Typography variant="h5">{user.username}</Typography>
-              </ListItem>
-              {auth.isAuthenticated() &&
-                auth.isAuthenticated().user._id === user._id && (
-                  <div className={classes.buttonWrapper}>
-                    <form encType="multipart/form-data" method="POST">
-                      <input
-                        style={{ display: "none" }}
-                        accept="image/*"
-                        onChange={handleImage}
-                        type="file"
-                        id="icon-button-file"
-                      />
-                      <label htmlFor="icon-button-file">
-                        <Button variant="contained" component="span">
-                          Change Avatar
-                        </Button>
-                      </label>
-                    </form>
-                    {uploading && (
-                      <CircularProgress size={24} sx={{ marginLeft: 2 }} />
-                    )}
-                  </div>
-                )}
-              {auth.isAuthenticated() &&
-                auth.isAuthenticated().user._id !== user._id && (
-                  <div className={classes.buttonWrapper}>
-                    <Button
-                      variant="contained"
-                      component="span"
-                      onClick={accessChat}
-                    >
-                      Send Message
-                    </Button>
-                  </div>
-                )}
-
-              <Typography sx={{ textAlign: "center" }}>
-                <Stars noOfStars={avgRatings} />
-              </Typography>
-
-              <List>
-                <ListItemText
-                  primary={
-                    <Typography variant="body1">
-                      Bio:{" "}
-                      {isEditing ? (
-                        <TextField
-                          name="bio"
-                          value={updatedFields.bio}
-                          onChange={handleFieldChange}
-                          variant="outlined"
-                          size="small"
-                          fullWidth
+                  {uploading ? (
+                    <Spinner className="h-8 w-8" />
+                  ) : (
+                    <label htmlFor="icon-button-file">
+                      <Button
+                        variant="text"
+                        size="sm"
+                        className="border-gray-300 flex items-center gap-2"
+                        onClick={() =>
+                          document.getElementById("icon-button-file").click()
+                        }
+                      >
+                        <ArrowUpTrayIcon
+                          strokeWidth={2}
+                          className="h-6 w-6 text-gray-500"
                         />
-                      ) : (
-                        user.bio || "No bio available"
-                      )}
-                    </Typography>
-                  }
-                />
-                <ListItemText
-                  primary={
-                    <Typography variant="body1">
-                      Gender: {user.gender === true ? "Male" : "Female"}
-                    </Typography>
-                  }
-                />
-                <ListItemText
-                  primary={
-                    <Typography variant="body1">Age: {user.age}</Typography>
-                  }
-                />
-                <ListItemText
-                  primary={
-                    <Typography variant="body1">
-                      From:{" "}
-                      {isEditing ? (
-                        <TextField
-                          name="from"
-                          value={updatedFields.from}
-                          onChange={handleFieldChange}
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                        />
-                      ) : (
-                        user.from || "Unknown"
-                      )}
-                    </Typography>
-                  }
-                />
-                <ListItemText
-                  primary={
-                    <Typography variant="body1">
-                      Joined:{" "}
-                      {user.createdAt
-                        ? new Date(user.createdAt).toLocaleString()
-                        : "N/A"}
-                    </Typography>
-                  }
-                />
-                <ListItemText
-                  primary={
-                    <Typography variant="body1">
-                      Posts: {usersPosts.length}
-                    </Typography>
-                  }
-                />
-                {isEditing ? (
-                  <div
-                    style={{
-                      textAlign: "center",
-                    }}
-                  >
-                    <Button
-                      onClick={handleSave}
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      sx={{ margin: 1 }}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      onClick={handleCancelEdit}
-                      variant="outlined"
-                      color="secondary"
-                      size="small"
-                      sx={{ margin: 1 }}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      width: "100%",
-                      textAlign: "center",
-                    }}
-                  >
-                    <Button
-                      onClick={handleEdit}
-                      variant="outlined"
-                      color="primary"
-                      size="small"
-                    >
-                      Update Profile
-                    </Button>
-                  </div>
-                )}
-              </List>
-            </CardContent>
-          </Card>
-        </Box>
-        <Box sx={{ flex: 3, padding: 2 }}>
-          <Typography variant="h5" sx={{ marginBottom: 2 }}>
-            Here are your posts...
-          </Typography>
-          {usersPosts.length === 0 ? (
-            <Typography variant="body1" className={classes.noPosts}>
-              No posts yet. Start contributing now!
+                        Upload Avatar
+                      </Button>
+                    </label>
+                  )}
+                </form>
+              </div>
+            </div>
+            <Typography
+              variant="small"
+              className="font-normal text-gray-600 mt-6"
+            >
+              {user.bio}
             </Typography>
-          ) : (
-            usersPosts.map((post) => (
-              <Link
-                key={post._id}
-                to={`/post/${post._id}`}
-                style={{ textDecoration: "none" }}
-              >
-                <Paper className={classes.post}>
-                  <ListItem>
-                    <ListItemText
-                      primary={
-                        <Typography variant="h6" sx={{ cursor: "pointer" }}>
-                          {post.name}
-                          {post.approved === false ? (
-                            <span style={{ color: "red" }}> In approval</span>
-                          ) : null}
-                        </Typography>
-                      }
-                      secondary={post.createdAt}
-                    />
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText
-                      primary={
-                        <Typography
-                          variant="body1"
-                          className={classes.multiLineEllipsis}
-                          component="div"
-                        >
-                          <Markup content={post.content} />
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
-                  <ListItem>
-                    {post.topic &&
-                      post.topic.map((topic, id) => (
-                        <Topic
-                          key={id}
-                          name={topic.name}
-                          color={topic.color}
-                          id={id}
-                        />
-                      ))}
-                  </ListItem>
-                  <Box
-                    sx={{
-                      display: { xs: "none", md: "flex" },
-                      alignItems: "center",
-                    }}
-                  >
-                    <Container maxWidth="large">
-                      <Toolbar disableGutters>
-                        <Box sx={{ display: "flex", flexGrow: 1 }}>
-                          <ListItem>
-                            <Badge>
-                              <FavoriteBorderIcon />
-                            </Badge>
-                            <ListItemText
-                              primary={
-                                <Typography
-                                  sx={{ paddingLeft: "5px" }}
-                                  variant="body2"
-                                >
-                                  {Object.keys(post.likes).length} Likes
-                                </Typography>
-                              }
-                            />
-                            <Badge>
-                              <ChatBubbleOutlineIcon />
-                            </Badge>
-                            <ListItemText
-                              primary={
-                                <Typography
-                                  sx={{ paddingLeft: "5px" }}
-                                  variant="body2"
-                                >
-                                  {Object.keys(post.comments).length} Comments
-                                </Typography>
-                              }
-                            />
-                          </ListItem>
-                        </Box>
-                      </Toolbar>
-                    </Container>
-                  </Box>
-                </Paper>
-              </Link>
-            ))
-          )}
-        </Box>
-        <Box sx={{ flex: 1, padding: 2 }}>
-          {/* Posts management section */}
-          {auth.isAuthenticated() &&
-            auth.isAuthenticated().user._id === user._id && (
-              <Card sx={{ maxWidth: "300px" }}>
-                <CardContent>
-                  <ListItem>
-                    <ListItemText
-                      primary={
-                        <Typography
-                          variant="body1"
-                          sx={{ textAlign: "center", fontWeight: "bold" }}
-                        >
-                          Manage posts
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
-                  <Divider />
-                  <List>
-                    <ListItem>
-                      <Typography
-                        sx={{
-                          cursor: "pointer",
-                          "&:hover": { color: "grey" },
-                          transition: "0.2s ease",
-                        }}
-                      >
-                        Approved posts (
-                        {
-                          usersPosts.filter((post) => post.approved === true)
-                            .length
-                        }
-                        )
-                      </Typography>
-                    </ListItem>
-                    <ListItem>
-                      <Typography
-                        sx={{
-                          cursor: "pointer",
-                          "&:hover": { color: "grey" },
-                          transition: "0.2s ease",
-                        }}
-                      >
-                        Waiting for approval (
-                        {
-                          usersPosts.filter((post) => post.approved === false)
-                            .length
-                        }
-                        )
-                      </Typography>
-                    </ListItem>
-                  </List>
-                </CardContent>
-              </Card>
-            )}
-          {/* Rating section */}
-          <Card sx={{ maxWidth: "300px", marginTop: 2 }}>
-            <CardContent>
-              <ListItem>
-                <ListItemText
-                  primary={
-                    <Typography
-                      variant="body1"
-                      sx={{ textAlign: "center", fontWeight: "bold" }}
-                    >
-                      Ratings ({ratings.length})
-                    </Typography>
-                  }
-                />
-              </ListItem>
-              <Divider />
-              <List>
-                {ratings &&
-                  ratings.map((rating, id) => (
-                    <Box
-                      sx={{
-                        textAlign: "center",
-                        border: "1px solid #ccc",
-                        borderRadius: "8px",
-                        padding: "10px",
-                        marginBottom: "10px",
-                        boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.1)",
-                      }}
-                      key={id}
-                    >
-                      <ListItem>
-                        <Typography
-                          sx={{
-                            cursor: "pointer",
-                            "&:hover": { color: "grey" },
-                            transition: "0.2s ease",
-                          }}
-                        >
-                          <Stars noOfStars={rating.noOfStars} />
-                        </Typography>
-                      </ListItem>
-                      <Typography>
-                        {rating.comment} from {rating.author.username}
-                      </Typography>
-                    </Box>
-                  ))}
-              </List>
-            </CardContent>
-          </Card>
-        </Box>
-      </Box>
-    </div>
+            <div className="flex gap-4">
+              <Typography variant="small" className="font-normal mt-6">
+                {Object.keys(usersPosts).length +
+                  ` ${Object.keys(usersPosts).length > 1 ? `Posts` : `Post`}`}
+              </Typography>
+              <Typography variant="small" className="font-normal mt-6">
+                {Object.keys(ratings).length +
+                  ` ${Object.keys(ratings).length > 1 ? `Ratings` : `Rating`}`}
+              </Typography>
+            </div>
+          </CardBody>
+        </Card>
+        <Tabs value="ratings">
+          <TabsHeader
+            className="rounded-none border-b border-blue-gray-50 bg-transparent p-0 mt-2"
+            indicatorProps={{
+              className:
+                "bg-transparent border-b-2 border-gray-900 shadow-none rounded-none",
+            }}
+          >
+            {data.map(({ label, value, icon }) => (
+              <Tab key={value} value={value}>
+                <div className="flex items-center gap-2">
+                  {React.createElement(icon, { className: "w-5 h-5" })}
+                  {label}
+                </div>
+              </Tab>
+            ))}
+          </TabsHeader>
+          <TabsBody>
+            {data.map(({ value, desc }) => (
+              <TabPanel key={value} value={value}>
+                {desc}
+              </TabPanel>
+            ))}
+          </TabsBody>
+        </Tabs>
+      </div>
+    </section>
   );
 };

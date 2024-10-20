@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SingleReply from "./SingleReply";
+import { Typography } from "@material-tailwind/react";
 
 export default function ReplyComment({
   postId,
@@ -27,14 +28,15 @@ export default function ReplyComment({
   }, [comments, commentFatherId]);
 
   return (
-    <div>
+    <div className="gap-4 mt-5 ml-10 sm:ml-10 lg:ml-6 xl:ml-6 pl-4 sm:pl-6 lg:pl-8">
       {openViewMore && amountOfChildComments > 1 && (
-        <p
+        <Typography
           onClick={handleOpenReplies}
-          style={{ cursor: "pointer", paddingLeft: "2%" }}
+          variant="h6"
+          className="font-normal cursor-pointer text-sm text-gray-700"
         >
           View {amountOfChildComments} more comments
-        </p>
+        </Typography>
       )}
 
       {(openReplyComments || amountOfChildComments === 1) &&

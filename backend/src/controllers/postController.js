@@ -14,7 +14,7 @@ const Report = require("../models/report");
 
 const getApprovedPosts = async (req, res) => {
   try {
-    let perPage = 5;
+    let perPage = 6;
     let page = Number(req.query.page) || 1;
 
     const posts = await Post.find({ approved: true })
@@ -317,7 +317,7 @@ const getFilterOptions = (option) => {
 const filterPost = async (req, res) => {
   try {
     const { filters, tag, sort, name, page = 1 } = req.query;
-    const perPage = 5;
+    const perPage = 9;
 
     let query = { approved: true };
     let sortCriteria = { _id: -1 };

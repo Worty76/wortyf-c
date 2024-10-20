@@ -6,7 +6,7 @@ const TopicSchema = new Schema({
     type: String,
     required: true,
   },
-  color: {
+  description: {
     type: String,
     required: true,
   },

@@ -1,19 +1,14 @@
-import {
-  Avatar,
-  Button,
-  IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Menu,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@mui/material";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import BestAnswer from "../../../components/customIcons/Mark";
+import {
+  Typography,
+  Carousel,
+  Textarea,
+  Button,
+  IconButton,
+  Avatar,
+} from "@material-tailwind/react";
 import ReplyComment from "./ReplyComment";
 import { VariantType, useSnackbar } from "notistack";
 import {
@@ -26,6 +21,8 @@ import { Link } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Markup } from "interweave";
 import TextEditor from "./TextEditor";
+import moment from "moment";
+import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 
 export default function SingleComment({
   updateComments,
@@ -173,124 +170,69 @@ export default function SingleComment({
   };
 
   return (
-    <div key={comment._id}>
-      <br />
-      <ListItem>
-        <ListItemAvatar>
-          <Avatar src={comment.author.avatar_url} />
-        </ListItemAvatar>
-        <ListItemText
-          primary={
-            <Typography
-              component="a"
-              href={`/profile/${comment.author._id}`}
-              sx={{ textDecoration: "none" }}
-              color="inherit"
-            >
-              {comment.author.username}
+    <>
+      <div className="flex items-center justify-between mt-5">
+        <div className="flex gap-4">
+          <Avatar
+            src={comment.author.avatar_url}
+            alt="avatar"
+            variant="rounded"
+            className="w-12 h-12 object-cover"
+          />
+          <div>
+            <Typography variant="h6" className="whitespace-nowrap">
+              {comment.author.username} -{" "}
+              <span className="text-gray-500 text-sm font-normal">
+                {moment(new Date(comment.createdAt)).fromNow()}
+              </span>
             </Typography>
-          }
-          secondary={comment.createdAt}
-        />
-        {comment.correctAns ? <BestAnswer /> : ""}
-        {auth.isAuthenticated().user &&
-        auth.isAuthenticated().user._id === comment.author._id &&
-        !comment.correctAns ? (
-          <>
-            <IconButton onClick={handleOpenOptions}>
-              <MoreVertIcon />
-            </IconButton>
-            <Menu anchorEl={anchorEl} open={open} onClose={handleCloseOptions}>
-              <MenuItem
-                onClick={(e) => {
-                  handleOpenEditing();
-                  handleCloseOptions();
-                }}
-              >
-                Edit
-              </MenuItem>
-              <MenuItem
-                onClick={(e) => {
-                  onDeleteComment();
-                  handleCloseOptions();
-                }}
-              >
-                Delete
-              </MenuItem>
-            </Menu>
-          </>
-        ) : (
-          ""
-        )}
-      </ListItem>
-      <ListItem>
-        {openEditing ? (
-          <TextField
-            value={commentEditing.text}
-            sx={{ width: "100%" }}
-            placeholder="Your Answer"
-            variant="outlined"
-            multiline={true}
-            onChange={handleCommentEditing("text")}
-          />
-        ) : (
-          <ListItemText
-            primary={
-              <Typography gutterBottom component="div">
-                <Markup content={comment.text} />
-              </Typography>
-            }
-          />
-        )}
-
-        {openEditing ? (
-          <Button
-            variant="contained"
-            style={{ cursor: "pointer", margin: "10px" }}
-            onClick={onSaveEditing}
-          >
-            Save
-          </Button>
-        ) : null}
+            <Typography
+              variant="small"
+              color="gray"
+              className="font-normal max-w-md break-words"
+            >
+              {comment.text}
+            </Typography>
+          </div>
+        </div>
         <Button
+          variant="text"
+          className="flex items-center gap-2 p-2"
+          size="sm"
           onClick={handleReply}
-          variant="outlined"
-          style={{ cursor: "pointer" }}
         >
-          Reply
+          <ArrowUturnLeftIcon strokeWidth={2} className="h-5 w-5" />
+          <Typography variant="h6" className="text-xs">
+            REPLY
+          </Typography>
         </Button>
-      </ListItem>
+      </div>
+      {/* Reply */}
       {openReply && (
-        <List style={{ paddingLeft: "100px" }}>
-          <ListItem>
-            <div style={{ width: "100%" }}>
-              <TextEditor setText={setText} editorRef={editorRef} />
+        <div className="mt-6 my-2 sm:mt-2 lg:mt-4 ml-4 sm:ml-10 lg:ml-16 xl:ml-20 pl-4 sm:pl-6 lg:pl-8">
+          <Textarea
+            rows={4}
+            label="Message"
+            className="mb-2"
+            onChange={(e) => setText(e.target.value)}
+          />
+          <div className="flex justify-between items-center">
+            <div></div>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="text"
+                className="rounded-md"
+                onClick={handleReply}
+              >
+                Close
+              </Button>
+              <Button size="sm" className="rounded-md" onClick={onCreateReply}>
+                Post
+              </Button>
             </div>
-            <List>
-              <ListItem>
-                {auth.isAuthenticated().user ? (
-                  <Button
-                    disabled={text ? false : true}
-                    variant="contained"
-                    onClick={onCreateReply}
-                  >
-                    Reply
-                  </Button>
-                ) : (
-                  <Button
-                    disabled={text ? false : true}
-                    variant="contained"
-                    LinkComponent={Link}
-                    to="/signin"
-                    sx={{ textAlign: "center" }}
-                  >
-                    Sign in to reply
-                  </Button>
-                )}
-              </ListItem>
-            </List>
-          </ListItem>
-        </List>
+          </div>
+        </div>
       )}
       <ReplyComment
         postId={postId}
@@ -298,7 +240,6 @@ export default function SingleComment({
         commentFatherId={comment._id}
         updateReplies={updateReplies}
       />
-      <br />
-    </div>
+    </>
   );
 }

@@ -1,22 +1,18 @@
 import {
-  Avatar,
+  Typography,
+  Carousel,
+  Textarea,
   Button,
   IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Menu,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@mui/material";
+  Avatar,
+} from "@material-tailwind/react";
 import auth from "../../../helpers/Auth";
 import React, { useState } from "react";
 import { deleteReply, updateReply } from "../api/DiscussionApi";
 import { Link } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Markup } from "interweave";
+import moment from "moment";
 
 export default function SingleReply({
   comment,
@@ -87,87 +83,28 @@ export default function SingleReply({
   };
 
   return (
-    <div key={comment._id} style={{ paddingLeft: "10%" }}>
-      <List>
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar src={comment.author.avatar_url} />
-          </ListItemAvatar>
-          <ListItemText
-            primary={
-              <Typography
-                sx={{ textDecoration: "none", color: "inherit" }}
-                component={Link}
-                to={`/profile/${comment.author._id}`}
-              >
-                {comment.author.username}
-              </Typography>
-            }
-            secondary={comment.createdAt}
-          />
-          {auth.isAuthenticated().user &&
-          auth.isAuthenticated().user._id === comment.author._id ? (
-            <>
-              <IconButton onClick={handleOpenOptions}>
-                <MoreVertIcon />
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleCloseOptions}
-              >
-                <MenuItem
-                  onClick={(e) => {
-                    handleOpenEditing();
-                    handleCloseOptions();
-                  }}
-                >
-                  Edit
-                </MenuItem>
-                <MenuItem
-                  onClick={(e) => {
-                    onDeleteReply();
-                    handleCloseOptions();
-                  }}
-                >
-                  Delete
-                </MenuItem>
-              </Menu>
-            </>
-          ) : (
-            ""
-          )}
-        </ListItem>
-        <ListItem>
-          {openEditing ? (
-            <TextField
-              sx={{ width: "100%" }}
-              value={commentEditing.text}
-              placeholder="Your Answer"
-              variant="outlined"
-              multiline={true}
-              onChange={handleCommentEditing("text")}
-            />
-          ) : (
-            <ListItemText
-              primary={
-                <Typography component="div">
-                  <Markup content={comment.text} />
-                </Typography>
-              }
-            />
-          )}
-          {openEditing ? (
-            <Button
-              variant="contained"
-              sx={{ margin: "10px" }}
-              onClick={onSaveEditing}
-            >
-              Save
-            </Button>
-          ) : null}
-        </ListItem>
-      </List>
+    <div className="flex gap-4 mt-5 sm:mt-2 lg:mt-4">
+      <Avatar
+        src={comment.author.avatar_url}
+        alt="avatar"
+        className="w-12 h-12 object-cover"
+        variant="rounded"
+      />
+      <div>
+        <Typography variant="h6" className="whitespace-nowrap">
+          {comment.author.username} -{" "}
+          <span className="text-gray-500 text-sm font-normal">
+            {moment(new Date(comment.createdAt)).fromNow()}
+          </span>
+        </Typography>
+        <Typography
+          variant="small"
+          color="gray"
+          className="font-normal max-w-md break-words"
+        >
+          {comment.text}
+        </Typography>
+      </div>
     </div>
   );
 }

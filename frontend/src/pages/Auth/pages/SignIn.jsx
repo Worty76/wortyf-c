@@ -1,65 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Checkbox,
-  Container,
-  FormControlLabel,
-  TextField,
-  Typography,
-  styled,
-  Paper,
-  InputAdornment,
-} from "@mui/material";
-import { FaEnvelope } from "react-icons/fa";
 import { useNavigate } from "../../../../node_modules/react-router-dom/dist/index";
 import { signIn } from "../api/authApi";
 import auth from "../../../helpers/Auth";
 import { ChatState } from "../../../context/ChatProvider";
-
-const BackgroundImage = styled(Box)(({ theme }) => ({
-  backgroundImage:
-    "url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80)",
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  minHeight: "100vh",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const FormContainer = styled(Paper)(({ theme }) => ({
-  backgroundColor: "rgba(255, 255, 255, 0.9)",
-  borderRadius: theme.shape.borderRadius,
-  padding: theme.spacing(4),
-  boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-  backdropFilter: "blur(4px)",
-  border: "1px solid rgba(255, 255, 255, 0.18)",
-  maxWidth: 400,
-  width: "100%",
-  [theme.breakpoints.down("sm")]: {
-    padding: theme.spacing(3),
-    maxWidth: "90%",
-  },
-}));
-
-const StyledTextField = styled(TextField)(({ theme }) => ({
-  marginBottom: theme.spacing(1),
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: theme.palette.primary.main,
-    },
-    "&:hover fieldset": {
-      borderColor: theme.palette.primary.dark,
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: theme.palette.primary.main,
-    },
-  },
-}));
+import { Typography, Input, Button } from "@material-tailwind/react";
+import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid";
 
 export const SignIn = () => {
-  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const [values, setValues] = useState({
     email: "",
@@ -67,6 +14,8 @@ export const SignIn = () => {
     error: "",
     redirect: false,
   });
+  const [passwordShown, setPasswordShown] = useState(false);
+  const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
 
   const { setIsLoggedIn } = ChatState();
 
@@ -106,117 +55,109 @@ export const SignIn = () => {
   }, [redirect]);
 
   return (
-    <BackgroundImage>
-      <Container
-        component="main"
-        maxWidth="xs"
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <FormContainer elevation={3}>
-          <Typography
-            component="h1"
-            variant="h4"
-            align="center"
-            gutterBottom
-            fontWeight="bold"
-            color="primary"
-          >
-            Welcome to WortyF
-          </Typography>
-          <Typography
-            variant="body1"
-            align="center"
-            gutterBottom
-            color="textSecondary"
-          >
-            Please sign in to continue
-          </Typography>
-          <div>
-            <StyledTextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
+    <section className="grid text-center h-5/6 items-center p-8">
+      <div>
+        <Typography variant="h3" color="blue-gray" className="mb-2">
+          Sign In
+        </Typography>
+        <Typography className="mb-16 text-gray-600 font-normal text-[18px]">
+          Enter your email and password to sign in
+        </Typography>
+        <form action="#" className="mx-auto max-w-[24rem] text-left">
+          <div className="mb-6">
+            <label htmlFor="email">
+              <Typography
+                variant="small"
+                className="mb-2 block font-medium text-gray-900"
+              >
+                Your Email
+              </Typography>
+            </label>
+            <Input
               id="email"
-              label="Email Address"
+              color="gray"
+              size="lg"
+              type="email"
               name="email"
-              autoComplete="email"
-              autoFocus
+              placeholder="name@mail.com"
+              className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
               onChange={handleChange("email")}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <FaEnvelope color="#1976d2" />
-                  </InputAdornment>
-                ),
-              }}
             />
-            <StyledTextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              type="password"
-              name="password"
-              label="Password"
-              id="password"
-              autoComplete="current-password"
+          </div>
+          <div className="mb-6">
+            <label htmlFor="password">
+              <Typography
+                variant="small"
+                className="mb-2 block font-medium text-gray-900"
+              >
+                Password
+              </Typography>
+            </label>
+            <Input
+              size="lg"
+              placeholder="********"
+              className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
+              type={passwordShown ? "text" : "password"}
+              icon={
+                <i onClick={togglePasswordVisiblity}>
+                  {passwordShown ? (
+                    <EyeIcon className="h-5 w-5" />
+                  ) : (
+                    <EyeSlashIcon className="h-5 w-5" />
+                  )}
+                </i>
+              }
               onChange={handleChange("password")}
             />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  value="remember"
-                  color="primary"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-              }
-              label="Remember me"
-            />
-            <div>
-              <Typography
-                onClick={redirectToSignUp}
-                sx={{
-                  cursor: "pointer",
-                  "&:hover": {
-                    color: "gray",
-                  },
-                  transition: "ease 0.2s",
-                  fontWeight: "bold",
-                }}
-              >
-                Don't have an account?
-              </Typography>
-            </div>
-            <div style={{ color: "red", textAlign: "center" }}>
-              {values.error}
-            </div>
-
-            <Button
-              onClick={onSignIn}
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              size="large"
-              sx={{
-                mt: 3,
-                mb: 2,
-                background: "#24292F",
-                boxShadow: "0 3px 5px 2px rgba(33, 203, 243, .3)",
-              }}
-            >
-              Sign In
-            </Button>
           </div>
-        </FormContainer>
-      </Container>
-    </BackgroundImage>
+          <Button
+            color="gray"
+            size="lg"
+            className="mt-6"
+            fullWidth
+            onClick={onSignIn}
+          >
+            sign in
+          </Button>
+          <div className="!mt-4 flex justify-end">
+            <Typography
+              as="a"
+              href="#"
+              color="blue-gray"
+              variant="small"
+              className="font-medium"
+            >
+              Forgot password
+            </Typography>
+          </div>
+          <Button
+            variant="outlined"
+            size="lg"
+            className="mt-6 flex h-12 items-center justify-center gap-2"
+            fullWidth
+          >
+            <img
+              src={`https://www.material-tailwind.com/logos/logo-google.png`}
+              alt="google"
+              className="h-6 w-6"
+            />{" "}
+            sign in with google
+          </Button>
+          <Typography
+            variant="small"
+            color="gray"
+            className="!mt-4 text-center font-normal"
+          >
+            Not registered?{" "}
+            <span
+              className="font-medium text-gray-900 cursor-pointer hover:text-green-300"
+              onClick={() => redirectToSignUp()}
+            >
+              Create account
+            </span>
+          </Typography>
+        </form>
+      </div>
+    </section>
   );
 };

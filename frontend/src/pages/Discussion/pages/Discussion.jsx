@@ -2,31 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 // import CssBaseline from "@material-ui/core/CssBaseline";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
-  Grid,
-  Box,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Paper,
   Typography,
-  Avatar,
-  Toolbar,
-  IconButton,
-  Divider,
-  TextField,
+  Carousel,
+  Textarea,
   Button,
-  List,
-  ListItemAvatar,
-  Menu,
-  MenuItem,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+  IconButton,
+  Avatar,
+} from "@material-tailwind/react";
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
 import {
@@ -48,25 +30,11 @@ import ChatIcon from "@mui/icons-material/Chat";
 import { Topic } from "../components/Topic";
 import { ChatState } from "../../../context/ChatProvider";
 import { useSocket } from "../../../context/SocketProvider";
-
-const useStyles = makeStyles({
-  root: {
-    padding: "5%",
-  },
-  responsiveTexts: {
-    fontSize: "clamp(1.5rem, 5vw, 2rem)",
-  },
-  sidebarContainer: {
-    width: "20%",
-  },
-  postDetails: {
-    marginTop: "30px",
-  },
-});
+import { HeartIcon, FlagIcon } from "@heroicons/react/24/solid";
+import moment from "moment";
 
 export const Discussion = () => {
   const { socket } = useSocket();
-  const classes = useStyles();
   const params = useParams();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -90,7 +58,6 @@ export const Discussion = () => {
     notification,
   } = ChatState();
 
-  // Handle multiple clicks on Like/Unlike button
   const debouncedOnCreateLike = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -300,7 +267,6 @@ export const Discussion = () => {
         setComments([comment, ...comments]);
         setText("");
         handleVariant("success");
-        editorRef.current.setContent("");
 
         if (auth.isAuthenticated().user._id !== post.author._id) {
           createNotification(
@@ -388,323 +354,212 @@ export const Discussion = () => {
     }
   });
 
+  console.log(post);
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper} elevation={3}>
-        <Grid display="flex">
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              width: "240px",
-              padding: "20px",
-              borderRadius: "8px",
-            }}
-          >
-            <ListItem disablePadding>
-              <ListItemIcon>
-                {post.approved ? (
-                  <CheckCircleIcon
-                    sx={{ color: post.sold ? "#008000" : "gray" }}
-                  />
-                ) : (
-                  <CheckCircleIcon sx={{ color: "orange" }} />
-                )}
-              </ListItemIcon>
-            </ListItem>
-          </Box>
-
-          <Box sx={{ width: "100%" }}>
-            <div
-              sx={{
-                minWidth: "100%",
-                height: "100%",
-              }}
-              className={classes.postDetails}
+    <section className="p-8">
+      <div className="mx-auto max-w-screen-md space-y-2 xs:space-y-1 sm:space-y-2 md:space-y-3">
+        <div className="flex items-center gap-4 p-2">
+          <img
+            src={post && post.author && post.author.avatar_url}
+            alt="avatar"
+            className="inline-block object-cover object-center rounded-full w-12 h-12"
+          />
+          <div>
+            <Typography
+              className="text-slate-800 font-semibold cursor-pointer"
+              onClick={() => navigate(`/profile/${post.author._id}`)}
             >
-              {openEditing ? (
-                <TextField
-                  value={valuesEditing.name}
-                  sx={{ width: "100%" }}
-                  placeholder="Content"
-                  variant="outlined"
-                  multiline={true}
-                  onChange={handleChangeEditing("name")}
-                />
-              ) : (
-                <ListItemText
-                  primary={<Typography variant="h5">{post.name}</Typography>}
-                  secondary={
-                    <Typography sx={{ color: "red" }} variant="h8">
-                      {post.price}
-                    </Typography>
-                  }
-                />
-              )}
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar src={user?.avatar_url ? user?.avatar_url : ""} />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <Typography
-                      sx={{ textDecoration: "none", color: "inherit" }}
-                      component={Link}
-                      to={`/profile/${user._id}`}
-                    >
-                      {user.username}
-                    </Typography>
-                  }
-                  secondary={post.createdAt}
-                />
-                {auth.isAuthenticated().user &&
-                auth.isAuthenticated().user._id === user._id ? (
-                  <>
-                    <IconButton onClick={handleOpenOptions}>
-                      <MoreVertIcon />
-                    </IconButton>
-                    <Menu
-                      anchorEl={anchorEl}
-                      open={open}
-                      onClose={handleCloseOptions}
-                    >
-                      <MenuItem
-                        onClick={(e) => {
-                          handleOpenEditing();
-                          handleCloseOptions();
-                        }}
-                      >
-                        Edit
-                      </MenuItem>
-                      <MenuItem
-                        onClick={(e) => {
-                          onDeletePost();
-                          handleCloseOptions();
-                        }}
-                      >
-                        Delete
-                      </MenuItem>
-                    </Menu>
-                  </>
-                ) : null}
-                {post &&
-                  !post.sold &&
-                  auth.isAuthenticated().user &&
-                  auth.isAuthenticated().user._id !== user._id && (
-                    <Button
-                      variant="contained"
-                      onClick={() => accessChat(user._id, post._id)}
-                    >
-                      <ChatIcon /> Chat
-                    </Button>
-                  )}
-              </ListItem>
-              {openEditing ? (
-                <TextField
-                  value={valuesEditing.content}
-                  sx={{ width: "100%" }}
-                  placeholder="Content"
-                  variant="outlined"
-                  multiline={true}
-                  onChange={handleChangeEditing("content")}
-                />
-              ) : (
-                <ListItem>
-                  <ListItemText
-                    primary={
-                      <>
-                        <Typography component="div">
-                          <Markup content={post.content} />
-                        </Typography>
-                        <div
-                          style={{
-                            alignItems: "center",
-                            flexFlow: "row wrap",
-                            display: "flex",
-                          }}
-                        >
-                          {post.images &&
-                            post.images.map((image, id) => (
-                              <img
-                                key={id}
-                                alt="images"
-                                style={{
-                                  width: "300px",
-                                  borderRadius: "10px",
-                                  minHeight: "100%",
-                                  objectFit: "contain",
-                                  padding: 2,
-                                }}
-                                src={image}
-                              />
-                            ))}
-                        </div>
-                      </>
-                    }
-                  />
-                </ListItem>
-              )}
+              {post && post.author && post.author.username}
+            </Typography>
+            <Typography className="text-slate-600 text-sm">
+              {post && moment(new Date(post.createdAt)).fromNow()}
+            </Typography>
+          </div>
+        </div>
 
-              <ListItem>
-                {post.topic &&
-                  post.topic.map((topic, id) => (
-                    <Topic
-                      key={id}
-                      name={topic.name}
-                      color={topic.color}
-                      id={id}
-                    />
-                  ))}
-              </ListItem>
-              <Toolbar disableGutters>
-                <Box sx={{ flexGrow: 1 }}>
-                  <List>
-                    <ListItem>
-                      {auth.isAuthenticated() &&
-                      (likes !== null) &
-                        (likes !== undefined) &
-                        (Object.keys(likes).length > 0) ? (
-                        checkLiked(likes) ? (
-                          <IconButton onClick={debouncedOnDeleteLike}>
-                            <FavoriteIcon sx={{ color: "#DC143C" }} />
-                          </IconButton>
-                        ) : (
-                          <IconButton onClick={debouncedOnCreateLike}>
-                            <FavoriteIcon />
-                          </IconButton>
-                        )
-                      ) : (
-                        ""
-                      )}
-                      {auth.isAuthenticated() &&
-                      Object.keys(likes).length === 0 ? (
-                        <IconButton onClick={debouncedOnCreateLike}>
-                          <FavoriteIcon />
-                        </IconButton>
-                      ) : (
-                        ""
-                      )}
-                      {!auth.isAuthenticated() ? (
-                        <IconButton href="/sign-in">
-                          <FavoriteIcon />
-                        </IconButton>
-                      ) : (
-                        ""
-                      )}
-
-                      <ListItemText
-                        primary={
-                          Object.keys(likes).length +
-                          `${
-                            Object.keys(likes).length > 1 ? " likes" : " like"
-                          }`
-                        }
-                      />
-                      {openEditing ? (
-                        <Button variant="contained" onClick={onSaveEditing}>
-                          Save
-                        </Button>
-                      ) : null}
-                    </ListItem>
-                  </List>
-                </Box>
-                <Box sx={{ flexGrow: 0 }}>
-                  <ListItem>
-                    <IconButton onClick={handleOpenReportDialog}>
-                      <ErrorOutlineIcon />
-                    </IconButton>
-                    <ListItemText primary="Report this topic" />
-                  </ListItem>
-                </Box>
-              </Toolbar>
-
-              <Typography>
-                {Object.keys(comments).length}
-                {Object.keys(comments).length <= 1 ? " Answer" : " Answers"}
-              </Typography>
-              <br />
-              <Divider />
-              <Dialog
-                open={openReportDialog}
-                onClose={handleCloseReportDialog}
-                aria-labelledby="report-dialog-title"
+        <div className="mt-4">
+          <Carousel
+            className="rounded-xl"
+            prevArrow={({ handlePrev }) => (
+              <IconButton
+                variant="text"
+                color="white"
+                size="lg"
+                onClick={handlePrev}
+                className="!absolute top-2/4 left-4 -translate-y-2/4"
               >
-                <DialogTitle id="report-dialog-title">
-                  Report This Topic
-                </DialogTitle>
-                <DialogContent>
-                  <Typography>
-                    Please describe why you want to report this topic:
-                  </Typography>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="reportReason"
-                    label="Reason"
-                    onChange={(e) => setMessage(e.target.value)}
-                    type="text"
-                    fullWidth
-                    variant="outlined"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="h-6 w-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
                   />
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleCloseReportDialog} color="secondary">
-                    Cancel
-                  </Button>
-                  <Button color="primary" onClick={report}>
-                    Submit Report
-                  </Button>
-                </DialogActions>
-              </Dialog>
+                </svg>
+              </IconButton>
+            )}
+            nextArrow={({ handleNext }) => (
+              <IconButton
+                variant="text"
+                color="white"
+                size="lg"
+                onClick={handleNext}
+                className="!absolute top-2/4 !right-4 -translate-y-2/4"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="h-6 w-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                  />
+                </svg>
+              </IconButton>
+            )}
+          >
+            {post &&
+              post.images &&
+              post.images.map((img, index) => (
+                <img
+                  key={index}
+                  src={img}
+                  alt="Post"
+                  className="h-full w-full object-cover shadow-lg"
+                />
+              ))}
+          </Carousel>
+        </div>
 
-              {/* Comment section */}
-              <List>
-                <ListItem>
-                  {post.approved && (
-                    <>
-                      {" "}
-                      <div
-                        style={{
-                          width: "100%",
-                        }}
-                      >
-                        <TextEditor setText={setText} editorRef={editorRef} />
-                      </div>
-                      <Button
-                        sx={{ margin: 2 }}
-                        variant="contained"
-                        onClick={onCreateComment}
-                      >
-                        Send
-                      </Button>
-                    </>
-                  )}
-                </ListItem>
-              </List>
-              {comments &&
-                comments.map((comment) => (
-                  <Box
-                    key={comment._id}
-                    sx={{
-                      padding: "10px",
-                      backgroundColor: "#f9f9f9",
-                      borderRadius: "8px",
-                      margin: "15px",
-                    }}
-                  >
-                    <SingleComment
-                      updateComments={updateComments}
-                      comment={comment}
-                      postId={params.id}
-                      authorId={user._id}
-                    />
-                  </Box>
-                ))}
+        <div className="my-4">
+          <Typography variant="small" className="font-medium text-blue-500">
+            {post &&
+              post.topic &&
+              post.topic.map((e, index) => <span key={index}>#{e.name} </span>)}
+          </Typography>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-gray-700">
+            {auth.isAuthenticated() &&
+            (likes !== null) &
+              (likes !== undefined) &
+              (Object.keys(likes).length > 0) ? (
+              checkLiked(likes) ? (
+                <IconButton
+                  variant="text"
+                  onClick={debouncedOnDeleteLike}
+                  className="hover:bg-[#feeceb]"
+                >
+                  <HeartIcon
+                    strokeWidth={2}
+                    className="h-6 w-6 my-4 text-[#f44336] cursor-pointer"
+                  />
+                </IconButton>
+              ) : (
+                <IconButton variant="text" onClick={debouncedOnCreateLike}>
+                  <HeartIcon
+                    strokeWidth={2}
+                    className="h-6 w-6 my-4 text-gray-500 cursor-pointer"
+                  />
+                </IconButton>
+              )
+            ) : (
+              ""
+            )}
+            {auth.isAuthenticated() && Object.keys(likes).length === 0 ? (
+              <IconButton variant="text" onClick={debouncedOnCreateLike}>
+                <HeartIcon
+                  strokeWidth={2}
+                  className="h-6 w-6 my-4 text-gray-500 cursor-pointer"
+                />
+              </IconButton>
+            ) : (
+              ""
+            )}
+            {!auth.isAuthenticated() ? (
+              <IconButton variant="text" onClick={() => navigate("/sign-in")}>
+                <HeartIcon
+                  strokeWidth={2}
+                  className="h-6 w-6 my-4 text-gray-500 cursor-pointer"
+                />
+              </IconButton>
+            ) : (
+              ""
+            )}
+            {Object.keys(likes).length +
+              `${Object.keys(likes).length > 1 ? " likes" : " like"}`}
+          </div>
+
+          <div className="flex items-center gap-2 text-gray-700">
+            <IconButton variant="text">
+              <FlagIcon
+                strokeWidth={2}
+                className="h-6 w-6 my-4 text-gray-500 cursor-pointer"
+              />
+            </IconButton>
+            Report
+          </div>
+        </div>
+
+        <Typography
+          variant="h2"
+          className="my-4 xs:my-1 sm:my-2 md:my-2 font-black text-4xl leading-snug text-blue-gray-900"
+        >
+          {post && post.name}
+        </Typography>
+        <Typography className="font-normal text-gray-700">
+          {post && <Markup content={post.content} />}
+        </Typography>
+        <div className="pt-5 pb-5">
+          <Typography className="font-normal font-black">
+            {Object.keys(comments).length} comments
+          </Typography>
+          {console.log(comments)}
+          {comments &&
+            comments.map((comment, index) => (
+              <SingleComment
+                authorId={user._id}
+                postId={post._id}
+                comment={comment}
+                updateComments={updateComments}
+                key={index}
+              />
+            ))}
+        </div>
+        <div className="relative w-full mt-6">
+          <Typography variant="h6">Post your comment</Typography>
+          <Textarea
+            rows={4}
+            label="Message"
+            className="mb-2"
+            onChange={(e) => setText(e.target.value)}
+          />
+          <div className="flex justify-between items-center">
+            <div></div>
+            <div>
+              <Button
+                size="sm"
+                className="rounded-md"
+                onClick={onCreateComment}
+              >
+                Post Comment
+              </Button>
             </div>
-          </Box>
-        </Grid>
-      </Paper>
-    </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };

@@ -36,7 +36,7 @@ const createComment = async (req, res) => {
     if (!post)
       return res.status(400).send({ message: "Could not find the post!" });
 
-    let timestamps = new Date().toLocaleString();
+    let timestamps = new Date();
 
     const comment = new Comment({
       text: req.body.text,
@@ -145,7 +145,7 @@ const createReply = async (req, res) => {
     if (!user)
       return res.status(400).send({ message: "Could not find the user!" });
 
-    let timestamps = new Date().toLocaleString();
+    let timestamps = new Date();
 
     const parentComment = await findAuthorOfComment(postId, commentId);
 

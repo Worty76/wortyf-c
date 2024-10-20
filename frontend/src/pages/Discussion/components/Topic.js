@@ -1,26 +1,27 @@
-export const Topic = ({ name, color, id }) => {
+import { Card, CardBody, Typography } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
+
+export const Topic = ({ name, description, color, id }) => {
+  const navigate = useNavigate();
+
   return (
-    <div
-      style={{
-        borderRadius: "50px",
-        display: "flex",
-        alignItems: "center",
-        border: `1px solid ${color}`,
-        margin: 5,
-        cursor: "pointer",
-      }}
-      key={id}
+    <Card
+      className="border border-gray-300 overflow-hidden shadow-sm h-full cursor-pointer"
+      onClick={() => navigate(`/tag/${id}`)}
     >
-      <div
-        style={{
-          fontSize: "clamp(0.7rem, 5vw, 0.3rem)",
-          color: `${color}`,
-          fontWeight: "700",
-          padding: 5,
-        }}
-      >
-        {name}
-      </div>
-    </div>
+      <CardBody className="p-4 flex flex-col h-full">
+        <div className="flex-grow">
+          <Typography
+            color="blue-gray"
+            className="!text-base !font-semibold mb-1"
+          >
+            {name}
+          </Typography>
+          <Typography variant="small" color="gray" className="font-medium">
+            {description}
+          </Typography>
+        </div>
+      </CardBody>
+    </Card>
   );
 };

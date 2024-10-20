@@ -1,92 +1,148 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import {
-  AppBar,
-  Container,
-  Toolbar,
-  Typography,
-  Box,
-  IconButton,
-  Menu,
-  MenuItem,
+  Navbar as MTNavbar,
+  Collapse,
   Button,
-  Tooltip,
+  IconButton,
+  Typography,
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
   Avatar,
-  Badge,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import { Link, useNavigate } from "react-router-dom";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import MessageIcon from "@mui/icons-material/Message";
+} from "@material-tailwind/react";
+import {
+  RectangleStackIcon,
+  UserCircleIcon,
+  CommandLineIcon,
+  HomeIcon,
+  XMarkIcon,
+  Bars3Icon,
+  PowerIcon,
+} from "@heroicons/react/24/solid";
+import { useNavigate, Link } from "react-router-dom";
 import auth from "../helpers/Auth";
-import { ChatState } from "../context/ChatProvider";
-import { getSender } from "../logic/ChatLogics";
-import axios from "axios";
+
+const NAV_MENU = [
+  {
+    name: "Home",
+    icon: HomeIcon,
+    url: "/home",
+  },
+  {
+    name: "Pages",
+    icon: RectangleStackIcon,
+  },
+];
+
+const NavItem = forwardRef(({ children, onClick, href }, ref) => (
+  <Typography
+    variant="paragraph"
+    color="gray"
+    className="flex items-center gap-2 font-medium text-gray-900 cursor-pointer"
+    onClick={onClick}
+    ref={ref}
+  >
+    {children}
+  </Typography>
+));
+
+const profileMenuItems = [
+  {
+    label: "My Profile",
+    icon: UserCircleIcon,
+  },
+  {
+    label: "Sign Out",
+    icon: PowerIcon,
+  },
+];
+
+const ProfileMenu = ({ isMenuOpen, setIsMenuOpen, closeMenu, user }) => {
+  const navigate = useNavigate();
+
+  return (
+    <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
+      <MenuHandler>
+        <Button
+          variant="text"
+          color="blue-gray"
+          className="flex items-center rounded-full py-0 pr-0 pl-0 lg:ml-auto"
+        >
+          <Avatar
+            variant="circular"
+            size="sm"
+            alt="tania andrew"
+            className="border border-gray-900 p-0.5"
+            src={user && user.avatar_url}
+          />
+        </Button>
+      </MenuHandler>
+      <MenuList className="p-1">
+        {profileMenuItems.map(({ label, icon }, key) => {
+          const isLastItem = key === profileMenuItems.length - 1;
+          return (
+            <MenuItem
+              key={label}
+              onClick={() => {
+                if (label === "My Profile") {
+                  navigate(`/profile/${user._id}`);
+                }
+                if (label === "Sign Out") {
+                  auth.clearJwt(() => {
+                    navigate(`sign-in`);
+                  });
+                  navigate(0);
+                }
+                closeMenu();
+              }}
+              className={`flex items-center gap-2 rounded ${
+                isLastItem
+                  ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
+                  : ""
+              }`}
+            >
+              {React.createElement(icon, {
+                className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
+                strokeWidth: 2,
+              })}
+              <Typography
+                as="span"
+                variant="small"
+                className="font-normal"
+                color={isLastItem ? "red" : "inherit"}
+              >
+                {label}
+              </Typography>
+            </MenuItem>
+          );
+        })}
+      </MenuList>
+    </Menu>
+  );
+};
 
 export const Appbar = () => {
   const user = auth.isAuthenticated().user;
-
-  const [anchorElNav, setAnchorElNav] = useState(null);
-  const [anchorElUser, setAnchorElUser] = useState(null);
-  const [anchorElMessage, setAnchorElMessage] = useState(null);
-  const [anchorElNoti, setAnchorElNoti] = useState(null);
-  const {
-    setSelectedChat,
-    messageNotification,
-    setMessageNotification,
-    setIsLoggedIn,
-    setNotification,
-    notification,
-  } = ChatState();
+  const [open, setOpen] = useState(false);
+  const [openPagesMenu, setOpenPagesMenu] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const navigate = useNavigate();
-
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  const handleCloseMessage = () => {
-    setAnchorElMessage(null);
-  };
-
-  const handleCloseNoti = () => {
-    setAnchorElNoti(null);
-  };
-
-  const handleClickMessage = (event) => {
-    setAnchorElMessage(event.currentTarget);
-  };
-
-  const handleClickNoti = (event) => {
-    setAnchorElNoti(event.currentTarget);
-  };
+  const closeMenu = () => setIsMenuOpen(false);
 
   const pages = {
     user: [
-      { name: "Home", URL: "home" },
       { name: "Guardians", URL: "guardians" },
       { name: "Events", URL: "events" },
       { name: "Chat", URL: "chat" },
     ],
     admin: [
-      { name: "Home", URL: "home" },
       { name: "Guardians", URL: "guardians" },
       { name: "Events", URL: "events" },
       { name: "Chat", URL: "chat" },
       { name: "Manage", URL: "admin/manage" },
     ],
     moderator: [
-      { name: "Home", URL: "home" },
       { name: "Guardians", URL: "guardians" },
       { name: "Events", URL: "events" },
       { name: "Chat", URL: "chat" },
@@ -96,365 +152,124 @@ export const Appbar = () => {
     ],
   };
 
-  const notificationLength = (notification) => {
-    return notification.filter((noti) => noti.isRead === false).length;
+  const getPagesForRole = () => {
+    if (user && user.role === "admin") return pages.admin;
+    if (user && user.role === "moderator") return pages.moderator;
+    return pages.user;
   };
 
-  const read = async (notification) => {
-    let config = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + JSON.parse(auth.isAuthenticated().token),
-      },
-    };
-    await axios
-      .put(
-        `${process.env.REACT_APP_API}/api/notification/read`,
-        {
-          notificationId: notification._id,
-        },
-        config
-      )
-      .then((data) => {
-        console.log(data);
-        setNotification((prevNotifications) =>
-          prevNotifications.map((n) =>
-            n._id === notification._id ? { ...n, isRead: true } : n
-          )
-        );
-      });
-  };
+  const handleOpen = () => setOpen((cur) => !cur);
 
   return (
-    <div>
-      <AppBar
-        position="static"
-        color="primary"
-        elevation={1}
-        sx={{ zIndex: 999 }}
-      >
-        <Container maxWidth="xl">
-          <Toolbar disableGutters>
-            {/* Put logo */}
-            <Typography
-              variant="h6"
-              sx={{
-                textDecoration: "none",
-                color: "white",
-                fontWeight: 700,
-                outline: "none",
-              }}
-              component={Link}
-              to="/"
-            >
-              Worty-F
-            </Typography>
+    <MTNavbar shadow={false} fullWidth className="border-0 sticky top-0 z-50">
+      <div className="relative container mx-auto flex items-center justify-between">
+        <div className="flex-1">
+          <Typography
+            component={Link}
+            onClick={() => navigate("/")}
+            color="blue-gray"
+            className="text-lg font-bold cursor-pointer"
+          >
+            WortyF
+          </Typography>
+        </div>
 
-            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-              <IconButton
-                size="large"
-                color="inherit"
-                onClick={handleOpenNavMenu}
-              >
-                <MenuIcon />
-              </IconButton>
+        <ul className="flex-1 hidden items-center gap-8 lg:flex w-full justify-center">
+          {NAV_MENU.map(({ name, icon: Icon, url }) =>
+            name === "Pages" ? (
               <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{ display: { xs: "block", md: "none" } }}
+                key={name}
+                open={openPagesMenu}
+                handler={setOpenPagesMenu}
+                placement="bottom-start"
+                offset={10}
               >
-                {user &&
-                  user.role === "user" &&
-                  pages.user.map((page) => (
-                    <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{page.name}</Typography>
-                    </MenuItem>
-                  ))}
-                {user &&
-                  user.role === "admin" &&
-                  pages.admin.map((page) => (
-                    <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{page.name}</Typography>
-                    </MenuItem>
-                  ))}
-                {user &&
-                  user.role === "moderator" &&
-                  pages.moderator.map((page) => (
-                    <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{page.name}</Typography>
-                    </MenuItem>
-                  ))}
-              </Menu>
-            </Box>
-
-            <Box
-              sx={{
-                flexGrow: 1,
-                display: {
-                  xs: "none",
-                  md: "flex",
-                },
-                paddingLeft: "10px",
-              }}
-            >
-              {(!user || user.role === "user" || user.role === "guardian") &&
-                pages.user.map((page) => (
-                  <Button
-                    key={page.name}
-                    onClick={handleCloseNavMenu}
-                    sx={{
-                      color: window.location.pathname.includes(page.URL)
-                        ? "grey"
-                        : "white",
-                      display: "block",
-                      "&:hover": {
-                        backgroundColor: window.location.pathname.includes(
-                          page.URL
-                        )
-                          ? "#24292F"
-                          : "grey",
-                      },
-                      textAlign: "center",
-                    }}
-                    component={Link}
-                    to={`${page.URL}`}
-                  >
-                    {page.name}
-                  </Button>
-                ))}
-
-              {user &&
-                user.role === "admin" &&
-                pages.admin.map((page) => (
-                  <Button
-                    key={page.name}
-                    onClick={handleCloseNavMenu}
-                    sx={{
-                      color: window.location.pathname.includes(page.URL)
-                        ? "grey"
-                        : "white",
-                      display: "block",
-                      "&:hover": {
-                        backgroundColor: window.location.pathname.includes(
-                          page.URL
-                        )
-                          ? "#24292F"
-                          : "grey",
-                      },
-                      textAlign: "center",
-                    }}
-                    component={Link}
-                    to={`${page.URL}`}
-                  >
-                    {page.name}
-                  </Button>
-                ))}
-
-              {user &&
-                user.role === "moderator" &&
-                pages.moderator.map((page) => (
-                  <Button
-                    key={page.name}
-                    onClick={handleCloseNavMenu}
-                    sx={{
-                      color: window.location.pathname.includes(page.URL)
-                        ? "grey"
-                        : "white",
-                      display: "block",
-                      "&:hover": {
-                        backgroundColor: window.location.pathname.includes(
-                          page.URL
-                        )
-                          ? "#24292F"
-                          : "grey",
-                      },
-                      textAlign: "center",
-                    }}
-                    component={Link}
-                    to={`${page.URL}`}
-                  >
-                    {page.name}
-                  </Button>
-                ))}
-            </Box>
-
-            {/* Notification Icon */}
-            <div style={{ padding: 10 }}>
-              <div>
-                <IconButton
-                  size="small"
-                  color="inherit"
-                  onClick={handleClickMessage}
-                >
-                  <Badge
-                    badgeContent={messageNotification.length}
-                    color="error"
-                  >
-                    <MessageIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="small"
-                  color="inherit"
-                  onClick={handleClickNoti}
-                >
-                  <Badge
-                    badgeContent={
-                      notification && notificationLength(notification)
-                    }
-                    color="error"
-                  >
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-              </div>
-              <Menu
-                anchorEl={anchorElMessage}
-                open={Boolean(anchorElMessage)}
-                onClose={handleCloseMessage}
-                PaperProps={{
-                  style: {
-                    maxHeight: 400,
-                    width: 300,
-                  },
-                }}
-              >
-                <div style={{ padding: 5 }}>
-                  <b>New Messages</b>
-                </div>
-                <div style={{ padding: 5 }}>
-                  {!messageNotification.length && "No new messages"}
-                  {messageNotification?.map((noti, index) => (
+                <MenuHandler>
+                  <NavItem onClick={() => setOpenPagesMenu((prev) => !prev)}>
+                    <Icon className="h-5 w-5" />
+                    {name}
+                  </NavItem>
+                </MenuHandler>
+                <MenuList className="z-50">
+                  {getPagesForRole().map((page) => (
                     <MenuItem
-                      key={index}
+                      key={page.name}
                       onClick={() => {
-                        setSelectedChat(noti.chat);
-                        setMessageNotification(
-                          messageNotification.filter(
-                            (n) => n.chat._id !== noti.chat._id
-                          )
-                        );
-                        navigate(`/chat/${noti.chat._id}`);
+                        navigate(`/${page.URL}`);
+                        setOpenPagesMenu(false);
                       }}
                     >
-                      {noti.chat.isGroupChat
-                        ? `New message in ${noti.chat.chatName}`
-                        : noti.content
-                        ? `New message from ${getSender(
-                            user,
-                            noti.chat.users
-                          )}: ${noti.content}`
-                        : `New message from ${getSender(
-                            user,
-                            noti.chat.users
-                          )} send an image`}
+                      {page.name}
                     </MenuItem>
                   ))}
-                </div>
+                </MenuList>
               </Menu>
-              <Menu
-                anchorEl={anchorElNoti}
-                open={Boolean(anchorElNoti)}
-                onClose={handleCloseNoti}
-                PaperProps={{
-                  style: {
-                    maxHeight: 400,
-                    width: 300,
-                  },
-                }}
-              >
-                <div style={{ padding: 5 }}>
-                  <b>New Notifications</b>
-                </div>
-                <div style={{ padding: 5 }}>
-                  {!notification.length && "No new "}
-                  {notification &&
-                    notification.length > 0 &&
-                    notification.map((noti, index) => (
-                      <MenuItem
-                        key={index}
-                        sx={{
-                          color: `${noti.isRead ? "grey" : "black"}`,
-                        }}
-                        onClick={() => {
-                          read(noti);
-                          navigate(
-                            noti?.postId?.name
-                              ? noti.redirectUrl
-                              : "404NotFound"
-                          );
-                        }}
-                      >
-                        {noti.type === "comment"
-                          ? `New comment in ${noti?.postId?.name}`
-                          : ""}
-                        {noti.type === "approvedPost"
-                          ? `Your post is approved, check ${noti?.postId?.name}`
-                          : ""}
-                      </MenuItem>
-                    ))}
-                </div>
-              </Menu>
-            </div>
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open options">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  {user ? <Avatar src={user.avatar_url} /> : <Avatar />}
-                </IconButton>
-              </Tooltip>
+            ) : (
+              <NavItem key={name} onClick={() => navigate(url)}>
+                <Icon className="h-5 w-5" />
+                {name}
+              </NavItem>
+            )
+          )}
+        </ul>
 
-              <Menu
-                sx={{ mt: "45px" }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                keepMounted
-                transformOrigin={{ vertical: "top", horizontal: "right" }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
+        <div className="flex-1 hidden items-center gap-2 lg:flex justify-end">
+          {!user && (
+            <>
+              <Button variant="text" onClick={() => navigate(`/sign-in`)}>
+                Sign In
+              </Button>
+
+              <Button
+                color="gray"
+                className="bg-primary"
+                onClick={() => navigate(`/sign-up`)}
               >
-                {user ? (
-                  <div>
-                    <MenuItem
-                      component={Link}
-                      to={`/profile/${user._id}`}
-                      onClick={handleCloseUserMenu}
-                    >
-                      <Typography textAlign="center">Profile</Typography>
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        auth.clearJwt(() => navigate("/sign-in"));
-                        navigate(0);
-                        setIsLoggedIn(false);
-                      }}
-                    >
-                      <Typography>Logout</Typography>
-                    </MenuItem>
-                  </div>
-                ) : (
-                  <MenuItem
-                    component={Link}
-                    to="/sign-in"
-                    onClick={handleCloseUserMenu}
-                  >
-                    <Typography textAlign="center">Sign in</Typography>
-                  </MenuItem>
-                )}
-              </Menu>
-            </Box>
-          </Toolbar>
-        </Container>
-      </AppBar>
-    </div>
+                Sign Up
+              </Button>
+            </>
+          )}
+          {user && (
+            <ProfileMenu
+              isMenuOpen={isMenuOpen}
+              setIsMenuOpen={setIsMenuOpen}
+              closeMenu={closeMenu}
+              user={user}
+            />
+          )}
+        </div>
+
+        <IconButton
+          variant="text"
+          color="gray"
+          onClick={handleOpen}
+          className="ml-auto inline-block lg:hidden"
+        >
+          {open ? (
+            <XMarkIcon strokeWidth={2} className="h-6 w-6" />
+          ) : (
+            <Bars3Icon strokeWidth={2} className="h-6 w-6" />
+          )}
+        </IconButton>
+      </div>
+
+      <Collapse open={open}>
+        <div className="container mx-auto mt-3 border-t border-gray-200 px-2 pt-4">
+          <ul className="flex flex-col gap-4">
+            {NAV_MENU.map(({ name, icon: Icon }) => (
+              <NavItem key={name}>
+                <Icon className="h-5 w-5" />
+                {name}
+              </NavItem>
+            ))}
+          </ul>
+          <div className="mt-6 mb-4 flex items-center gap-2">
+            <Button variant="text">Sign In</Button>
+
+            <Button color="gray">Sign Up</Button>
+          </div>
+        </div>
+      </Collapse>
+    </MTNavbar>
   );
 };

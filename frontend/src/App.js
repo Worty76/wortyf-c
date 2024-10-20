@@ -19,15 +19,13 @@ import { NotFound } from "./pages/NotFound";
 import { Tag } from "./pages/Tag";
 import { Tags } from "./pages/Tag";
 import { Reports } from "./pages/Moderator/pages";
-// import { Footer } from "./layouts/Footer";
+import { Test } from "./pages/Test";
 
 function App() {
   return (
     <div className="App">
-      {/* Header */}
       <Appbar />
 
-      {/* Body */}
       <Routes>
         {/* User route */}
         <Route exact path="/" element={<Start />} />
@@ -44,6 +42,7 @@ function App() {
         <Route path="/tag/:id" element={<Tag />} />
         <Route path="/tags/" element={<Tags />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/test" element={<Test />} />
 
         {/* Admin route */}
         <Route
@@ -73,9 +72,6 @@ function App() {
           }
         />
       </Routes>
-
-      {/* Footer */}
-      {/* <Footer /> */}
     </div>
   );
 }

@@ -3,17 +3,17 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
-import { ThemeProvider } from "@mui/material/styles";
-import { render } from "react-dom";
-import theme from "./theme";
+import ReactDOM from "react-dom/client";
+import { ThemeProvider } from "@material-tailwind/react";
 import { SnackbarProvider } from "notistack";
 import ChatProvider from "./context/ChatProvider";
 import { SocketProvider } from "./context/SocketProvider";
 
-const root = document.getElementById("root");
-render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
+    <ThemeProvider>
       <SnackbarProvider maxSnack={3}>
         <BrowserRouter>
           <ChatProvider>
@@ -24,8 +24,7 @@ render(
         </BrowserRouter>
       </SnackbarProvider>
     </ThemeProvider>
-  </React.StrictMode>,
-  root
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
