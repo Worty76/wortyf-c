@@ -358,22 +358,47 @@ export const Discussion = () => {
   return (
     <section className="p-8">
       <div className="mx-auto max-w-screen-md space-y-2 xs:space-y-1 sm:space-y-2 md:space-y-3">
-        <div className="flex items-center gap-4 p-2">
-          <img
-            src={post && post.author && post.author.avatar_url}
-            alt="avatar"
-            className="inline-block object-cover object-center rounded-full w-12 h-12"
-          />
+        <div className="flex items-center p-2 justify-between">
+          <div className="flex items-center gap-4">
+            <img
+              src={post && post.author && post.author.avatar_url}
+              alt="avatar"
+              className="inline-block object-cover object-center rounded-full w-12 h-12"
+            />
+            <div>
+              <Typography
+                className="text-slate-800 font-semibold cursor-pointer"
+                onClick={() => navigate(`/profile/${post.author._id}`)}
+              >
+                {post && post.author && post.author.username}
+              </Typography>
+              <Typography className="text-slate-600 text-sm">
+                {post && moment(new Date(post.createdAt)).fromNow()}
+              </Typography>
+            </div>
+          </div>
           <div>
-            <Typography
-              className="text-slate-800 font-semibold cursor-pointer"
-              onClick={() => navigate(`/profile/${post.author._id}`)}
+            <Button
+              variant="text"
+              size="sm"
+              className="flex items-center gap-2"
             >
-              {post && post.author && post.author.username}
-            </Typography>
-            <Typography className="text-slate-600 text-sm">
-              {post && moment(new Date(post.createdAt)).fromNow()}
-            </Typography>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+                />
+              </svg>
+              Chat
+            </Button>
           </div>
         </div>
 

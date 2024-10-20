@@ -164,7 +164,7 @@ const getUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     console.log("im running");
-    const { bio, from } = req.body;
+    const { bio, from, username, gender, phone } = req.body;
     const user = await User.findById({ _id: req.user._id });
 
     if (!user)
@@ -172,7 +172,15 @@ const updateUser = async (req, res) => {
 
     const newUser = await User.findByIdAndUpdate(
       { _id: req.user._id },
-      { $set: { bio: bio, from: from } },
+      {
+        $set: {
+          bio: bio,
+          from: from,
+          username: username,
+          gender: gender,
+          phone: phone,
+        },
+      },
       { new: true }
     );
     res

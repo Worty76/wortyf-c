@@ -28,6 +28,9 @@ const UserSchema = new Schema(
       minlength: 5,
       maxlength: 255,
     },
+    phone: {
+      type: String,
+    },
     avatar_url: {
       type: String,
       default:

@@ -48,10 +48,12 @@ export const Profile = () => {
   const [uploadError, setUploadError] = useState(null);
   const { setSelectedChat, chats, setChats } = ChatState();
   const [avgRatings, setAvgRatings] = useState(0);
-  const [isEditing, setIsEditing] = useState(false);
   const [updatedFields, setUpdatedFields] = useState({
-    bio: user.bio || "",
-    from: user.from || "",
+    bio: "",
+    from: "",
+    gender: "",
+    username: "",
+    phone: "",
   });
 
   const navigate = useNavigate();
@@ -71,6 +73,13 @@ export const Profile = () => {
       setRatings(data.ratings);
       setAvgRatings(data.avgRatings);
       console.log(data);
+      setUpdatedFields({
+        bio: data.user.bio || "",
+        from: data.user.from || "",
+        gender: data.user.gender || "",
+        username: data.user.username || "",
+        phone: data.user.phone || "",
+      });
     } catch (error) {
       if (axios.isCancel(error)) {
         console.log("Request canceled", error.message);
@@ -80,29 +89,12 @@ export const Profile = () => {
     }
   };
 
-  const handleEdit = () => {
-    setUpdatedFields({
-      bio: user.bio || "",
-      from: user.from || "",
-    });
-    setIsEditing(true);
-  };
-
   const handleSave = () => {
     console.log(updatedFields);
     updateBio(
       { t: JSON.parse(auth.isAuthenticated().token) },
       updatedFields
     ).then((data) => setUser(JSON.parse(data)));
-    setIsEditing(false);
-  };
-
-  const handleCancelEdit = () => {
-    setUpdatedFields({
-      bio: user.bio || "",
-      from: user.from || "",
-    });
-    setIsEditing(false);
   };
 
   const handleFieldChange = (e) => {
@@ -244,10 +236,22 @@ export const Profile = () => {
       label: "Information",
       value: "information",
       icon: UserCircleIcon,
-      desc: <Information />,
+      desc: (
+        <Information
+          bio={updatedFields.bio}
+          from={updatedFields.from}
+          gender={updatedFields.gender}
+          username={updatedFields.username}
+          phone={updatedFields.phone}
+          user={user}
+          handleFieldChange={handleFieldChange}
+          handleSave={handleSave}
+        />
+      ),
     },
   ];
 
+  console.log(updatedFields);
   return (
     <section className="p-8">
       <div className="container mx-auto max-w-screen-lg">
