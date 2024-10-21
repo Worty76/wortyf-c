@@ -1,47 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  Box,
-  ListItemText,
-  CircularProgress,
+  Drawer,
   Button,
   Typography,
-  Drawer,
   Input,
   Avatar,
-  ListItemAvatar,
-} from "@mui/material";
+  Spinner,
+} from "@material-tailwind/react";
 import { ChatState } from "../../../context/ChatProvider";
-import ListItemButton from "@mui/material/ListItemButton";
 import axios from "axios";
 import auth from "../../../helpers/Auth";
 import GroupChatModal from "./ModalButton/GroupChatModal";
-import SearchIcon from "@mui/icons-material/Search";
-import UserListItem from "./ModalButton/components/UserListItem";
 import { getSender, getSenderAvatar } from "../../../logic/ChatLogics";
-import { makeStyles } from "@mui/styles";
-
-const useStyles = makeStyles({
-  TitleMultiLineEllipsis: {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    "-webkit-line-clamp": 1,
-    "-webkit-box-orient": "vertical",
-  },
-  ContentMultiLineEllipsis: {
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    "-webkit-line-clamp": 2,
-    "-webkit-box-orient": "vertical",
-  },
-});
+import UserListItem from "./ModalButton/components/UserListItem";
 
 function MyChats({ fetchAgain }) {
   const { chatId } = useParams();
   const { selectedChat, setSelectedChat, chats, setChats } = ChatState();
-  const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
@@ -50,7 +26,7 @@ function MyChats({ fetchAgain }) {
   const [hasCalledEffect, setHasCalledEffect] = useState(false);
   const isMounted = useRef(true);
 
-  const toggleDrawer = (newOpen: boolean) => () => {
+  const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
 
@@ -75,8 +51,6 @@ function MyChats({ fetchAgain }) {
   };
 
   const accessChat = async (userId) => {
-    console.log(userId);
-
     try {
       const config = {
         headers: {
@@ -107,7 +81,6 @@ function MyChats({ fetchAgain }) {
       await axios
         .get(`${process.env.REACT_APP_API}/api/chat`, config)
         .then((response) => {
-          console.log(response);
           if (isMounted.current) {
             setChats(response.data);
           }
@@ -159,74 +132,49 @@ function MyChats({ fetchAgain }) {
 
   return (
     <>
-      <Box
-        sx={{
-          width: "30%",
-          border: "1px solid #ddd",
-          borderRadius: "8px",
-          backgroundColor: "#f9f9f9",
-          overflow: "auto",
-        }}
+      <div
+        className={`${
+          selectedChat ? "hidden" : "block"
+        } w-full md:w-1/3 h-full overflow-y-auto md:block`}
       >
-        <Box
-          sx={{
-            padding: 2,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            borderBottom: "1px solid #ddd",
-            backgroundColor: "#fff",
-          }}
-        >
-          My Chats
-          <div style={{ display: "flex" }}>
+        <div className="p-2 flex justify-between items-center border-b bg-white">
+          <Typography variant="h6">My Chats</Typography>
+          <div className="flex">
             <Button
-              variant="contained"
-              color="primary"
-              sx={{ marginRight: 1 }}
+              variant="filled"
+              color="blue"
+              size="sm"
+              className="mr-2"
               onClick={toggleDrawer(true)}
-              startIcon={<SearchIcon />}
             >
               Search User
             </Button>
             {auth.isAuthenticated().user.role === "guardian" && (
-              <>
-                <GroupChatModal />
-              </>
+              <GroupChatModal />
             )}
           </div>
-        </Box>
-        <Box sx={{ width: "100%" }}>
+        </div>
+        <div className="h-full overflow-auto">
           {loading ? (
-            <Box sx={{ display: "flex", justifyContent: "center", padding: 2 }}>
-              <CircularProgress />
-            </Box>
+            <div className="flex justify-center p-2">
+              <Spinner color="blue" />
+            </div>
           ) : chats?.length > 0 ? (
             chats.map((chat, id) => (
-              <Box
+              <div
                 key={id}
                 onClick={() => {
                   setSelectedChat(chat);
                   navigate(`/chat/${chat._id}`);
                 }}
-                sx={{
-                  backgroundColor: `${
-                    selectedChat._id === chat._id ? "#e0f7fa" : "#ffffff"
-                  }`,
-                  color: `${
-                    selectedChat._id === chat._id ? "#00796b" : "#000000"
-                  }`,
-                  borderRadius: "4px",
-                  marginBottom: "1px",
-                  cursor: "pointer",
-                  transition: "background-color 0.3s",
-                  "&:hover": {
-                    backgroundColor: "#f1f8e9",
-                  },
-                }}
+                className={`p-2 mb-1 cursor-pointer transition-colors ${
+                  selectedChat._id === chat._id
+                    ? "bg-teal-100 text-teal-700 rounded-md"
+                    : "bg-white text-black rounded-md"
+                } hover:bg-green-100 rounded-md`}
               >
-                <ListItemButton>
-                  <ListItemAvatar>
+                <div className="flex justify-between w-full">
+                  <div className="flex items-center">
                     <Avatar
                       src={
                         !chat.isGroupChat
@@ -236,103 +184,70 @@ function MyChats({ fetchAgain }) {
                             )
                           : chat.chatName
                       }
+                      alt="chat-avatar"
                     />
-                  </ListItemAvatar>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      width: "100%",
-                    }}
-                  >
-                    <ListItemText
-                      primary={
-                        !chat.isGroupChat
+                    <div className="ml-2">
+                      <Typography variant="h6">
+                        {!chat.isGroupChat
                           ? getSender(auth.isAuthenticated().user, chat.users)
-                          : chat.chatName
-                      }
-                      secondary={
-                        <Typography
-                          className={classes.TitleMultiLineEllipsis}
-                          sx={{ fontSize: "15px", display: "block" }}
-                        >
-                          {chat.post?.name}
-                          <span>
-                            {chat.latestMessage
-                              ? chat.latestMessage?.sender?.username +
-                                ": " +
-                                chat.latestMessage?.content
-                              : ""}
-                          </span>
-                        </Typography>
-                      }
-                    />
-                    {chat.post?.images && (
-                      <div
-                        style={{
-                          height: "80px",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <img
-                          alt=""
-                          style={{
-                            objectFit: "cover",
-                            borderRadius: "10px",
-                            maxWidth: "100%",
-                            height: "100%",
-                            width: "auto",
-                            display: "block",
-                            margin: "0 auto",
-                          }}
-                          src={chat.post?.images[0]}
-                        />
-                      </div>
-                    )}
+                          : chat.chatName}
+                      </Typography>
+                      <Typography className="text-sm text-gray-500 truncate">
+                        {chat.latestMessage
+                          ? `${chat.latestMessage.sender.username}: ${chat.latestMessage.content}`
+                          : ""}
+                      </Typography>
+                    </div>
                   </div>
-                </ListItemButton>
-              </Box>
+                  {chat.post?.images && (
+                    <img
+                      alt=""
+                      className="object-cover rounded-lg max-h-20 w-auto"
+                      src={chat.post.images[0]}
+                    />
+                  )}
+                </div>
+              </div>
             ))
           ) : (
-            <Box sx={{ textAlign: "center", padding: 2 }}>
-              No Chats Available
-            </Box>
+            <div className="text-center p-2">No Chats Available</div>
           )}
-        </Box>
-      </Box>
-      <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
-        <Box sx={{ width: 350 }}>
-          {" "}
-          {/* This sets the width of the drawer */}
-          <Box sx={{ borderBottom: "1px solid", padding: 2 }}>
+        </div>
+      </div>
+
+      <Drawer open={open} onClose={toggleDrawer(false)} placement="left">
+        <div>
+          <div className="border-b p-4">
             <Typography variant="h6">Search Users</Typography>
-          </Box>
-          <Box sx={{ padding: 2 }}>
-            <Box sx={{ display: "flex", pb: 2 }}>
+          </div>
+          <div className="p-4">
+            <div className="flex pb-2">
               <Input
                 placeholder="Search by name or email"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                sx={{ marginRight: 2 }}
+                className="mr-2"
               />
-              <Button variant="contained" onClick={handleSearch}>
+              <Button variant="filled" color="blue" onClick={handleSearch}>
                 Go
               </Button>
-            </Box>
+            </div>
             {loading ? (
-              <CircularProgress />
+              <Spinner color="blue" />
             ) : (
               searchResult?.map((user) => (
                 <UserListItem
                   key={user._id}
                   user={user}
-                  handleFunction={() => accessChat(user._id)}
+                  handleFunction={() => {
+                    accessChat(user._id);
+                    setOpen(false);
+                  }}
                 />
               ))
             )}
-          </Box>
-        </Box>
+          </div>
+        </div>
       </Drawer>
     </>
   );

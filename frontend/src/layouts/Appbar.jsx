@@ -14,7 +14,6 @@ import {
 import {
   RectangleStackIcon,
   UserCircleIcon,
-  CommandLineIcon,
   HomeIcon,
   XMarkIcon,
   Bars3Icon,

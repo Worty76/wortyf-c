@@ -70,10 +70,6 @@ const getFilterOptions = (option) => {
 
 const getTopic = async (req, res) => {
   try {
-    console.log("runnnig");
-    console.log(req.params);
-    console.log(req.query);
-
     const { id } = req.params;
     const { filters, tag, sort, name, page = 1 } = req.query;
     const perPage = 9;

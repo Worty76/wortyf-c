@@ -1,15 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  Box,
   Card,
   Button,
   Typography,
-  CircularProgress,
+  Spinner,
   IconButton,
-  Badge,
-} from "@mui/material";
+  Input,
+} from "@material-tailwind/react";
 import { ChatState } from "../../../context/ChatProvider";
-import { InputBase } from "@mui/material";
 import auth from "../../../helpers/Auth";
 import axios from "axios";
 import ScrollableChat from "./ModalButton/components/ScrollableChat";
@@ -17,7 +15,6 @@ import { Link } from "react-router-dom";
 import { sold } from "../api/ChatApi";
 import RateModalButton from "./RateModalButton/RateModalButton";
 import { debounce } from "lodash";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useSocket } from "../../../context/SocketProvider";
 
 var selectedChatCompare;
@@ -28,6 +25,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   const [newMessage, setNewMessage] = useState("");
   const isMounted = useRef(true);
   const [uploading, setUploading] = useState(false);
+  const [showMessages, setShowMessages] = useState(false);
 
   const {
     selectedChat,
@@ -39,7 +37,6 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
     setChats,
   } = ChatState();
 
-  // Fetch messages
   const fetchMessages = async (source) => {
     if (!selectedChat) return;
 
@@ -63,9 +60,8 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
     }
   };
 
-  // Handle sending message
   const sendMessage = async (event) => {
-    if (event.key === "Enter" && newMessage) {
+    if ((event.key === "Enter" && newMessage) || newMessage) {
       const contentData = new FormData();
       contentData.append("chatId", selectedChat._id);
       contentData.append("content", newMessage);
@@ -145,7 +141,6 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   const debouncedSendMessage = debounce(sendMessage, 200);
 
   useEffect(() => {
-    // !selectedChat|| selectedChat._id === selectedChatCompare?._id
     if (!selectedChat) {
       return;
     }
@@ -161,7 +156,6 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
       isMounted.current = false;
       source.cancel("Component unmounted, cancelling axios requests");
     };
-    // eslint-disable-next-line
   }, [selectedChat]);
 
   useEffect(() => {
@@ -172,7 +166,6 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
           selectedChatCompare._id !== newMessageReceived.chat._id
         ) {
           if (!messageNotification.includes(newMessageReceived)) {
-            console.log(newMessageReceived);
             setMessageNotification([
               newMessageReceived,
               ...messageNotification,
@@ -192,7 +185,6 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
       });
 
       socket.on("notification", (noti) => {
-        console.log(noti);
         setNotification([noti, ...notification]);
       });
 
@@ -205,80 +197,32 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   });
 
   return (
-    <Box
-      style={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div className="h-full flex flex-col">
       {selectedChat && selectedChat === selectedChatCompare ? (
         <>
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              overflowY: "auto",
-            }}
-          >
+          <div className="h-full">
             {selectedChat.post && (
-              <Box
-                sx={{
-                  padding: 1,
-                  borderRadius: "10px",
-                }}
-              >
-                <Card
-                  elevation={1}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
+              <div className="p-2 flex overflow-y-auto rounded-lg">
+                <Card className="flex flex-row items-center w-full">
                   {selectedChat.post?.images?.length > 0 && (
-                    <div style={{ width: "100px", height: "100px" }}>
+                    <div className="w-24 h-24">
                       <img
                         alt=""
-                        style={{
-                          objectFit: "cover",
-                          borderRadius: "10px",
-                          maxWidth: "100%",
-                          height: "100%",
-                          width: "auto",
-                          display: "block",
-                        }}
+                        className="object-cover rounded-lg w-full h-full"
                         src={selectedChat.post?.images[0]}
                       />
                     </div>
                   )}
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      alignItems: "center",
-                      padding: 10,
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                  >
+                  <div className="flex items-center justify-between w-full p-4">
                     <div>
                       <Typography
-                        sx={{
-                          cursor: "pointer",
-                          color: "black",
-                          textDecoration: "none",
-                          "&:hover": {
-                            color: "grey",
-                          },
-                          transition: "0.2s ease",
-                        }}
+                        className="cursor-pointer text-black no-underline hover:text-gray-500 transition duration-200"
                         component={Link}
                         to={`/post/${selectedChat.post._id}`}
                       >
                         {selectedChat.post.name}
                       </Typography>
-                      <Typography sx={{ color: "red" }}>
+                      <Typography className="text-red-500">
                         {selectedChat.post.price}
                       </Typography>
                     </div>
@@ -287,108 +231,78 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                         selectedChat.post.author._id &&
                         (!selectedChat.post.sold ? (
                           <Button
-                            variant="contained"
+                            color="red"
                             onClick={() =>
                               soldPost(
                                 selectedChat.post._id,
-                                selectedChat.users[0]?._id ===
-                                  auth.isAuthenticated().user?._id
-                                  ? selectedChat.users[1]._id
-                                  : selectedChat.users[0]._id,
+                                selectedChat.users[1]._id,
                                 selectedChat._id
                               )
                             }
                           >
-                            Sold to this person
+                            Sold
                           </Button>
                         ) : (
-                          <Typography sx={{ color: "green" }}>
-                            Already Sold
-                          </Typography>
-                        ))}
-                      {auth.isAuthenticated().user._id ===
-                        selectedChat.post.buyer?._id &&
-                        (selectedChat.post.rated ? (
-                          <Typography
-                            sx={{ color: "green", textDecoration: "none" }}
-                            component={Link}
-                            to={`/profile/${selectedChat.post.author._id}`}
-                          >
-                            You already rated, click here to see
-                          </Typography>
-                        ) : (
-                          <RateModalButton chat={selectedChat} />
+                          <Button color="green" disabled>
+                            Sold
+                          </Button>
                         ))}
                     </div>
                   </div>
                 </Card>
-              </Box>
+              </div>
             )}
-            <div
-              className="messages"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                overflowY: "auto",
-                padding: "10px",
-                flex: 1,
-              }}
-            >
-              {uploading && (
-                <CircularProgress size={24} sx={{ marginLeft: 2 }} />
-              )}
-              <ScrollableChat messages={messages} />
-            </div>
+            <ScrollableChat messages={messages} />
           </div>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div>
-              <form encType="multipart/form-data" method="POST">
-                <input
-                  style={{ display: "none" }}
-                  accept="image/*"
-                  type="file"
-                  onChange={handleImage}
-                  id="icon-button-file"
-                />
-                <IconButton size="small" color="inherit">
-                  <label htmlFor="icon-button-file">
-                    <Badge>
-                      <AddPhotoAlternateIcon />
-                    </Badge>
-                  </label>
-                </IconButton>
-              </form>
-            </div>
-            <InputBase
-              style={{
-                width: "100%",
-                padding: "10px",
-                border: "2px solid #4a4b4b",
-                borderRadius: "4px",
-                margin: "10px",
-                fontSize: "16px",
-                "&:focus": {
-                  borderColor: "#0056b3",
-                  outline: "none",
-                },
-              }}
-              placeholder="Enter a message.."
-              id="my-input"
-              aria-describedby="my-helper-text"
-              onChange={(e) => setNewMessage(e.target.value)}
+          <div className="flex items-center w-full p-4 gap-2">
+            <Input
+              type="text"
               value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
               onKeyDown={debouncedSendMessage}
+              placeholder="Type a message..."
+              className="flex-grow border-2 border-gray-300 rounded-lg p-3 mr-2"
             />
+            <label htmlFor="file-input" className="cursor-pointer">
+              <IconButton
+                variant="text"
+                onClick={() => document.getElementById("file-input").click()}
+                className="h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                  />
+                </svg>
+              </IconButton>
+              <input
+                type="file"
+                id="file-input"
+                onChange={handleImage}
+                className="hidden"
+                accept="image/*"
+              />
+            </label>
+            <Button disabled={!newMessage || uploading} onClick={sendMessage}>
+              {uploading ? <Spinner className="h-8 w-8" /> : "Send"}
+            </Button>
           </div>
         </>
-      ) : selectedChat === "" ? (
-        <Box sx={{ padding: 2 }}>Select a group chat to chat</Box>
       ) : (
-        <Box sx={{ padding: 2 }}>
-          <CircularProgress />
-        </Box>
+        <div className="flex items-center justify-center h-full">
+          <Typography>Select a chat</Typography>
+        </div>
       )}
-    </Box>
+    </div>
   );
 }
 

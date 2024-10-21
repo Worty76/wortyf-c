@@ -15,19 +15,15 @@ export const Chat = () => {
   });
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        width: "100%",
-        height: "100%",
-      }}
-    >
-      {user && <MyChats fetchAgain={fetchAgain} />}
-
-      {user && (
-        <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-      )}
-    </div>
+    <section className="p-4 h-full">
+      <div className="mx-auto max-w-screen-lg flex h-full">
+        {user && (
+          <div className="flex w-full h-full">
+            <MyChats fetchAgain={fetchAgain} />
+            <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+          </div>
+        )}
+      </div>
+    </section>
   );
 };

@@ -1,41 +1,28 @@
-import { Avatar, Box, Typography } from "@mui/material";
+import { Avatar, Typography, Card } from "@material-tailwind/react";
 
 const UserListItem = ({ handleFunction, user }) => {
   return (
-    <Box
+    <Card
       onClick={handleFunction}
-      sx={{
-        cursor: "pointer",
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        padding: 2,
-        borderRadius: 2,
-        backgroundColor: "#f5f5f5",
-        transition: "background-color 0.3s",
-        "&:hover": {
-          backgroundColor: "#e0e0e0",
-        },
-      }}
+      className="cursor-pointer w-full flex items-center p-4 rounded-lg bg-gray-100 hover:bg-gray-200 transition-all my-2"
     >
-      <Avatar
-        src={user.avatar_url}
-        alt={`${user.username}'s avatar`}
-        sx={{ width: 48, height: 48, marginRight: 2 }}
-      />
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <Typography
-          variant="body1"
-          component="span"
-          sx={{ fontWeight: "bold" }}
-        >
-          {user.username}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" component="span">
-          {user.email}
-        </Typography>
-      </Box>
-    </Box>
+      <div className="flex items-center">
+        <Avatar
+          src={user.avatar_url}
+          alt={`${user.username}'s avatar`}
+          size="sm"
+          className="mr-4"
+        />
+        <div>
+          <Typography variant="h6" className="font-bold text-sm">
+            {user.username}
+          </Typography>
+          <Typography variant="small" className="text-gray-500 text-sm">
+            {user.email}
+          </Typography>
+        </div>
+      </div>
+    </Card>
   );
 };
 

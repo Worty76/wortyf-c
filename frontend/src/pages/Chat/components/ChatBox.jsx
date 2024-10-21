@@ -1,32 +1,53 @@
-import { Box, Button } from "@mui/material";
+import { Button, IconButton } from "@material-tailwind/react";
 import SingleChat from "./SingleChat";
 import { ChatState } from "../../../context/ChatProvider";
+import { useNavigate } from "react-router-dom";
 
 function ChatBox({ fetchAgain, setFetchAgain }) {
-  const { setSelectedChat } = ChatState();
+  const { selectedChat, setSelectedChat } = ChatState();
+  const navigate = useNavigate();
 
   return (
-    <Box
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
+    <div
+      className={`flex-1 h-full flex flex-col overflow-hidden w-full md:w-2/3 md:flex ${
+        selectedChat ? "block" : "hidden"
+      } md:block`}
     >
-      <Box
+      <div
         sx={{
           display: "flex",
           alignItems: "center",
           padding: 2,
         }}
       >
-        <Button onClick={() => setSelectedChat("")}>Leave Chat</Button>
-      </Box>
-      <Box style={{ flex: 1, overflow: "hidden" }}>
+        <IconButton
+          variant="text"
+          size="sm"
+          onClick={() => {
+            setSelectedChat("");
+            navigate("/chat");
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5 8.25 12l7.5-7.5"
+            />
+          </svg>
+        </IconButton>
+      </div>
+      <div className="h-full overflow-hidden flex-1">
         <SingleChat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
 

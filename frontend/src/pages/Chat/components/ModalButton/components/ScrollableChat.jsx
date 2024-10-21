@@ -1,94 +1,73 @@
 import React from "react";
 import ScrollableFeed from "react-scrollable-feed";
+import { Avatar, Tooltip, Typography } from "@material-tailwind/react";
 import {
   isLastMessage,
   isSameSender,
   isSameSenderMargin,
   isSameUser,
-} from "../../../../../logic/ChatLogics.js";
+} from "../../../../../logic/ChatLogics";
 import auth from "../../../../../helpers/Auth";
-import { Avatar, Tooltip, Typography, Box } from "@mui/material";
 
-function ScrollableChat({ messages }) {
+const ScrollableChat = ({ messages }) => {
   return (
-    <ScrollableFeed>
+    <ScrollableFeed className="p-2">
       {messages && messages.length > 0 ? (
         messages.map((m, i) => (
-          <Box
-            key={m._id}
-            sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}
-          >
+          <div key={m._id} className="flex items-end mb-1">
             {(isSameSender(messages, m, i, auth.isAuthenticated().user._id) ||
               isLastMessage(messages, i, auth.isAuthenticated().user._id)) && (
               <Tooltip
                 placement="bottom-start"
+                className="mr-2"
+                content={m.sender.username}
                 arrow
-                title={m.sender.username}
-                sx={{ marginRight: 1 }}
               >
                 <Avatar
                   src={m.sender.avatar_url}
                   alt={m.sender.username}
-                  sx={{ width: 40, height: 40 }}
+                  className="w-10 h-10"
                 />
               </Tooltip>
             )}
-            <Box
-              sx={{
-                backgroundColor: `${
-                  m.sender._id === auth.isAuthenticated().user._id
-                    ? "#BEE3F8"
-                    : "#B9F5D0"
-                }`,
-                marginLeft: isSameSenderMargin(
-                  messages,
-                  m,
-                  i,
-                  auth.isAuthenticated().user._id
-                ),
-                marginTop: isSameUser(
-                  messages,
-                  m,
-                  i,
-                  auth.isAuthenticated().user._id
-                )
+            <div
+              className={`${
+                m.sender._id === auth.isAuthenticated().user._id
+                  ? "bg-blue-200"
+                  : "bg-green-200"
+              } ml-${isSameSenderMargin(
+                messages,
+                m,
+                i,
+                auth.isAuthenticated().user._id
+              )} mt-${
+                isSameUser(messages, m, i, auth.isAuthenticated().user._id)
                   ? 0
-                  : 1,
-                borderRadius: "20px",
-                padding: "10px 15px",
-                maxWidth: "75%",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
-                position: "relative",
-                wordBreak: "break-word",
-              }}
+                  : 1
+              } rounded-lg p-2 max-w-[75%] shadow-sm break-words relative`}
             >
-              <Typography variant="body2" component="span">
+              <Typography variant="body2">
                 {m.content && m.content}
                 {m.image && (
                   <img
                     alt=""
-                    style={{
-                      width: "150px",
-                      height: "150px",
-                      objectFit: "cover",
-                      borderRadius: "10px",
-                    }}
+                    className="w-40 h-40 object-cover rounded-lg"
                     src={m.image}
                   />
                 )}
               </Typography>
-            </Box>
-          </Box>
+            </div>
+          </div>
         ))
       ) : (
-        <Box sx={{ textAlign: "center", padding: 2 }}>
-          <Typography variant="body2" color="textSecondary">
+        <div className="text-center p-4">
+          <Typography variant="body2" className="text-gray-500">
             No messages yet
           </Typography>
-        </Box>
+        </div>
       )}
     </ScrollableFeed>
   );
-}
+};
 
 export default ScrollableChat;
