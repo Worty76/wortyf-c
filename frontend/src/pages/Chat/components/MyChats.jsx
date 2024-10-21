@@ -154,7 +154,7 @@ function MyChats({ fetchAgain }) {
             )}
           </div>
         </div>
-        <div className="h-full overflow-auto">
+        <div className="h-full flex-grow max-h-[calc(100vh-200px)] overflow-auto">
           {loading ? (
             <div className="flex justify-center p-2">
               <Spinner color="blue" />

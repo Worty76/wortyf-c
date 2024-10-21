@@ -13,6 +13,7 @@ import {
   CardBody,
 } from "@material-tailwind/react";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
 import auth from "../../../helpers/Auth";
 
 export const Tags = () => {
@@ -20,6 +21,7 @@ export const Tags = () => {
   const [newTag, setNewTag] = useState({ name: "", description: "" });
   const [editTag, setEditTag] = useState(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
   const user = auth.isAuthenticated().user;
 
   const getTags = async (signal) => {
@@ -127,7 +129,25 @@ export const Tags = () => {
           <Typography variant="h4" className="text-xl mb-4">
             Tags
           </Typography>
-
+          <div className="w-80 my-8 flex gap-2">
+            <IconButton variant="text">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m15.75 15.75-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            </IconButton>
+            <Input label="Search tag name" />
+          </div>
           {user && user.role === "moderator" ? (
             <div className="grid grid-cols-12 gap-4 mb-4">
               <div className="col-span-12 md:col-span-5">
@@ -164,7 +184,10 @@ export const Tags = () => {
             {tags &&
               tags.map((tag) => (
                 <div key={tag._id} className="col-span-auto">
-                  <Card className="border border-gray-300 overflow-hidden shadow-sm h-full cursor-pointer">
+                  <Card
+                    className="border border-gray-300 overflow-hidden shadow-sm h-full cursor-pointer"
+                    onClick={() => navigate(`/tag/${tag._id}`)}
+                  >
                     <CardBody className="p-4 flex flex-col h-full">
                       <div className="flex-grow">
                         <Typography

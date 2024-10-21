@@ -103,7 +103,6 @@ export const SignUp = () => {
           Enter your details to sign in
         </Typography>
         <form action="#" className="mx-auto max-w-[24rem] text-left space-y-6">
-          {/* Username */}
           <div className="mb-6">
             <label htmlFor="username">
               <Typography
@@ -124,7 +123,6 @@ export const SignUp = () => {
             />
           </div>
 
-          {/* Age */}
           <div className="mb-6">
             <label htmlFor="age">
               <Typography
@@ -145,7 +143,6 @@ export const SignUp = () => {
             />
           </div>
 
-          {/* Gender */}
           <div className="mb-6">
             <label htmlFor="gender">
               <Typography
@@ -167,7 +164,6 @@ export const SignUp = () => {
             </Select>
           </div>
 
-          {/* From */}
           <div className="mb-6">
             <label htmlFor="from">
               <Typography
@@ -188,7 +184,6 @@ export const SignUp = () => {
             />
           </div>
 
-          {/* Email */}
           <div className="mb-6">
             <label htmlFor="email">
               <Typography
@@ -209,7 +204,6 @@ export const SignUp = () => {
             />
           </div>
 
-          {/* Password */}
           <div className="mb-6">
             <label htmlFor="password">
               <Typography
@@ -236,7 +230,6 @@ export const SignUp = () => {
             />
           </div>
 
-          {/* Confirm Password */}
           <div className="mb-6">
             <label htmlFor="passwordConfirmed">
               <Typography
@@ -281,16 +274,18 @@ export const SignUp = () => {
             sign in with google
           </Button>
 
-          {/* Create Account */}
           <Typography
             variant="small"
             color="gray"
-            className="!mt-4 text-center font-normal"
+            className="!mt-4 text-center font-normal pb-4"
           >
             Already have account?{" "}
-            <a href="#" className="font-medium text-gray-900">
+            <span
+              onClick={() => navigate(`/sign-in`)}
+              className="font-medium text-gray-900 cursor-pointer"
+            >
               Sign in
-            </a>
+            </span>
           </Typography>
         </form>
       </div>

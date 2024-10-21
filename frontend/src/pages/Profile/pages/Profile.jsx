@@ -14,6 +14,7 @@ import {
   Tab,
   TabPanel,
 } from "@material-tailwind/react";
+import { VariantType, useSnackbar } from "notistack";
 import auth from "../../../helpers/Auth";
 import { changeAvatar } from "../../Auth/api/authApi";
 import { ChatState } from "../../../context/ChatProvider";
@@ -28,6 +29,7 @@ import Information from "../components/Information";
 export const Profile = () => {
   const [user, setUser] = useState({});
   const [usersPosts, setUsersPosts] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
   const [image, setImage] = useState(null);
   const [ratings, setRatings] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -76,12 +78,18 @@ export const Profile = () => {
     }
   };
 
+  const handleVariant = (variant: VariantType) => {
+    enqueueSnackbar("Successfully did an action", { variant });
+  };
+
   const handleSave = () => {
-    console.log(updatedFields);
     updateBio(
       { t: JSON.parse(auth.isAuthenticated().token) },
       updatedFields
-    ).then((data) => setUser(JSON.parse(data)));
+    ).then((data) => {
+      setUser(JSON.parse(data));
+      handleVariant("success");
+    });
   };
 
   const handleFieldChange = (e) => {
@@ -206,10 +214,10 @@ export const Profile = () => {
       label: "Posts",
       value: "posts",
       icon: UserCircleIcon,
-      desc: (
-        <CardBody className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8">
-          {usersPosts && usersPosts.length > 0 ? (
-            usersPosts.map((post, key) => (
+      desc:
+        usersPosts && usersPosts.length > 0 ? (
+          <CardBody className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8">
+            {usersPosts.map((post, key) => (
               <Post
                 key={key}
                 id={post._id}
@@ -219,12 +227,13 @@ export const Profile = () => {
                 imgs={post.images}
                 profileImg={post.author.avatar_url}
               />
-            ))
-          ) : (
+            ))}
+          </CardBody>
+        ) : (
+          <div className="mt-5">
             <Typography>No posts</Typography>
-          )}
-        </CardBody>
-      ),
+          </div>
+        ),
     },
     {
       label: "Information",
@@ -245,7 +254,6 @@ export const Profile = () => {
     },
   ];
 
-  console.log(updatedFields);
   return (
     <section className="p-8">
       <div className="container mx-auto max-w-screen-lg">

@@ -21,6 +21,9 @@ import {
 } from "@heroicons/react/24/solid";
 import { useNavigate, Link } from "react-router-dom";
 import auth from "../helpers/Auth";
+import { ChatState } from "../context/ChatProvider";
+import moment from "moment";
+import axios from "axios";
 
 const NAV_MENU = [
   {
@@ -125,9 +128,22 @@ export const Appbar = () => {
   const user = auth.isAuthenticated().user;
   const [open, setOpen] = useState(false);
   const [openPagesMenu, setOpenPagesMenu] = useState(false);
+  const [openMenuNotification, setOpenMenuNotification] = useState(false);
+  const [openMenuMessage, setOpenMenuMessage] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [openPagesMenuMobile, setOpenPagesMenuMobile] = useState(false);
+  const {
+    setSelectedChat,
+    messageNotification,
+    setMessageNotification,
+    setIsLoggedIn,
+    setNotification,
+    notification,
+  } = ChatState();
   const navigate = useNavigate();
   const closeMenu = () => setIsMenuOpen(false);
+  const closeNotification = () => setOpenMenuNotification(false);
+  const closeMessage = () => setOpenMenuMessage(false);
 
   const pages = {
     user: [
@@ -157,7 +173,40 @@ export const Appbar = () => {
     return pages.user;
   };
 
+  const notificationLength = (notification) => {
+    return notification.filter((noti) => noti.isRead === false).length;
+  };
+
   const handleOpen = () => setOpen((cur) => !cur);
+  const handleOpenNotification = () => setOpenMenuNotification((cur) => !cur);
+  const handleOpenMessage = () => setOpenMenuMessage((cur) => !cur);
+
+  const read = async (notification) => {
+    let config = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + JSON.parse(auth.isAuthenticated().token),
+      },
+    };
+    await axios
+      .put(
+        `${process.env.REACT_APP_API}/api/notification/read`,
+        {
+          notificationId: notification._id,
+        },
+        config
+      )
+      .then((data) => {
+        console.log(data);
+        closeNotification();
+        setNotification((prevNotifications) =>
+          prevNotifications.map((n) =>
+            n._id === notification._id ? { ...n, isRead: true } : n
+          )
+        );
+      });
+  };
 
   return (
     <MTNavbar shadow={false} fullWidth className="border-0 sticky top-0 z-50">
@@ -180,7 +229,7 @@ export const Appbar = () => {
                 key={name}
                 open={openPagesMenu}
                 handler={setOpenPagesMenu}
-                placement="bottom-start"
+                placement="bottom"
                 offset={10}
               >
                 <MenuHandler>
@@ -228,13 +277,187 @@ export const Appbar = () => {
               </Button>
             </>
           )}
+
           {user && (
-            <ProfileMenu
-              isMenuOpen={isMenuOpen}
-              setIsMenuOpen={setIsMenuOpen}
-              closeMenu={closeMenu}
-              user={user}
-            />
+            <div className="flex flex-row gap-2">
+              {/* MESSAGE */}
+              <div class="relative inline-block">
+                <IconButton
+                  variant="text"
+                  data-popover-target="notifications-menu"
+                  class="rounded-md border border-transparent p-2.5 text-center text-sm transition-all text-slate-600 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  type="button"
+                  onClick={handleOpenMessage}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+                    />
+                  </svg>
+                </IconButton>
+                <span class="absolute top-0.5 right-0.5 grid min-h-[24px] min-w-[24px] translate-x-2/4 -translate-y-2/4 place-items-center rounded-full bg-red-600 py-1 px-1 text-xs text-white">
+                  {messageNotification && messageNotification.length}
+                </span>
+                <ul
+                  role="menu"
+                  data-popover="notifications-menu"
+                  data-popover-placement="bottom"
+                  className={`${
+                    openMenuMessage
+                      ? "scale-100 opacity-100"
+                      : "scale-95 opacity-0 pointer-events-none"
+                  } absolute left-1/2 transform -translate-x-1/2 mt-2 z-10 w-[300px] overflow-auto rounded-lg border border-slate-200 bg-white p-1.5 shadow-lg shadow-sm focus:outline-none transition-all duration-200 ease-in-out origin-top`}
+                >
+                  {messageNotification &&
+                    messageNotification.map((message) => (
+                      <li
+                        onClick={() => {
+                          closeMessage();
+                          setSelectedChat(message.chat);
+                          setMessageNotification(
+                            messageNotification.filter(
+                              (n) => n.chat._id !== message.chat._id
+                            )
+                          );
+                          navigate(`/chat/${message.chat._id}`);
+                        }}
+                        role="menuitem"
+                        class="cursor-pointer text-slate-800 flex w-full text-sm items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
+                      >
+                        <img
+                          alt="tania andrew"
+                          src={message.sender.avatar_url}
+                          class="relative inline-block h-10 w-10 rounded-full object-cover object-center"
+                        />
+                        <div class="flex flex-col gap-1 ml-4">
+                          <p class="text-slate-800 font-medium text-black">
+                            {message.chat.isGroupChat
+                              ? `${message.sender.username} sent a message to ${message.chat.chatName}`
+                              : `${message.sender.username} sent you a message`}
+                          </p>
+                          <p class="text-slate-500 text-sm flex items-center text-black">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              class="w-4 h-4 mr-1 text-slate-400"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
+                            {moment(new Date(message.createdAt)).fromNow()}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+
+              {/* NOTIFICATION */}
+              <div class="relative inline-block">
+                <IconButton
+                  variant="text"
+                  data-popover-target="notifications-menu"
+                  class="rounded-md border border-transparent p-2.5 text-center text-sm transition-all text-slate-600 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                  type="button"
+                  onClick={handleOpenNotification}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+                    />
+                  </svg>
+                </IconButton>
+                <span class="absolute top-0.5 right-0.5 grid min-h-[24px] min-w-[24px] translate-x-2/4 -translate-y-2/4 place-items-center rounded-full bg-red-600 py-1 px-1 text-xs text-white">
+                  {notification && notificationLength(notification)}
+                </span>
+
+                <ul
+                  role="menu"
+                  data-popover="notifications-menu"
+                  data-popover-placement="bottom"
+                  className={`${
+                    openMenuNotification
+                      ? "scale-100 opacity-100"
+                      : "scale-95 opacity-0 pointer-events-none"
+                  } absolute left-1/2 transform -translate-x-1/2 mt-2 z-10 w-[300px] overflow-auto rounded-lg border border-slate-200 bg-white p-1.5 shadow-lg shadow-sm focus:outline-none transition-all duration-200 ease-in-out origin-top gap-1 flex flex-col`}
+                >
+                  {notification &&
+                    notification.map((noti) => (
+                      <li
+                        role="menuitem"
+                        onClick={() => {
+                          read(noti);
+                          navigate(
+                            noti?.postId?.name
+                              ? noti.redirectUrl
+                              : "404NotFound"
+                          );
+                        }}
+                        className={`${
+                          noti.isRead ? "bg-gray-300" : ""
+                        } cursor-pointer text-slate-800 flex w-full text-sm items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100`}
+                      >
+                        <img
+                          alt="users avatar"
+                          src={noti.senderId.avatar_url}
+                          class="relative inline-block h-10 w-10 rounded-full object-cover object-center"
+                        />
+                        <div class="flex flex-col gap-1 ml-4">
+                          <p class="text-slate-800 font-medium text-black">
+                            {noti.type === "comment" &&
+                              `${noti.senderId.username} commented at your post`}
+                            {noti.type === "approvedPost" &&
+                              `${noti.senderId.username} approved your post`}
+                          </p>
+                          <p class="text-slate-500 text-sm flex items-center text-black">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              class="w-4 h-4 mr-1 text-slate-400"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
+                            {moment(new Date(noti.createdAt)).fromNow()}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+              <ProfileMenu
+                isMenuOpen={isMenuOpen}
+                setIsMenuOpen={setIsMenuOpen}
+                closeMenu={closeMenu}
+                user={user}
+              />
+            </div>
           )}
         </div>
 
@@ -255,17 +478,50 @@ export const Appbar = () => {
       <Collapse open={open}>
         <div className="container mx-auto mt-3 border-t border-gray-200 px-2 pt-4">
           <ul className="flex flex-col gap-4">
-            {NAV_MENU.map(({ name, icon: Icon }) => (
-              <NavItem key={name}>
-                <Icon className="h-5 w-5" />
-                {name}
-              </NavItem>
-            ))}
+            {NAV_MENU.map(({ name, icon: Icon, url }) =>
+              name === "Pages" ? (
+                <Menu
+                  key={name}
+                  open={openPagesMenuMobile}
+                  handler={setOpenPagesMenuMobile}
+                  placement="bottom-start"
+                  offset={10}
+                >
+                  <MenuHandler>
+                    <NavItem onClick={() => setOpenPagesMenu((prev) => !prev)}>
+                      <Icon className="h-5 w-5" />
+                      {name}
+                    </NavItem>
+                  </MenuHandler>
+                  <MenuList className="z-50">
+                    {getPagesForRole().map((page) => (
+                      <MenuItem
+                        key={page.name}
+                        onClick={() => {
+                          navigate(`/${page.URL}`);
+                          setOpenPagesMenu(false);
+                        }}
+                      >
+                        {page.name}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </Menu>
+              ) : (
+                <NavItem key={name} onClick={() => navigate(url)}>
+                  <Icon className="h-5 w-5" />
+                  {name}
+                </NavItem>
+              )
+            )}
           </ul>
           <div className="mt-6 mb-4 flex items-center gap-2">
-            <Button variant="text">Sign In</Button>
-
-            <Button color="gray">Sign Up</Button>
+            <Button variant="text" onClick={() => navigate(`/sign-in`)}>
+              Sign In
+            </Button>
+            <Button color="gray" onClick={() => navigate(`/sign-up`)}>
+              Sign Up
+            </Button>
           </div>
         </div>
       </Collapse>

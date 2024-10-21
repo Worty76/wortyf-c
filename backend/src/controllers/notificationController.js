@@ -76,7 +76,9 @@ const fetchNotifications = async (req, res) => {
 
     const notifications = await Notification.find({
       recipientId: req.user._id,
-    }).populate("postId", "name");
+    })
+      .populate("postId", "name")
+      .populate("senderId");
 
     res.status(200).json({
       message: "Successfully fetched notifications",
