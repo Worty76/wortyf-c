@@ -139,7 +139,7 @@ function MyChats({ fetchAgain }) {
       >
         <div className="p-2 flex justify-between items-center border-b bg-white">
           <Typography variant="h6">My Chats</Typography>
-          <div className="flex">
+          <div className="flex flex-col gap-2">
             <Button
               variant="filled"
               color="blue"
@@ -182,7 +182,7 @@ function MyChats({ fetchAgain }) {
                               auth.isAuthenticated().user,
                               chat.users
                             )
-                          : chat.chatName
+                          : "https://cdn-icons-png.freepik.com/512/69/69589.png"
                       }
                       alt="chat-avatar"
                     />

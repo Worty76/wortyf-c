@@ -22,7 +22,7 @@ export default function Hero() {
       <div className="grid mt-16 min-h-[82vh] w-full lg:h-[54rem] md:h-[34rem] place-items-stretch bg-center bg-contain bg-no-repeat">
         <div className="container mx-auto px-4 text-center">
           <Typography className="inline-flex text-xs rounded-lg border-[1.5px] border-blue-gray-50 bg-white py-1 lg:px-4 px-1 font-medium text">
-            Exciting News! Introducing our latest innovation
+            Exciting News! Introducing our latest version
           </Typography>
           <Typography
             variant="h1"

@@ -1,33 +1,19 @@
-import { Box, Avatar, Typography } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { XMarkIcon } from "@heroicons/react/24/solid"; // Example using Heroicons
 
 const UserBadgeItem = ({ handleFunction, user }) => {
   return (
-    <Box
-      sx={{
-        padding: 1,
-        display: "flex",
-        alignItems: "center",
-        borderRadius: 1,
-        backgroundColor: "#f5f5f5",
-        transition: "background-color 0.3s",
-        cursor: "pointer",
-        "&:hover": {
-          backgroundColor: "#e0e0e0",
-        },
-      }}
+    <div
+      className="flex items-center p-2 rounded-lg bg-gray-200 cursor-pointer hover:bg-gray-300 transition-colors"
       onClick={handleFunction}
     >
-      <Avatar
+      <img
         src={user.avatar_url}
-        alt={`${user.username}'s avatar`} // Added alt text for accessibility
-        sx={{ width: 40, height: 40, marginRight: 2 }} // Adjusted size and margin
+        alt={`${user.username}'s avatar`}
+        className="w-10 h-10 rounded-full mr-2 object-cover"
       />
-      <Typography variant="body1" component="span">
-        {user.username}
-      </Typography>
-      <CloseIcon />
-    </Box>
+      <span className="text-sm font-medium">{user.username}</span>
+      <XMarkIcon className="w-5 h-5 ml-2 text-gray-600" />
+    </div>
   );
 };
 

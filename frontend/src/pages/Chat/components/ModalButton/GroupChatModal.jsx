@@ -1,40 +1,20 @@
 import React, { useState } from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
-import { TextField, Typography, CircularProgress } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  Spinner,
+  Input,
+} from "@material-tailwind/react";
 import axios from "axios";
 import auth from "../../../../helpers/Auth";
 import UserListItem from "./components/UserListItem";
 import UserBadgeItem from "./components/UserBadgeItem";
 import { ChatState } from "../../../../context/ChatProvider";
 
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 600,
-  bgcolor: "background.paper",
-  borderRadius: 2,
-  boxShadow: 24,
-  p: 4,
-};
-
-const buttonStyle = {
-  marginTop: 2,
-  backgroundColor: "#007bff",
-  color: "#fff",
-  "&:hover": {
-    backgroundColor: "#0056b3",
-  },
-};
-
 function GroupChatModal() {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
+  const [open, setOpen] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
@@ -99,7 +79,7 @@ function GroupChatModal() {
         config
       );
       setChats([data, ...chats]);
-      handleClose();
+      setOpen(false);
       console.log("Chat created");
     } catch (error) {
       console.log(error);
@@ -108,43 +88,38 @@ function GroupChatModal() {
 
   return (
     <div>
-      <Button onClick={handleOpen} variant="contained" color="primary">
+      <Button size="sm" onClick={() => setOpen(true)} className="bg-blue-500">
         New Group Chat
       </Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <Box sx={modalStyle}>
-          <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-            Create Group Chat
-          </Typography>
-          <TextField
-            id="group-name"
-            label="Group Name"
-            variant="standard"
-            fullWidth
-            margin="normal"
-            onChange={(e) => setGroupChatName(e.target.value)}
-            value={groupChatName}
-          />
-          <TextField
-            id="search"
-            label="Find Username or Email"
-            variant="standard"
-            fullWidth
-            margin="normal"
-            onChange={(e) => handleSearch(e.target.value)}
-            value={search}
-          />
+      <Dialog open={open} handler={setOpen} size="sm" className="p-4">
+        <DialogBody>
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold">Create Group Chat</h2>
+          </div>
+          <div className="mb-4">
+            <Input
+              type="text"
+              label="Group Name"
+              className="input input-bordered w-full"
+              onChange={(e) => setGroupChatName(e.target.value)}
+              value={groupChatName}
+            />
+          </div>
+          <div className="mb-4">
+            <Input
+              type="text"
+              label="Find Username or Email"
+              className="input input-bordered w-full"
+              onChange={(e) => handleSearch(e.target.value)}
+              value={search}
+            />
+          </div>
           {loading ? (
-            <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
-              <CircularProgress />
-            </Box>
+            <div className="flex justify-center my-4">
+              <Spinner className="h-8 w-8" />
+            </div>
           ) : (
-            <Box sx={{ mb: 2 }}>
+            <div className="mb-4">
               {searchResult?.slice(0, 4).map((user) => (
                 <UserListItem
                   key={user._id}
@@ -152,9 +127,9 @@ function GroupChatModal() {
                   handleFunction={() => handleGroup(user)}
                 />
               ))}
-            </Box>
+            </div>
           )}
-          <Box sx={{ display: "flex", flexWrap: "wrap", mb: 2 }}>
+          <div className="flex flex-wrap gap-2 mb-4">
             {selectedUsers.map((u) => (
               <UserBadgeItem
                 key={u._id}
@@ -162,12 +137,17 @@ function GroupChatModal() {
                 handleFunction={() => handleDelete(u)}
               />
             ))}
-          </Box>
-          <Button onClick={handleSubmit} sx={buttonStyle} variant="contained">
+          </div>
+        </DialogBody>
+        <DialogFooter className="flex flex-row gap-2">
+          <Button onClick={handleSubmit} className="bg-blue-500">
             Create
           </Button>
-        </Box>
-      </Modal>
+          <Button onClick={() => setOpen(false)} className="bg-red-500">
+            Cancel
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </div>
   );
 }
