@@ -16,6 +16,7 @@ import { sold } from "../api/ChatApi";
 import RateModalButton from "./RateModalButton/RateModalButton";
 import { debounce } from "lodash";
 import { useSocket } from "../../../context/SocketProvider";
+import { useNavigate } from "react-router-dom";
 
 var selectedChatCompare;
 
@@ -26,6 +27,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   const isMounted = useRef(true);
   const [uploading, setUploading] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
+  const navigate = useNavigate();
 
   const {
     selectedChat,
@@ -61,7 +63,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   };
 
   const sendMessage = async (event) => {
-    if ((event.key === "Enter" && newMessage) || newMessage) {
+    if (event.key === "Enter" && newMessage) {
       const contentData = new FormData();
       contentData.append("chatId", selectedChat._id);
       contentData.append("content", newMessage);
@@ -197,12 +199,12 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   });
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full max-h-full flex flex-col">
       {selectedChat && selectedChat === selectedChatCompare ? (
         <>
-          <div className="h-full">
+          <div className="flex-grow max-h-[calc(100vh-200px)] overflow-y-auto">
             {selectedChat.post && (
-              <div className="p-2 flex overflow-y-auto rounded-lg">
+              <div className="p-2 flex rounded-lg">
                 <Card className="flex flex-row items-center w-full">
                   {selectedChat.post?.images?.length > 0 && (
                     <div className="w-24 h-24">
@@ -217,8 +219,9 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                     <div>
                       <Typography
                         className="cursor-pointer text-black no-underline hover:text-gray-500 transition duration-200"
-                        component={Link}
-                        to={`/post/${selectedChat.post._id}`}
+                        onClick={() =>
+                          navigate(`/post/${selectedChat.post._id}`)
+                        }
                       >
                         {selectedChat.post.name}
                       </Typography>
@@ -231,11 +234,14 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                         selectedChat.post.author._id &&
                         (!selectedChat.post.sold ? (
                           <Button
-                            color="red"
+                            color="green"
                             onClick={() =>
                               soldPost(
                                 selectedChat.post._id,
-                                selectedChat.users[1]._id,
+                                selectedChat.users[0]?._id ===
+                                  auth.isAuthenticated().user?._id
+                                  ? selectedChat.users[1]._id
+                                  : selectedChat.users[0]._id,
                                 selectedChat._id
                               )
                             }
@@ -243,9 +249,23 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                             Sold
                           </Button>
                         ) : (
-                          <Button color="green" disabled>
+                          <Button color="green" variant="text" disabled>
                             Sold
                           </Button>
+                        ))}
+                      {console.log(selectedChat.post)}
+                      {auth.isAuthenticated().user._id ===
+                        selectedChat.post.buyer?._id &&
+                        (selectedChat.post.rated ? (
+                          <Typography
+                            sx={{ color: "green", textDecoration: "none" }}
+                            component={Link}
+                            to={`/profile/${selectedChat.post.author._id}`}
+                          >
+                            You already rated, click here to see
+                          </Typography>
+                        ) : (
+                          <RateModalButton chat={selectedChat} />
                         ))}
                     </div>
                   </div>
@@ -292,9 +312,6 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                 accept="image/*"
               />
             </label>
-            <Button disabled={!newMessage || uploading} onClick={sendMessage}>
-              {uploading ? <Spinner className="h-8 w-8" /> : "Send"}
-            </Button>
           </div>
         </>
       ) : (

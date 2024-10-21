@@ -1,13 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { makeStyles } from "@mui/styles";
+import { useParams } from "react-router-dom";
 import {
   Avatar,
   Button,
   Card,
   CardBody,
-  CardHeader,
   Spinner,
   Typography,
   Tabs,
@@ -16,25 +14,14 @@ import {
   Tab,
   TabPanel,
 } from "@material-tailwind/react";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import CloseIcon from "@mui/icons-material/Close";
 import auth from "../../../helpers/Auth";
 import { changeAvatar } from "../../Auth/api/authApi";
 import { ChatState } from "../../../context/ChatProvider";
 import { useNavigate } from "react-router-dom";
-import { Topic } from "../../Discussion/components/Topic";
-import { Stars } from "../components/Stars";
-import { Markup } from "interweave";
 import { updateBio } from "../api/profileApi";
 import { ArrowUpTrayIcon } from "@heroicons/react/24/solid";
 import { CardReview } from "../components/CardReview";
-
-import {
-  StarIcon,
-  UserCircleIcon,
-  Cog6ToothIcon,
-} from "@heroicons/react/24/solid";
+import { StarIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { Post } from "../../Discussion/components/Post";
 import Information from "../components/Information";
 
@@ -200,15 +187,18 @@ export const Profile = () => {
       icon: StarIcon,
       desc: (
         <div className="mt-5">
-          {CONTENTS.map(({ name, feedback, title, date }, index) => (
-            <CardReview
-              key={index}
-              title={title}
-              name={name}
-              feedback={feedback}
-              date={date}
-            />
-          ))}
+          {ratings && ratings.length > 0 ? (
+            ratings.map((rating, index) => (
+              <CardReview
+                key={index}
+                name={rating.author.username}
+                feedback={rating.comment}
+                date={rating.createdAt}
+              />
+            ))
+          ) : (
+            <Typography>No ratings</Typography>
+          )}
         </div>
       ),
     },
@@ -218,17 +208,21 @@ export const Profile = () => {
       icon: UserCircleIcon,
       desc: (
         <CardBody className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8">
-          {usersPosts.map((post, key) => (
-            <Post
-              key={key}
-              id={post._id}
-              name={post.name}
-              date={post.createdAt}
-              authorName={post.author.username}
-              imgs={post.images}
-              profileImg={post.author.avatar_url}
-            />
-          ))}
+          {usersPosts && usersPosts.length > 0 ? (
+            usersPosts.map((post, key) => (
+              <Post
+                key={key}
+                id={post._id}
+                name={post.name}
+                date={post.createdAt}
+                authorName={post.author.username}
+                imgs={post.images}
+                profileImg={post.author.avatar_url}
+              />
+            ))
+          ) : (
+            <Typography>No posts</Typography>
+          )}
         </CardBody>
       ),
     },

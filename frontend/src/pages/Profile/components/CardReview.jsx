@@ -5,8 +5,9 @@ import {
   Typography,
   Avatar,
 } from "@material-tailwind/react";
+import moment from "moment";
 
-export function CardReview({ name, feedback, date, title }) {
+export function CardReview({ name, feedback, date }) {
   return (
     <Card shadow={false}>
       <CardBody className="pt-0">
@@ -21,7 +22,7 @@ export function CardReview({ name, feedback, date, title }) {
               {name}
             </Typography>
             <Typography variant="small" className="font-normal !text-gray-500">
-              {date}
+              {moment(new Date(date)).fromNow()}
             </Typography>
           </div>
         </div>

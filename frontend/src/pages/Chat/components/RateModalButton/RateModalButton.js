@@ -1,37 +1,21 @@
 import React, { useState } from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
-import { TextField, Typography } from "@mui/material";
 import { rate } from "../../api/ChatApi";
 import auth from "../../../../helpers/Auth";
 import { useNavigate } from "react-router-dom";
-
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 600,
-  bgcolor: "background.paper",
-  borderRadius: 2,
-  boxShadow: 24,
-  p: 4,
-};
-
-const buttonStyle = {
-  marginTop: 2,
-  backgroundColor: "#007bff",
-  color: "#fff",
-  "&:hover": {
-    backgroundColor: "#0056b3",
-  },
-};
+import {
+  Button,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Textarea,
+  Typography,
+} from "@material-tailwind/react";
 
 function RateModalButton({ chat }) {
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+
+  const handleOpen = () => setOpen(!open);
   const [rating, setRating] = useState(null);
   const [hover, setHover] = useState(null);
   const [comment, setComment] = useState("");
@@ -73,24 +57,13 @@ function RateModalButton({ chat }) {
   };
 
   return (
-    <div>
-      <Button onClick={handleOpen} variant="contained" color="primary">
+    <>
+      <Button onClick={handleOpen} variant="text">
         Rate
       </Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <Box sx={modalStyle}>
-          <Typography
-            variant="h6"
-            component="h2"
-            sx={{ mb: 2, textAlign: "center" }}
-          >
-            Rate
-          </Typography>
+      <Dialog open={open} handler={handleOpen}>
+        <DialogHeader>Rate</DialogHeader>
+        <DialogBody>
           <div
             style={{
               textAlign: "center",
@@ -129,24 +102,27 @@ function RateModalButton({ chat }) {
               );
             })}
           </div>
-          <Typography sx={{ textAlign: "center", color: "red" }}>
-            {errorMessages.name}
-          </Typography>
-          <TextField
-            id="comment"
-            label="Write your comment here"
-            variant="standard"
-            fullWidth
-            margin="normal"
+          <Typography>Your message</Typography>
+          <Textarea
+            label="Message"
             onChange={(e) => setComment(e.target.value)}
           />
-          <Box sx={{ display: "flex", flexWrap: "wrap", mb: 2 }}></Box>
-          <Button sx={buttonStyle} onClick={onRate} variant="contained">
-            Done
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            variant="text"
+            color="red"
+            onClick={handleOpen}
+            className="mr-1"
+          >
+            <span>Cancel</span>
           </Button>
-        </Box>
-      </Modal>
-    </div>
+          <Button variant="gradient" color="green" onClick={onRate}>
+            <span>Confirm</span>
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </>
   );
 }
 

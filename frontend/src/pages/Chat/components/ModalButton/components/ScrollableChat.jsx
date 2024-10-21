@@ -14,7 +14,7 @@ const ScrollableChat = ({ messages }) => {
     <ScrollableFeed className="p-2">
       {messages && messages.length > 0 ? (
         messages.map((m, i) => (
-          <div key={m._id} className="flex items-end mb-1">
+          <div key={m._id} className="flex items-end mb-1 ">
             {(isSameSender(messages, m, i, auth.isAuthenticated().user._id) ||
               isLastMessage(messages, i, auth.isAuthenticated().user._id)) && (
               <Tooltip
@@ -31,16 +31,27 @@ const ScrollableChat = ({ messages }) => {
               </Tooltip>
             )}
             <div
+              style={{
+                marginLeft:
+                  isSameSenderMargin(
+                    messages,
+                    m,
+                    i,
+                    auth.isAuthenticated().user._id
+                  ) === "auto"
+                    ? "auto"
+                    : `${isSameSenderMargin(
+                        messages,
+                        m,
+                        i,
+                        auth.isAuthenticated().user._id
+                      )}px`,
+              }}
               className={`${
                 m.sender._id === auth.isAuthenticated().user._id
                   ? "bg-blue-200"
                   : "bg-green-200"
-              } ml-${isSameSenderMargin(
-                messages,
-                m,
-                i,
-                auth.isAuthenticated().user._id
-              )} mt-${
+              } mt-${
                 isSameUser(messages, m, i, auth.isAuthenticated().user._id)
                   ? 0
                   : 1

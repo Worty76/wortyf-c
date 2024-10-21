@@ -27,7 +27,7 @@ const RatingSchema = new Schema(
       required: true,
     },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Rating", RatingSchema);
