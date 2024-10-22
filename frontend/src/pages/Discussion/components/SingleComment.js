@@ -8,6 +8,11 @@ import {
   Button,
   IconButton,
   Avatar,
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
+  Input,
 } from "@material-tailwind/react";
 import ReplyComment from "./ReplyComment";
 import { VariantType, useSnackbar } from "notistack";
@@ -186,26 +191,81 @@ export default function SingleComment({
                 {moment(new Date(comment.createdAt)).fromNow()}
               </span>
             </Typography>
-            <Typography
-              variant="small"
-              color="gray"
-              className="font-normal max-w-md break-words"
-            >
-              {comment.text}
-            </Typography>
+            {openEditing ? (
+              <Input
+                label="Change your comment"
+                value={commentEditing.text}
+                onChange={handleCommentEditing("text")}
+              />
+            ) : (
+              <Typography
+                variant="small"
+                color="gray"
+                className="font-normal max-w-md break-words"
+              >
+                {comment.text}
+              </Typography>
+            )}
           </div>
         </div>
-        <Button
-          variant="text"
-          className="flex items-center gap-2 p-2"
-          size="sm"
-          onClick={handleReply}
-        >
-          <ArrowUturnLeftIcon strokeWidth={2} className="h-5 w-5" />
-          <Typography variant="h6" className="text-xs">
-            REPLY
-          </Typography>
-        </Button>
+        <div className="flex flex-row items-center gap-2">
+          <Button
+            variant="text"
+            className="flex items-center gap-2 p-2"
+            size="sm"
+            onClick={handleReply}
+          >
+            <ArrowUturnLeftIcon strokeWidth={2} className="h-5 w-5" />
+            <Typography variant="h6" className="text-xs">
+              REPLY
+            </Typography>
+          </Button>
+          {auth.isAuthenticated() &&
+            auth.isAuthenticated().user._id === authorId &&
+            (openEditing ? (
+              <IconButton variant="text" color="green" onClick={onSaveEditing}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m4.5 12.75 6 6 9-13.5"
+                  />
+                </svg>
+              </IconButton>
+            ) : (
+              <Menu>
+                <MenuHandler>
+                  <IconButton variant="text" size="sm">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
+                      />
+                    </svg>
+                  </IconButton>
+                </MenuHandler>
+                <MenuList>
+                  <MenuItem onClick={handleOpenEditing}>Edit</MenuItem>
+                  <MenuItem onClick={onDeleteComment}>Delete</MenuItem>
+                </MenuList>
+              </Menu>
+            ))}
+        </div>
       </div>
       {/* Reply */}
       {openReply && (

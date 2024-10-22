@@ -72,7 +72,7 @@ const getTopic = async (req, res) => {
   try {
     const { id } = req.params;
     const { filters, tag, sort, name, page = 1 } = req.query;
-    const perPage = 9;
+    const perPage = 12;
 
     const topic = await Topic.findOne({ _id: id });
     if (!topic) {

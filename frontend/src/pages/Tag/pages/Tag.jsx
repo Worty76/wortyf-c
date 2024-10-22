@@ -143,7 +143,7 @@ export const Tag = () => {
           />
         )}
 
-        <CardBody className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8">
+        <CardBody className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 px-4 mb-8">
           {posts.map((post, key) => (
             <Post
               key={key}

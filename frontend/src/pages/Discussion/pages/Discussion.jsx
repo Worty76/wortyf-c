@@ -11,6 +11,7 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
+  Input,
 } from "@material-tailwind/react";
 import axios from "axios";
 import {
@@ -402,32 +403,55 @@ export const Discussion = () => {
                   Chat
                 </Button>
               )}
-            {auth.isAuthenticated().user._id === user._id && (
-              <Menu>
-                <MenuHandler>
-                  <IconButton variant="text">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="size-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
-                      />
-                    </svg>
-                  </IconButton>
-                </MenuHandler>
-                <MenuList>
-                  <MenuItem>Edit</MenuItem>
-                  <MenuItem>Delete</MenuItem>
-                </MenuList>
-              </Menu>
-            )}
+            {auth.isAuthenticated() &&
+              auth.isAuthenticated().user._id === user._id &&
+              (openEditing ? (
+                <IconButton
+                  variant="text"
+                  color="green"
+                  onClick={onSaveEditing}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m4.5 12.75 6 6 9-13.5"
+                    />
+                  </svg>
+                </IconButton>
+              ) : (
+                <Menu>
+                  <MenuHandler>
+                    <IconButton variant="text">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
+                        />
+                      </svg>
+                    </IconButton>
+                  </MenuHandler>
+                  <MenuList>
+                    <MenuItem onClick={handleOpenEditing}>Edit</MenuItem>
+                    <MenuItem onClick={onDeletePost}>Delete</MenuItem>
+                  </MenuList>
+                </Menu>
+              ))}
           </div>
         </div>
 
@@ -567,15 +591,33 @@ export const Discussion = () => {
           </div>
         </div>
 
-        <Typography
-          variant="h2"
-          className="my-4 xs:my-1 sm:my-2 md:my-2 font-black text-4xl leading-snug text-blue-gray-900"
-        >
-          {post && post.name}
-        </Typography>
-        <Typography className="font-normal text-gray-700">
-          {post && <Markup content={post.content} />}
-        </Typography>
+        {openEditing ? (
+          <Input
+            label="Change your post name"
+            value={valuesEditing.name}
+            onChange={handleChangeEditing("name")}
+          />
+        ) : (
+          <Typography
+            variant="h2"
+            className="my-4 xs:my-1 sm:my-2 md:my-2 font-black text-4xl leading-snug text-blue-gray-900"
+          >
+            {post && post.name}
+          </Typography>
+        )}
+
+        {openEditing ? (
+          <Textarea
+            value={valuesEditing.content}
+            onChange={handleChangeEditing("content")}
+            rows={8}
+          />
+        ) : (
+          <Typography className="font-normal text-gray-700">
+            {post && <Markup content={post.content} />}
+          </Typography>
+        )}
+
         <div className="pt-5 pb-5">
           <Typography className="font-normal font-black">
             {Object.keys(comments).length} comments
