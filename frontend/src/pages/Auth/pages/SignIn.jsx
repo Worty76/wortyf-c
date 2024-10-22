@@ -109,6 +109,11 @@ export const SignIn = () => {
               }
               onChange={handleChange("password")}
             />
+            {values.error && (
+              <Typography className="text-normal text-red-500 text-center mt-4">
+                {values.error}
+              </Typography>
+            )}
           </div>
           <Button
             color="gray"

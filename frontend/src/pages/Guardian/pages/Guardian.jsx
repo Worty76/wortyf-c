@@ -1,20 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@mui/styles";
-import { Box, ListItem, ListItemText, Typography } from "@mui/material";
 import { GuardiansList } from "../components/GuardiansList";
 import axios from "axios";
-
-const useStyles = makeStyles({
-  root: {
-    padding: "1%",
-    width: "95%",
-    margin: "0 auto",
-  },
-});
+import { Typography } from "@material-tailwind/react";
 
 export const Guardian = () => {
-  const classes = useStyles();
-
   const [guardians, setGuardians] = useState([]);
 
   const getGuardians = async (signal) => {
@@ -49,27 +38,11 @@ export const Guardian = () => {
   console.log(guardians);
 
   return (
-    <div className={classes.root}>
-      <div>
-        {/* Container */}
-        <Box>
-          <ListItem>
-            <ListItemText
-              primary={
-                <Typography variant="h5" color={"variant"}>
-                  List of Guardians
-                </Typography>
-              }
-              secondary={
-                "If you want to be a guardian, contact lethanhdat762003@gmail.com and i'll give you permissions"
-              }
-            />
-          </ListItem>
-          <ListItem>
-            <GuardiansList guardians={guardians} />
-          </ListItem>
-        </Box>
+    <section className="p-4">
+      <div className="mx-auto max-w-screen-lg">
+        <Typography variant="h4">Guardians</Typography>
+        <GuardiansList guardians={guardians} />
       </div>
-    </div>
+    </section>
   );
 };

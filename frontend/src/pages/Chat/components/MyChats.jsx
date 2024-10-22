@@ -82,6 +82,7 @@ function MyChats({ fetchAgain }) {
         .get(`${process.env.REACT_APP_API}/api/chat`, config)
         .then((response) => {
           if (isMounted.current) {
+            console.log(response.data);
             setChats(response.data);
           }
         })

@@ -184,39 +184,41 @@ export const Tags = () => {
             {tags &&
               tags.map((tag) => (
                 <div key={tag._id} className="col-span-auto">
-                  <Card
-                    className="border border-gray-300 overflow-hidden shadow-sm h-full cursor-pointer"
-                    onClick={() => navigate(`/tag/${tag._id}`)}
-                  >
+                  <Card className="border border-gray-300 overflow-hidden shadow-sm h-full">
                     <CardBody className="p-4 flex flex-col h-full">
                       <div className="flex-grow">
-                        <Typography
-                          color="blue-gray"
-                          className="!text-base !font-semibold mb-1 flex justify-between"
-                        >
-                          {tag.name}
-                          {user && user.role === "moderator" && (
-                            <>
-                              <div className="flex gap-2">
-                                <IconButton
-                                  variant="text"
-                                  onClick={() => handleEditClick(tag)}
-                                  size="sm"
-                                  color="blue"
-                                >
-                                  <PencilIcon className="h-4 w-4" />
-                                </IconButton>
-                                <IconButton
-                                  onClick={() => deleteTag(tag._id)}
-                                  size="sm"
-                                  color="red"
-                                >
-                                  <TrashIcon className="h-4 w-4" />
-                                </IconButton>
-                              </div>
-                            </>
-                          )}
-                        </Typography>
+                        <div className="flex flex-row justify-between">
+                          <Typography
+                            color="blue-gray"
+                            onClick={() => navigate(`/tag/${tag._id}`)}
+                            className="!text-base !font-semibold mb-1 flex justify-between cursor-pointer "
+                          >
+                            {tag.name}
+                          </Typography>
+                          <div>
+                            {user && user.role === "moderator" && (
+                              <>
+                                <div className="flex gap-2">
+                                  <IconButton
+                                    variant="text"
+                                    onClick={() => handleEditClick(tag)}
+                                    size="sm"
+                                    color="blue"
+                                  >
+                                    <PencilIcon className="h-4 w-4" />
+                                  </IconButton>
+                                  <IconButton
+                                    onClick={() => deleteTag(tag._id)}
+                                    size="sm"
+                                    color="red"
+                                  >
+                                    <TrashIcon className="h-4 w-4" />
+                                  </IconButton>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
                         <Typography
                           variant="small"
                           color="gray"

@@ -164,30 +164,6 @@ export const Profile = () => {
     // eslint-disable-next-line
   }, [params.id]);
 
-  const CONTENTS = [
-    {
-      title: "This tool has made my workflow seamless",
-      name: "Ryan Samuel",
-      feedback:
-        "I've been using this for a while now, and it's become an essential part of my daily routine. It's incredibly user-friendly and has greatly improved my productivity.",
-      date: "03 March 2024",
-    },
-    {
-      title: "It's made my job so much easier",
-      name: "Emma Roberts",
-      feedback:
-        "This tool has been a game-changer for me. From managing my tasks to collaborating with my team, it's made everything so much easier. Highly recommended!",
-      date: "14 February 2023",
-    },
-    {
-      title: "It's my go-to solution for staying organized.",
-      name: "Bruce Mars",
-      feedback:
-        "I've been using this for a while now, and it's become an essential part of my daily routine. It's incredibly user-friendly and has greatly improved my productivity.",
-      date: "10 February 2023",
-    },
-  ];
-
   const data = [
     {
       label: "Ratings",

@@ -18,7 +18,7 @@ export const SignUp = () => {
   const [values, setValues] = useState({
     username: "",
     age: "",
-    gender: "male",
+    gender: "",
     email: "",
     from: "",
     password: "",
@@ -44,6 +44,7 @@ export const SignUp = () => {
       values.username.length > 15 || values.username.length < 6
         ? "Username must be more than 6 characters and less than 15 characters."
         : "";
+    tempErrors.gender = values.gender === "" ? "Gender must be selected" : "";
     tempErrors.age =
       values.age && values.age > 0
         ? ""
@@ -64,7 +65,7 @@ export const SignUp = () => {
   console.log(values);
 
   const onSignUp = () => {
-    if (!validate()) return; // Prevent submission if validation fails
+    if (!validate()) return;
 
     let user = new FormData();
     values.username && user.append("username", values.username);
@@ -93,6 +94,8 @@ export const SignUp = () => {
     }
   }, [redirect, navigate]);
 
+  console.log(values);
+
   return (
     <section className="grid text-center h-5/6 items-center p-8">
       <div>
@@ -117,12 +120,33 @@ export const SignUp = () => {
               color="gray"
               size="lg"
               type="text"
+              onChange={handleChange("username")}
+              error={!!errors.username}
               name="username"
               placeholder="Enter your username"
               className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
             />
+            <p
+              className={`flex items-start mt-2 text-xs ${
+                !!errors.username ? `text-red-400` : `text-slate-400`
+              }`}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="w-5 h-5 mr-1.5"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              Username must be more than 6 characters and less than 15
+              characters.
+            </p>
           </div>
-
           <div className="mb-6">
             <label htmlFor="age">
               <Typography
@@ -138,9 +162,28 @@ export const SignUp = () => {
               size="lg"
               type="number"
               name="age"
+              onChange={handleChange("age")}
+              error={!!errors.age}
               placeholder="Enter your age"
               className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
             />
+            {!!errors.age && (
+              <p className={`flex items-start mt-2 text-xs text-red-400`}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="w-5 h-5 mr-1.5"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                Age is required and must be a positive number.
+              </p>
+            )}
           </div>
 
           <div className="mb-6">
@@ -155,6 +198,8 @@ export const SignUp = () => {
             <Select
               id="gender"
               name="gender"
+              onChange={(e) => setValues({ ...values, gender: e })}
+              error={!!errors.gender}
               label="Select gender"
               className="w-full px-4 py-2 border-t-blue-gray-200 focus:border-t-primary text-gray-600 rounded-lg"
             >
@@ -179,6 +224,7 @@ export const SignUp = () => {
               size="lg"
               type="text"
               name="from"
+              onChange={handleChange("from")}
               placeholder="Enter your location"
               className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
             />
@@ -199,9 +245,28 @@ export const SignUp = () => {
               size="lg"
               type="email"
               name="email"
+              onChange={handleChange("email")}
+              error={!!errors.email}
               placeholder="name@mail.com"
               className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
             />
+            {!!errors.email && (
+              <p className={`flex items-start mt-2 text-xs text-red-400`}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="w-5 h-5 mr-1.5"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                Email is not valid.
+              </p>
+            )}
           </div>
 
           <div className="mb-6">
@@ -216,6 +281,8 @@ export const SignUp = () => {
             <Input
               size="lg"
               placeholder="********"
+              onChange={handleChange("password")}
+              error={!!errors.password}
               className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
               type={passwordShown ? "text" : "password"}
               icon={
@@ -242,6 +309,8 @@ export const SignUp = () => {
             <Input
               size="lg"
               placeholder="********"
+              onChange={handleChange("passwordConfirmed")}
+              error={!!errors.passwordConfirmed}
               className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
               type={passwordShown ? "text" : "password"}
               icon={
@@ -254,9 +323,32 @@ export const SignUp = () => {
                 </i>
               }
             />
+            {!!errors.passwordConfirmed && (
+              <p className={`flex items-start mt-2 text-xs text-red-400`}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="w-5 h-5 mr-1.5"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                Passwords are not matched
+              </p>
+            )}
           </div>
 
-          <Button color="gray" size="lg" className="mt-6" fullWidth>
+          <Button
+            color="gray"
+            size="lg"
+            className="mt-6"
+            fullWidth
+            onClick={onSignUp}
+          >
             sign up
           </Button>
 

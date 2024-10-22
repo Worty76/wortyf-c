@@ -1,71 +1,60 @@
 import React from "react";
-import {
-  Box,
-  Card,
-  CardContent,
-  Avatar,
-  Typography,
-  Grid,
-  Divider,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-} from "@mui/material";
+import { Avatar, Typography, Button } from "@material-tailwind/react";
 import { Stars } from "../../Profile/components/Stars";
-import { Link } from "react-router-dom";
 
 export const GuardiansList = ({ guardians }) => {
   return (
-    <div>
-      <Box sx={{ mt: 4 }}>
-        <Grid container spacing={3}>
-          {guardians.map((guardian, id) => (
-            <Grid item key={id}>
-              <Card sx={{ width: "300px" }}>
-                <CardContent>
-                  <List>
-                    <ListItem
-                      sx={{ display: "flex", justifyContent: "center" }}
-                    >
-                      <ListItemAvatar
-                        sx={{ display: "flex", justifyContent: "center" }}
-                      >
-                        <Avatar
-                          src={guardian.avatar_url}
-                          sx={{ width: "80px", height: "80px" }}
-                        />
-                      </ListItemAvatar>
-                    </ListItem>
-                    <ListItemText
-                      primary={
-                        <Typography
-                          component={Link}
-                          to={`/profile/${guardian._id}`}
-                          sx={{ textDecoration: "none", color: "black" }}
-                        >
-                          <b>{guardian.username}</b>
-                        </Typography>
-                      }
-                      sx={{ textAlign: "center" }}
-                    />
-                    <ListItemText
-                      primary={guardian.bio}
-                      sx={{ textAlign: "center" }}
-                    />
-                    <Divider />
-                  </List>
-                  <List>
-                    <Typography sx={{ textAlign: "center" }}>
-                      <Stars noOfStars={guardian.avgRating} />
-                    </Typography>
-                  </List>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+    <div className="mt-4 flex flex-col gap-6">
+      {guardians.map((guardian, index) => (
+        <div
+          key={index}
+          className="flex flex-wrap justify-between items-center"
+        >
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <Avatar
+              src={guardian.avatar_url}
+              alt="avatar"
+              size="xl"
+              variant="rounded"
+            />
+            <div className="min-w-0 flex-1 items-center">
+              <Typography color="blue-gray" variant="h6" className="truncate">
+                {guardian.username}
+              </Typography>
+              <Typography
+                variant="small"
+                className="font-normal text-gray-600 truncate"
+              >
+                {guardian.bio}
+              </Typography>
+              <Stars noOfStars={guardian.avgRating} />
+            </div>
+          </div>
+          <div className="flex-shrink-0">
+            <Button
+              variant="text"
+              className="flex items-center gap-2"
+              size="sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+                />
+              </svg>
+              Message
+            </Button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

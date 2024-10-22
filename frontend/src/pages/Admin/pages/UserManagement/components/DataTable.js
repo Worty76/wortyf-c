@@ -6,16 +6,16 @@ import auth from "../../../../../helpers/Auth";
 
 export const DataTable = () => {
   const columns: GridColDef[] = [
-    { field: "_id", headerName: "ID", width: 300 },
+    { field: "_id", headerName: "ID", width: 200 },
     { field: "username", headerName: "Username", width: 130 },
-    { field: "email", headerName: "Email", width: 300 },
+    { field: "email", headerName: "Email", width: 200 },
     {
       field: "age",
       headerName: "Age",
       type: "number",
       width: 90,
     },
-    { field: "from", headerName: "From", width: 300 },
+    { field: "from", headerName: "From", width: 180 },
     {
       field: "role",
       headerName: "Role",

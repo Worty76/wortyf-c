@@ -304,13 +304,16 @@ export const Appbar = () => {
                     />
                   </svg>
                 </IconButton>
-                <span class="absolute top-0.5 right-0.5 grid min-h-[24px] min-w-[24px] translate-x-2/4 -translate-y-2/4 place-items-center rounded-full bg-red-600 py-1 px-1 text-xs text-white">
-                  {messageNotification && messageNotification.length}
-                </span>
+                {messageNotification && messageNotification.length > 0 && (
+                  <span class="absolute top-0.5 right-0.5 grid min-h-[24px] min-w-[24px] translate-x-2/4 -translate-y-2/4 place-items-center rounded-full bg-red-600 py-1 px-1 text-xs text-white">
+                    {messageNotification && messageNotification.length}
+                  </span>
+                )}
                 <ul
                   role="menu"
                   data-popover="notifications-menu"
                   data-popover-placement="bottom"
+                  onMouseLeave={closeMessage}
                   className={`${
                     openMenuMessage
                       ? "scale-100 opacity-100"
@@ -362,6 +365,18 @@ export const Appbar = () => {
                         </div>
                       </li>
                     ))}
+                  {messageNotification && messageNotification.length === 0 && (
+                    <li
+                      role="menuitem"
+                      class="cursor-pointer text-slate-800 flex w-full text-sm items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
+                    >
+                      <div class="flex flex-col gap-1 w-full">
+                        <p class="text-slate-800 font-medium text-black text-center">
+                          There's no new messages
+                        </p>
+                      </div>
+                    </li>
+                  )}
                 </ul>
               </div>
 
@@ -389,14 +404,17 @@ export const Appbar = () => {
                     />
                   </svg>
                 </IconButton>
-                <span class="absolute top-0.5 right-0.5 grid min-h-[24px] min-w-[24px] translate-x-2/4 -translate-y-2/4 place-items-center rounded-full bg-red-600 py-1 px-1 text-xs text-white">
-                  {notification && notificationLength(notification)}
-                </span>
+                {notification && notificationLength(notification) > 0 && (
+                  <span class="absolute top-0.5 right-0.5 grid min-h-[24px] min-w-[24px] translate-x-2/4 -translate-y-2/4 place-items-center rounded-full bg-red-600 py-1 px-1 text-xs text-white">
+                    {notification && notificationLength(notification)}
+                  </span>
+                )}
 
                 <ul
                   role="menu"
                   data-popover="notifications-menu"
                   data-popover-placement="bottom"
+                  onMouseLeave={closeNotification}
                   className={`${
                     openMenuNotification
                       ? "scale-100 opacity-100"
@@ -449,6 +467,20 @@ export const Appbar = () => {
                         </div>
                       </li>
                     ))}
+                  {notification &&
+                    notification.length === 0 &&
+                    notificationLength(notification) === 0 && (
+                      <li
+                        role="menuitem"
+                        class="cursor-pointer text-slate-800 flex w-full text-sm items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
+                      >
+                        <div class="flex flex-col gap-1 w-full">
+                          <p class="text-slate-800 font-medium text-black text-center">
+                            There's no new notifications
+                          </p>
+                        </div>
+                      </li>
+                    )}
                 </ul>
               </div>
               <ProfileMenu

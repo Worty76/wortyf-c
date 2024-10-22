@@ -7,7 +7,6 @@ const mongoose = require("mongoose");
 
 const sendMessage = async (req, res) => {
   const body = await doSomethingWithNodeRequest(req);
-  // const { content, chatId, image } = req.body;
 
   if (!body.chatId) {
     console.log("Invalid data passed into request");
@@ -56,7 +55,7 @@ const sendMessage = async (req, res) => {
       path: "chat.users",
       select: "username avatar_url email",
     });
-    await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
+    await Chat.findByIdAndUpdate(body.chatId, { latestMessage: message });
     res.json(message);
   } catch (error) {
     res.status(400);

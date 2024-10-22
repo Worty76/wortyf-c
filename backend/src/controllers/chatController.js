@@ -72,7 +72,10 @@ const accessChats = async (req, res) => {
 
 const fetchChats = async (req, res) => {
   try {
-    await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+    console.log("running");
+    let results = await Chat.find({
+      users: { $elemMatch: { $eq: req.user._id } },
+    })
       .populate("users", "-password")
       .populate("groupAdmin", "-password")
       .populate({
@@ -80,14 +83,20 @@ const fetchChats = async (req, res) => {
         populate: { path: "buyer", select: "username email avatar_url" },
       })
       .populate("latestMessage")
-      .sort({ updatedAt: -1 })
-      .then(async (results) => {
-        results = await User.populate(results, {
-          path: "latestMessage.sender",
-          select: "username avatar_url email",
-        });
-        res.status(200).send(results);
-      });
+      .sort({ updatedAt: -1 });
+
+    results = await User.populate(results, {
+      path: "latestMessage.sender",
+      select: "username avatar_url email",
+    });
+
+    results = results.sort(
+      (a, b) =>
+        new Date(b.latestMessage?.createdAt) -
+        new Date(a.latestMessage?.createdAt)
+    );
+
+    res.status(200).send(results);
   } catch (error) {
     res.status(400);
     throw new Error(error.message);

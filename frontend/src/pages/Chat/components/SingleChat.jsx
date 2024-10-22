@@ -26,7 +26,6 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
   const [newMessage, setNewMessage] = useState("");
   const isMounted = useRef(true);
   const [uploading, setUploading] = useState(false);
-  const [showMessages, setShowMessages] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -158,6 +157,7 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
       isMounted.current = false;
       source.cancel("Component unmounted, cancelling axios requests");
     };
+    // eslint-disable-next-line
   }, [selectedChat]);
 
   useEffect(() => {

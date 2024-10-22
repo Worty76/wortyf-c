@@ -163,13 +163,20 @@ const getUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    console.log("im running");
     const { bio, from, username, gender, phone } = req.body;
     const user = await User.findById({ _id: req.user._id });
 
     if (!user)
       return res.status(400).send({ message: "Could not get any user" });
 
+    await Comment.updateMany(
+      { "author._id": req.user._id },
+      { $set: { "author.username": username } }
+    );
+    await Post.updateMany(
+      { "author._id": req.user._id },
+      { $set: { "author.username": username } }
+    );
     const newUser = await User.findByIdAndUpdate(
       { _id: req.user._id },
       {
