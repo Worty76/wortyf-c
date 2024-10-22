@@ -317,7 +317,7 @@ const getFilterOptions = (option) => {
 const filterPost = async (req, res) => {
   try {
     const { filters, tag, sort, name, page = 1 } = req.query;
-    const perPage = 9;
+    const perPage = 12;
 
     let query = { approved: true };
     let sortCriteria = { _id: -1 };

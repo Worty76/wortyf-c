@@ -200,7 +200,7 @@ export const SignUp = () => {
               name="gender"
               onChange={(e) => setValues({ ...values, gender: e })}
               error={!!errors.gender}
-              label="Select gender"
+              label={values.gender ? "" : "Select gender"}
               className="w-full px-4 py-2 border-t-blue-gray-200 focus:border-t-primary text-gray-600 rounded-lg"
             >
               <Option value="male">Male</Option>
@@ -340,6 +340,12 @@ export const SignUp = () => {
                 Passwords are not matched
               </p>
             )}
+          </div>
+
+          <div className="mb-6">
+            <Typography className="text-normal text-center text-red-500">
+              {values.error && values.error}
+            </Typography>
           </div>
 
           <Button

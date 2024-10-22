@@ -1,23 +1,19 @@
-import {
-  Card,
-  Avatar,
-  Button,
-  CardBody,
-  CardHeader,
-  Typography,
-} from "@material-tailwind/react";
+import { Card, CardBody, Typography } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 
 export function Post({ id, name, date, imgs, authorName, profileImg }) {
   const navigate = useNavigate();
   return (
-    <Card className="border border-gray-300 overflow-hidden shadow-sm h-full">
-      <CardBody className="p-4 flex flex-col h-full">
+    <Card
+      className="border border-gray-300 overflow-hidden shadow-sm h-full cursor-pointer hover:shadow-lg hover:shadow-gray-400 transition-shadow duration-300"
+      onClick={() => navigate(`/post/${id}`)}
+    >
+      <CardBody className="p-4 flex flex-col h-full gap-2">
         <div className="flex-grow">
           <Typography
             color="blue-gray"
-            className="!text-base !font-semibold mb-1"
+            className="!text-base !font-semibold mb-1 line-clamp-2"
           >
             {name}
           </Typography>
@@ -25,7 +21,7 @@ export function Post({ id, name, date, imgs, authorName, profileImg }) {
             {moment(new Date(date)).fromNow()}
           </Typography>
 
-          <div className="my-4 flex items-start justify-between items-center">
+          {/* <div className="my-4 flex items-start justify-between items-center">
             <div className="flex items-center gap-3">
               <Avatar src={profileImg} alt={name} />
               <div>
@@ -42,14 +38,14 @@ export function Post({ id, name, date, imgs, authorName, profileImg }) {
             >
               see more
             </Button>
-          </div>
+          </div> */}
         </div>
 
-        <div className="">
+        <div>
           {imgs && imgs.length > 0 && (
             <img
               src={imgs[0]}
-              className="h-32 w-full object-cover rounded-xl"
+              className={`h-24 md:h-32 w-full object-cover rounded-xl`}
               alt={`product`}
             />
           )}

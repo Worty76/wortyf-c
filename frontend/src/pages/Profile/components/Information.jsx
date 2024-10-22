@@ -145,7 +145,7 @@ function Information({
         <div className="flex justify-between">
           <div></div>
           {auth.isAuthenticated().user._id === user._id ? (
-            <Button color="blue" onClick={handleSave}>
+            <Button color="green" onClick={handleSave}>
               Update
             </Button>
           ) : null}

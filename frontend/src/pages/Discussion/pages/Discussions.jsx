@@ -58,7 +58,11 @@ export const Discussions = ({
   };
 
   const handleOpen = () => {
-    navigate("/home/create");
+    if (auth.isAuthenticated().user) {
+      navigate("/home/create");
+    } else {
+      navigate("/sign-in");
+    }
   };
 
   const handleFilter = () => {
@@ -165,7 +169,7 @@ export const Discussions = ({
           )}
         </div>
 
-        <CardBody className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8">
+        <CardBody className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 px-4 mb-8">
           {posts.map((post, key) => (
             <Post
               key={key}
@@ -193,7 +197,7 @@ export const Discussions = ({
                 <IconButton
                   key={page}
                   variant={currentPage === page ? "filled" : "text"}
-                  color={currentPage === page ? "blue" : "gray"}
+                  color={currentPage === page ? "green" : "gray"}
                   onClick={() => handlePageChange(page)}
                 >
                   {page}

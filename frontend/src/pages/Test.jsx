@@ -6,17 +6,11 @@ import {
   Avatar,
   IconButton,
   Tooltip,
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
   Button,
 } from "@material-tailwind/react";
-import { PencilIcon } from "@heroicons/react/24/solid";
-import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, ChevronUpDownIcon } from "@heroicons/react/24/solid";
 
 const TABLE_HEAD = ["Member", "Function", "Status", "Employed", ""];
-
 const TABLE_ROWS = [
   {
     img: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
@@ -65,36 +59,33 @@ const TABLE_ROWS = [
   },
 ];
 
+const ROWS_PER_PAGE = 4;
+
 export const Test = () => {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(!open);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const totalPages = Math.ceil(TABLE_ROWS.length / ROWS_PER_PAGE);
+
+  const currentTableRows = TABLE_ROWS.slice(
+    currentPage * ROWS_PER_PAGE,
+    (currentPage + 1) * ROWS_PER_PAGE
+  );
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <section className="p-4">
-      <div className="mx-auto max-w-screen-lg ">
-        <Menu>
-          <MenuHandler>
-            <IconButton variant="text">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="size-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
-                />
-              </svg>
-            </IconButton>
-          </MenuHandler>
-          <MenuList>
-            <MenuItem>Edit</MenuItem>
-            <MenuItem color="red">Delete</MenuItem>
-          </MenuList>
-        </Menu>
+      <div className="mx-auto max-w-screen-lg">
         <CardBody className="overflow-scroll px-0">
           <table className="mt-4 w-full min-w-max table-auto text-left">
             <thead>
@@ -122,9 +113,9 @@ export const Test = () => {
               </tr>
             </thead>
             <tbody>
-              {TABLE_ROWS.map(
+              {currentTableRows.map(
                 ({ img, name, email, job, org, online, date }, index) => {
-                  const isLast = index === TABLE_ROWS.length - 1;
+                  const isLast = index === currentTableRows.length - 1;
                   const classes = isLast
                     ? "p-4"
                     : "p-4 border-b border-blue-gray-50";
@@ -171,14 +162,12 @@ export const Test = () => {
                         </div>
                       </td>
                       <td className={classes}>
-                        <div className="w-max">
-                          <Chip
-                            variant="ghost"
-                            size="sm"
-                            value={online ? "online" : "offline"}
-                            color={online ? "green" : "blue-gray"}
-                          />
-                        </div>
+                        <Chip
+                          variant="ghost"
+                          size="sm"
+                          value={online ? "online" : "offline"}
+                          color={online ? "green" : "blue-gray"}
+                        />
                       </td>
                       <td className={classes}>
                         <Typography
@@ -202,6 +191,20 @@ export const Test = () => {
               )}
             </tbody>
           </table>
+          <div className="flex justify-between items-center mt-4">
+            <Button disabled={currentPage === 0} onClick={handlePreviousPage}>
+              Previous
+            </Button>
+            <Typography variant="small" className="text-gray-600">
+              Page {currentPage + 1} of {totalPages}
+            </Typography>
+            <Button
+              disabled={currentPage >= totalPages - 1}
+              onClick={handleNextPage}
+            >
+              Next
+            </Button>
+          </div>
         </CardBody>
       </div>
     </section>

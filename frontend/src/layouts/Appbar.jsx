@@ -148,18 +148,15 @@ export const Appbar = () => {
   const pages = {
     user: [
       { name: "Guardians", URL: "guardians" },
-      { name: "Events", URL: "events" },
       { name: "Chat", URL: "chat" },
     ],
     admin: [
       { name: "Guardians", URL: "guardians" },
-      { name: "Events", URL: "events" },
       { name: "Chat", URL: "chat" },
       { name: "Manage", URL: "admin/manage" },
     ],
     moderator: [
       { name: "Guardians", URL: "guardians" },
-      { name: "Events", URL: "events" },
       { name: "Chat", URL: "chat" },
       { name: "In approval", URL: "moderator/approve" },
       { name: "Reports", URL: "moderator/report" },

@@ -5,14 +5,16 @@ import auth from "../../../helpers/Auth";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import TextEditor from "../components/TextEditor";
-import { Topic } from "../components/Topic";
 import {
   Input,
   Button,
   Select,
   Option,
   Spinner,
+  Typography,
+  Textarea,
 } from "@material-tailwind/react";
+import { SelectedTags } from "../components/SelectedTags";
 
 export const CreatePost = () => {
   const [values, setValues] = useState({
@@ -118,6 +120,8 @@ export const CreatePost = () => {
     if (values.name.length < 11 || values.name.length > 50)
       errors.name = "Name should be more than 10 or less than 50 characters.";
     if (!values.price) errors.price = "Price is required.";
+    if (images.length === 0) errors.image = "Select at least 1 image";
+    console.log(images);
     return errors;
   };
 
@@ -161,129 +165,152 @@ export const CreatePost = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <div className="p-6 rounded-lg bg-white">
-        <h2 className="text-2xl font-semibold mb-6">Create a New Post</h2>
+    <section className="p-4">
+      <div className="mx-auto max-w-screen-lg">
+        <div className="p-6 rounded-lg bg-white">
+          <h2 className="text-2xl font-semibold mb-6">Create a New Post</h2>
 
-        <div className="grid gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="name">
-              Name
-            </label>
-            <Input
-              type="text"
-              id="name"
-              className="input input-bordered w-full"
-              placeholder="Summarize your problem in one line"
-              onChange={handleChange("name")}
-              value={values.name}
-              aria-label="Name"
-            />
-            {errorMessages.name && (
-              <p className="text-red-500">{errorMessages.name}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="price">
-              Price
-            </label>
-            <Input
-              type="text"
-              id="price"
-              className="input input-bordered w-full"
-              placeholder="Your price"
-              onChange={handleChange("price")}
-              value={values.price}
-              aria-label="Price"
-            />
-            {errorMessages.price && (
-              <p className="text-red-500">{errorMessages.price}</p>
-            )}
-          </div>
-
-          <div>
-            <TextEditor
-              placeholder={"Write your content here..."}
-              setText={handleChange("content")}
-              editorRef={editorRef}
-            />
-          </div>
-          <div className="flex">
-            {selectTopics !== "" &&
-              topics.map((topic, id) =>
-                selectTopics.includes(topic.name) ? (
-                  <Topic
-                    key={id}
-                    name={topic.name}
-                    color={topic.color}
-                    id={topic._id}
-                  />
-                ) : (
-                  ""
-                )
+          <div className="grid gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1" htmlFor="name">
+                Name
+              </label>
+              <Input
+                type="text"
+                id="name"
+                className="input input-bordered w-full"
+                placeholder="Summarize your problem in one line"
+                onChange={handleChange("name")}
+                error={errorMessages.name}
+                value={values.name}
+                aria-label="Name"
+              />
+              {errorMessages.name && (
+                <p className="text-red-500">{errorMessages.name}</p>
               )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Topics</label>
-            <Select
-              multiple
-              className="select select-bordered w-full"
-              onChange={handleSelectingOptions}
-              value={selectTopics}
-            >
-              {topics.map((topic, id) => (
-                <Option key={id} value={topic.name}>
-                  {topic.name}
-                </Option>
-              ))}
-            </Select>
-          </div>
+            </div>
 
-          <div>
-            <input
-              ref={fileInputRef}
-              className="hidden"
-              type="file"
-              id="image-upload"
-              accept="image/*"
-              multiple
-              onChange={handleImage}
-            />
-            <Button
-              onClick={handleAddImagesClick}
-              htmlFor="image-upload"
-              className="btn btn-primary"
-            >
-              Add Images
-            </Button>
-          </div>
+            <div>
+              <label className="block text-sm font-medium mb-1" htmlFor="price">
+                Price
+              </label>
+              <Input
+                type="text"
+                id="price"
+                className="input input-bordered w-full"
+                placeholder="Your price"
+                onChange={handleChange("price")}
+                value={values.price}
+                error={errorMessages.price}
+                aria-label="Price"
+              />
+              {errorMessages.price && (
+                <p className="text-red-500">{errorMessages.price}</p>
+              )}
+            </div>
 
-          <div className="columns-4 gap-5">
-            {images &&
-              images.map((img, id) => (
-                <img
-                  key={id}
-                  alt="img"
-                  className="w-44 h-auto object-contain rounded-md"
-                  src={img.preview}
-                />
-              ))}
-          </div>
+            <div>
+              <label
+                className="block text-sm font-medium mb-1"
+                htmlFor="content"
+              >
+                Content
+              </label>
+              <Textarea
+                id="content"
+                variant="outlined"
+                rows={8}
+                onChange={handleChange("content")}
+              />
+            </div>
+            {console.log(values)}
+            <div className="flex gap-2">
+              {selectTopics !== "" &&
+                topics.map((topic, id) =>
+                  selectTopics.includes(topic.name) ? (
+                    <SelectedTags key={id} name={topic.name} id={topic._id} />
+                  ) : (
+                    ""
+                  )
+                )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Topics</label>
+              <Select
+                multiple
+                variant="outlined"
+                className="select select-bordered w-full"
+                onChange={handleSelectingOptions}
+                value={selectTopics}
+              >
+                {topics.map((topic, id) => (
+                  <Option
+                    key={id}
+                    value={topic.name}
+                    className={`${
+                      selectTopics.includes(topic.name) ? "bg-gray-300" : ""
+                    }`}
+                  >
+                    {topic.name}
+                  </Option>
+                ))}
+              </Select>
+            </div>
 
-          <div className="mt-6">
-            {loading ? (
-              <div className="flex justify-center items-center">
-                <Spinner className="h-8 w-8" />
-              </div>
-            ) : (
-              <Button className="btn btn-primary w-full" onClick={onSubmit}>
-                Post
+            <div>
+              <input
+                ref={fileInputRef}
+                className="hidden"
+                type="file"
+                id="image-upload"
+                accept="image/*"
+                multiple
+                onChange={handleImage}
+              />
+              <Button
+                onClick={handleAddImagesClick}
+                htmlFor="image-upload"
+                className="btn btn-primary"
+              >
+                Add Images
               </Button>
-            )}
+              {!errorMessages.image ? (
+                <Typography className="text-normal mt-2 text-gray-500">
+                  *Select at least 1 image
+                </Typography>
+              ) : (
+                <Typography className="text-normal mt-2 text-red-500">
+                  *Select at least 1 image
+                </Typography>
+              )}
+            </div>
+
+            <div className="columns-4 gap-5">
+              {images &&
+                images.map((img, id) => (
+                  <img
+                    key={id}
+                    alt="img"
+                    className="w-44 h-auto object-contain rounded-md"
+                    src={img.preview}
+                  />
+                ))}
+            </div>
+
+            <div className="mt-6">
+              {loading ? (
+                <div className="flex justify-center items-center">
+                  <Spinner className="h-8 w-8" />
+                </div>
+              ) : (
+                <Button className="btn btn-primary w-full" onClick={onSubmit}>
+                  Post
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };

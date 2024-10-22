@@ -143,9 +143,8 @@ function MyChats({ fetchAgain }) {
           <div className="flex flex-col gap-2">
             <Button
               variant="filled"
-              color="blue"
               size="sm"
-              className="mr-2"
+              className="mr-2 bg-green-500"
               onClick={toggleDrawer(true)}
             >
               Search User
@@ -193,7 +192,11 @@ function MyChats({ fetchAgain }) {
                           ? getSender(auth.isAuthenticated().user, chat.users)
                           : chat.chatName}
                       </Typography>
-                      <Typography className="text-sm text-gray-500 truncate">
+                      <Typography
+                        className={`text-sm text-gray-500 truncate ${
+                          chat.post ? `w-28` : `w-56`
+                        }`}
+                      >
                         {chat.latestMessage
                           ? `${chat.latestMessage.sender.username}: ${chat.latestMessage.content}`
                           : ""}

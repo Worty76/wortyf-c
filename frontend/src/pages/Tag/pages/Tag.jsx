@@ -173,7 +173,7 @@ export const Tag = () => {
                 <IconButton
                   key={page}
                   variant={currentPage === page ? "filled" : "text"}
-                  color={currentPage === page ? "blue" : "gray"}
+                  color={currentPage === page ? "green" : "gray"}
                   onClick={() => handlePageChange(page)}
                 >
                   {page}
