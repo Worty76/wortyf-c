@@ -66,6 +66,7 @@ export const InApprovalPosts = () => {
     <section className="p-4">
       <div className="mx-auto max-w-screen-lg">
         <div className="flex flex-col gap-4">
+          <Typography variant="h4">In Approval Posts</Typography>
           {posts &&
             posts.map((post) => (
               <Card

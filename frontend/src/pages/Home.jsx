@@ -105,26 +105,26 @@ export const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.on("message received", (newMessageReceived) => {
-        if (!messageNotification.includes(newMessageReceived)) {
-          console.log(newMessageReceived);
-          setMessageNotification([newMessageReceived, ...messageNotification]);
-        }
-      });
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.on("message received", (newMessageReceived) => {
+  //       if (!messageNotification.includes(newMessageReceived)) {
+  //         console.log(newMessageReceived);
+  //         setMessageNotification([newMessageReceived, ...messageNotification]);
+  //       }
+  //     });
 
-      socket.on("notification", (noti) => {
-        console.log(noti);
-        setNotification([noti, ...notification]);
-      });
+  //     socket.on("notification", (noti) => {
+  //       console.log(noti);
+  //       setNotification([noti, ...notification]);
+  //     });
 
-      return () => {
-        socket.off("message received");
-        socket.off("notification");
-      };
-    }
-  });
+  //     return () => {
+  //       socket.off("message received");
+  //       socket.off("notification");
+  //     };
+  //   }
+  // });
 
   return (
     <Discussions

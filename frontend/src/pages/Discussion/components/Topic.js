@@ -6,7 +6,7 @@ export const Topic = ({ name, description, color, id }) => {
 
   return (
     <Card
-      className="border border-gray-300 overflow-hidden shadow-sm h-full cursor-pointer"
+      className="border border-gray-300 overflow-hidden shadow-sm h-full cursor-pointer hover:shadow-lg hover:shadow-gray-400 transition-shadow duration-300"
       onClick={() => navigate(`/tag/${id}`)}
     >
       <CardBody className="p-4 flex flex-col h-full">

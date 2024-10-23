@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import ScrollableFeed from "react-scrollable-feed";
 import { Avatar, Tooltip, Typography } from "@material-tailwind/react";
 import {
@@ -10,6 +11,8 @@ import {
 import auth from "../../../../../helpers/Auth";
 
 const ScrollableChat = ({ messages }) => {
+  const navigate = useNavigate();
+
   return (
     <ScrollableFeed className="p-2">
       {messages && messages.length > 0 ? (
@@ -24,9 +27,10 @@ const ScrollableChat = ({ messages }) => {
                 arrow
               >
                 <Avatar
+                  onClick={() => navigate(`/profile/${m.sender._id}`)}
                   src={m.sender.avatar_url}
                   alt={m.sender.username}
-                  className="w-10 h-10"
+                  className="w-10 h-10 cursor-pointer"
                 />
               </Tooltip>
             )}
@@ -49,8 +53,8 @@ const ScrollableChat = ({ messages }) => {
               }}
               className={`${
                 m.sender._id === auth.isAuthenticated().user._id
-                  ? "bg-blue-200"
-                  : "bg-green-200"
+                  ? "bg-green-200"
+                  : "bg-gray-300"
               } mt-${
                 isSameUser(messages, m, i, auth.isAuthenticated().user._id)
                   ? 0

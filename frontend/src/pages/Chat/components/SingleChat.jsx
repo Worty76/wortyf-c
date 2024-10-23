@@ -11,7 +11,6 @@ import { ChatState } from "../../../context/ChatProvider";
 import auth from "../../../helpers/Auth";
 import axios from "axios";
 import ScrollableChat from "./ModalButton/components/ScrollableChat";
-import { Link } from "react-router-dom";
 import { sold } from "../api/ChatApi";
 import RateModalButton from "./RateModalButton/RateModalButton";
 import { debounce } from "lodash";
@@ -258,9 +257,16 @@ function SingleChat({ fetchAgain, setFetchAgain }) {
                         selectedChat.post.buyer?._id &&
                         (selectedChat.post.rated ? (
                           <Typography
-                            sx={{ color: "green", textDecoration: "none" }}
-                            component={Link}
-                            to={`/profile/${selectedChat.post.author._id}`}
+                            sx={{
+                              color: "green",
+                              textDecoration: "none",
+                            }}
+                            className="cursor-pointer"
+                            onClick={() =>
+                              navigate(
+                                `/profile/${selectedChat.post.author._id}`
+                              )
+                            }
                           >
                             You already rated, click here to see
                           </Typography>

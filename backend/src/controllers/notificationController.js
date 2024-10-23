@@ -78,7 +78,8 @@ const fetchNotifications = async (req, res) => {
       recipientId: req.user._id,
     })
       .populate("postId", "name")
-      .populate("senderId");
+      .populate("senderId")
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       message: "Successfully fetched notifications",

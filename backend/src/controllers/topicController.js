@@ -225,6 +225,24 @@ const searchTopic = async (req, res) => {
   }
 };
 
+const searchByNameOrTag = async (req, res) => {
+  try {
+    const { search } = req.query;
+
+    const searchRegex = new RegExp(decodeURIComponent(search), "i");
+
+    const topics = await Topic.find({ name: { $regex: searchRegex } });
+
+    return res
+      .status(200)
+      .send({ message: "Successfully found topics", data: topics });
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ message: "Failed to search topics", error: error.message });
+  }
+};
+
 const topicController = {
   getTopics,
   getAllTopics,
@@ -232,6 +250,7 @@ const topicController = {
   create,
   update,
   remove,
+  searchByNameOrTag,
 };
 
 module.exports = topicController;

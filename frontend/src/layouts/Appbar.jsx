@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from "react";
+import React, { useState, forwardRef, useEffect } from "react";
 import {
   Navbar as MTNavbar,
   Collapse,
@@ -24,6 +24,7 @@ import auth from "../helpers/Auth";
 import { ChatState } from "../context/ChatProvider";
 import moment from "moment";
 import axios from "axios";
+import { useSocket } from "../context/SocketProvider";
 
 const NAV_MENU = [
   {
@@ -125,6 +126,7 @@ const ProfileMenu = ({ isMenuOpen, setIsMenuOpen, closeMenu, user }) => {
 };
 
 export const Appbar = () => {
+  const { socket } = useSocket();
   const user = auth.isAuthenticated().user;
   const [open, setOpen] = useState(false);
   const [openPagesMenu, setOpenPagesMenu] = useState(false);
@@ -204,6 +206,27 @@ export const Appbar = () => {
         );
       });
   };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("message received", (newMessageReceived) => {
+        if (!messageNotification.includes(newMessageReceived)) {
+          console.log(newMessageReceived);
+          setMessageNotification([newMessageReceived, ...messageNotification]);
+        }
+      });
+
+      socket.on("notification", (noti) => {
+        console.log(noti);
+        setNotification([noti, ...notification]);
+      });
+
+      return () => {
+        socket.off("message received");
+        socket.off("notification");
+      };
+    }
+  });
 
   return (
     <MTNavbar shadow={false} fullWidth className="border-0 sticky top-0 z-50">

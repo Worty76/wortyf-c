@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import {
   Dialog,
@@ -15,12 +15,15 @@ import {
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import auth from "../../../helpers/Auth";
+import { debounce } from "lodash";
 
 export const Tags = () => {
   const [tags, setTags] = useState([]);
   const [newTag, setNewTag] = useState({ name: "", description: "" });
   const [editTag, setEditTag] = useState(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
+  // eslint-disable-next-line
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const user = auth.isAuthenticated().user;
 
@@ -107,6 +110,24 @@ export const Tags = () => {
     }
   };
 
+  // eslint-disable-next-line
+  const debounceDropDown = useCallback(
+    debounce((nextValue) => fetchSearchedTags(nextValue), 1000),
+    []
+  );
+
+  const fetchSearchedTags = (key) => {
+    axios
+      .get(`${process.env.REACT_APP_API}/api/topic/search?search=${key}`)
+      .then((response) => setTags(response.data.data));
+  };
+
+  const handleInputOnChange = (e) => {
+    const { value } = e.target;
+    setSearch(value);
+    debounceDropDown(value);
+  };
+
   useEffect(() => {
     const CancelToken = axios.CancelToken;
     const source = CancelToken.source();
@@ -146,7 +167,10 @@ export const Tags = () => {
                 />
               </svg>
             </IconButton>
-            <Input label="Search tag name" />
+            <Input
+              label="Search tag name"
+              onChange={(e) => handleInputOnChange(e)}
+            />
           </div>
           {user && user.role === "moderator" ? (
             <div className="grid grid-cols-12 gap-4 mb-4">
@@ -173,7 +197,7 @@ export const Tags = () => {
                 />
               </div>
               <div className="col-span-12 md:col-span-2">
-                <Button fullWidth onClick={createTag} color="blue">
+                <Button fullWidth onClick={createTag} color="green">
                   Create Tag
                 </Button>
               </div>
@@ -203,7 +227,7 @@ export const Tags = () => {
                                     variant="text"
                                     onClick={() => handleEditClick(tag)}
                                     size="sm"
-                                    color="blue"
+                                    color="green"
                                   >
                                     <PencilIcon className="h-4 w-4" />
                                   </IconButton>
@@ -260,7 +284,7 @@ export const Tags = () => {
                 <Button onClick={() => setDialogOpen(false)} color="red">
                   Cancel
                 </Button>
-                <Button onClick={updateTag} color="blue">
+                <Button onClick={updateTag} color="green">
                   Update
                 </Button>
               </DialogFooter>

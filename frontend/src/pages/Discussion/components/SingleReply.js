@@ -12,6 +12,7 @@ import auth from "../../../helpers/Auth";
 import React, { useState } from "react";
 import { deleteReply, updateReply } from "../api/DiscussionApi";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 export default function SingleReply({
   comment,
@@ -23,6 +24,8 @@ export default function SingleReply({
   const [commentEditing, setCommentEditing] = useState({
     text: comment.text,
   });
+
+  const navigate = useNavigate();
 
   const handleOpenEditing = (text) => {
     setOpenEditing(!openEditing);
@@ -83,10 +86,14 @@ export default function SingleReply({
           />
         </div>
         <div>
-          <Typography variant="h6" className="whitespace-nowrap">
-            {comment.author.username} -{" "}
+          <Typography
+            variant="h6"
+            className="whitespace-nowrap cursor-pointer"
+            onClick={() => navigate(`/profile/${comment.author._id}`)}
+          >
+            {comment.author.username}{" "}
             <span className="text-gray-500 text-sm font-normal">
-              {moment(new Date(comment.createdAt)).fromNow()}
+              • {moment(new Date(comment.createdAt)).fromNow()}
             </span>
           </Typography>
           {openEditing ? (

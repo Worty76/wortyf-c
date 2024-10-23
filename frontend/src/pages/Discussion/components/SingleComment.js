@@ -19,6 +19,7 @@ import {
   deleteComment,
   updateComment,
 } from "../api/DiscussionApi";
+import { useNavigate } from "react-router-dom";
 import auth from "../../../helpers/Auth";
 import moment from "moment";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
@@ -33,6 +34,7 @@ export default function SingleComment({
   const [replies, setReplies] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const [openEditing, setOpenEditing] = useState(false);
+  const navigate = useNavigate();
 
   const [text, setText] = useState("");
 
@@ -169,10 +171,14 @@ export default function SingleComment({
             className="w-12 h-12 object-cover"
           />
           <div>
-            <Typography variant="h6" className="whitespace-nowrap">
-              {comment.author.username} -{" "}
+            <Typography
+              variant="h6"
+              className="whitespace-nowrap cursor-pointer"
+              onClick={() => navigate(`/profile/${comment.author._id}`)}
+            >
+              {comment.author.username}{" "}
               <span className="text-gray-500 text-sm font-normal">
-                {moment(new Date(comment.createdAt)).fromNow()}
+                • {moment(new Date(comment.createdAt)).fromNow()}
               </span>
             </Typography>
             {openEditing ? (

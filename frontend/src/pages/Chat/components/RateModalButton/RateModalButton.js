@@ -25,7 +25,7 @@ function RateModalButton({ chat }) {
 
   const validateForm = () => {
     let errors = {};
-    if (!rating) errors.name = "This is required.";
+    if (!rating) errors.rating = "This is required.";
     return errors;
   };
 
@@ -102,11 +102,10 @@ function RateModalButton({ chat }) {
               );
             })}
           </div>
-          {errorMessages && (
-            <Typography className="text-base text-red-500 text-center">
-              {errorMessages}
-            </Typography>
-          )}
+          <Typography className="text-base text-red-500 text-center">
+            {" "}
+            {errorMessages.rating && errorMessages.rating}
+          </Typography>
           <Typography>Your message</Typography>
           <Textarea
             label="Message"

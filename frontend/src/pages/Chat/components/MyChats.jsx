@@ -108,7 +108,7 @@ function MyChats({ fetchAgain }) {
     fetchChats(source);
     return () => {
       isMounted.current = false;
-      setSelectedChat("");
+      // setSelectedChat("");
       source.cancel("Component unmounted, cancelling axios requests");
     };
     // eslint-disable-next-line
