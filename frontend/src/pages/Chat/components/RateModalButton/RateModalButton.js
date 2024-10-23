@@ -102,6 +102,11 @@ function RateModalButton({ chat }) {
               );
             })}
           </div>
+          {errorMessages && (
+            <Typography className="text-base text-red-500 text-center">
+              {errorMessages}
+            </Typography>
+          )}
           <Typography>Your message</Typography>
           <Textarea
             label="Message"

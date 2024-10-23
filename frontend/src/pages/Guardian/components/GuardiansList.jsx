@@ -1,6 +1,5 @@
 import React from "react";
-import { Avatar, Typography, Button } from "@material-tailwind/react";
-import { Stars } from "../../Profile/components/Stars";
+import { Avatar, Typography, Button, Rating } from "@material-tailwind/react";
 
 export const GuardiansList = ({ guardians }) => {
   return (
@@ -17,7 +16,7 @@ export const GuardiansList = ({ guardians }) => {
               size="xl"
               variant="rounded"
             />
-            <div className="min-w-0 flex-1 items-center">
+            <div className="min-w-0 flex-1 flex flex-col gap-1">
               <Typography color="blue-gray" variant="h6" className="truncate">
                 {guardian.username}
               </Typography>
@@ -27,7 +26,7 @@ export const GuardiansList = ({ guardians }) => {
               >
                 {guardian.bio}
               </Typography>
-              <Stars noOfStars={guardian.avgRating} />
+              <Rating value={guardian.avgRating} readonly />
             </div>
           </div>
           <div className="flex-shrink-0">

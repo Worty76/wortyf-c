@@ -60,6 +60,7 @@ const getSpecificPost = async (req, res) => {
   try {
     const post = await Post.findById({ _id: req.params.id })
       .populate("topic")
+      .populate("buyer")
       .populate("likes");
 
     const author = await User.findById({ _id: post.author._id });

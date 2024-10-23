@@ -225,19 +225,19 @@ function MyChats({ fetchAgain }) {
             <Typography variant="h6">Search Users</Typography>
           </div>
           <div className="p-4">
-            <div className="flex pb-2">
+            <div className="flex pb-2 gap-2">
               <Input
                 placeholder="Search by name or email"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="mr-2"
               />
-              <Button variant="filled" color="blue" onClick={handleSearch}>
+              <Button variant="filled" color="green" onClick={handleSearch}>
                 Go
               </Button>
             </div>
             {loading ? (
-              <Spinner color="blue" />
+              <Spinner color="green" />
             ) : (
               searchResult?.map((user) => (
                 <UserListItem

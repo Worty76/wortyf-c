@@ -1,38 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-  List,
-} from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { VariantType, useSnackbar } from "notistack";
 import auth from "../../../../helpers/Auth";
-import { approve } from "../../api/moderatorApi";
-import { Markup } from "interweave";
-import { createNotification } from "../../../Discussion/api/DiscussionApi";
-import { useSocket } from "../../../../context/SocketProvider";
-
-const useStyles = makeStyles({
-  root: {
-    padding: "1%",
-    width: "95%",
-    margin: "0 auto",
-  },
-});
+import { Typography, Avatar, Card, CardBody } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
 
 export const InApprovalPosts = () => {
-  const { socket } = useSocket();
-  const classes = useStyles();
   const [posts, setPosts] = useState([]);
-  const { enqueueSnackbar } = useSnackbar();
-
-  const handleVariant = (variant: VariantType) => {
-    enqueueSnackbar("Successfully did an action", { variant });
-  };
+  const navigate = useNavigate();
 
   const getPosts = async (signal) => {
     try {
@@ -59,44 +33,6 @@ export const InApprovalPosts = () => {
         });
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const handleApprovePost = (post) => {
-    let approvePost = new FormData();
-
-    approve(
-      { postId: post._id },
-      { t: JSON.parse(auth.isAuthenticated().token) },
-      approvePost
-    ).then((data) => {
-      if (data.stack) {
-      } else {
-        handleVariant("success");
-        setPosts(data);
-      }
-    });
-
-    if (auth.isAuthenticated().user._id !== post.author._id) {
-      createNotification(
-        {
-          t: JSON.parse(auth.isAuthenticated().token),
-        },
-        {
-          recipientId: post.author._id,
-          postId: post._id,
-          redirectUrl: `/post/${post._id}`,
-          type: "approvedPost",
-        }
-      ).then((data) => {
-        if (data.stack) {
-          console.log(data);
-        }
-        console.log(data);
-        const notification = JSON.parse(data);
-
-        socket.emit("notification", notification);
-      });
     }
   };
 
@@ -127,57 +63,49 @@ export const InApprovalPosts = () => {
   }, []);
 
   return (
-    <div className={classes.root}>
-      <Grid container spacing={2}>
-        {posts.map((post) => (
-          <Grid item key={post._id} xs={12} md={6}>
-            <Card>
-              <CardContent>
-                <Grid container spacing={2}>
-                  <Grid item>
-                    <Typography variant="h6">{post.name}</Typography>
-                    <Typography variant="body2">{post.price}</Typography>
-                    <Typography variant="body2" component="div">
-                      <Markup content={post.content} />
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                      Author: {post.author.username}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Grid item>
-                  {post.images.map((image, id) => (
-                    <img
-                      alt=""
-                      style={{ width: 200, padding: 2 }}
-                      key={id}
-                      src={image}
-                    />
-                  ))}
-                </Grid>
-                <List sx={{ display: "flex" }}>
-                  <div style={{ padding: 2 }}>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      onClick={() => handleApprovePost(post)}
-                    >
-                      Approve
-                    </Button>
+    <section className="p-4">
+      <div className="mx-auto max-w-screen-lg">
+        <div className="flex flex-col gap-4">
+          {posts &&
+            posts.map((post) => (
+              <Card
+                shadow={false}
+                className="border border-gray-300 rounded-2xl cursor-pointer hover:shadow-lg hover:shadow-gray-400 transition-shadow duration-300"
+                onClick={() => navigate(`/post/${post._id}`)}
+              >
+                <CardBody>
+                  <div className="flex lg:gap-0 gap-6 flex-wrap justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <Avatar
+                        className="h-24 w-24 md:h-32 object-cover rounded-xl"
+                        src={post.images[0]}
+                        alt="avatar"
+                        variant="rounded"
+                      />
+                      <div>
+                        <Typography color="blue-gray" variant="h6">
+                          {post.name}
+                        </Typography>
+                        <Typography
+                          variant="small"
+                          className="font-normal text-gray-600"
+                        >
+                          {post.content}
+                        </Typography>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2"></div>
                   </div>
-                  {/* <div style={{ padding: 2 }}>
-                    <Button variant="contained" color="error">
-                      Reject
-                    </Button>
-                  </div> */}
-                </List>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-
-        {posts.length === 0 && <div>No posts found</div>}
-      </Grid>
-    </div>
+                </CardBody>
+              </Card>
+            ))}
+          {posts && posts.length === 0 && (
+            <Typography className="text-base">
+              There's no posts in approval
+            </Typography>
+          )}
+        </div>
+      </div>
+    </section>
   );
 };

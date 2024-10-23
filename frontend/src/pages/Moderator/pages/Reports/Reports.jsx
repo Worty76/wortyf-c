@@ -1,56 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { makeStyles } from "@mui/styles";
-import {
-  Avatar,
-  CardContent,
-  Typography,
-  Paper,
-  List,
-  CircularProgress,
-  Box,
-} from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
-import PostIcon from "@mui/icons-material/Description";
+import { Spinner, Card, CardBody, Typography } from "@material-tailwind/react";
 import auth from "../../../../helpers/Auth";
 
-const useStyles = makeStyles({
-  root: {
-    width: "95%",
-    margin: "0 auto",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  reportList: {
-    width: "100%",
-  },
-  reportCard: {
-    margin: "10px 0",
-    padding: "10px",
-    display: "flex",
-    alignItems: "center",
-  },
-  avatar: {
-    marginRight: "15px",
-  },
-  loading: {
-    marginTop: "20px",
-  },
-  noReports: {
-    marginTop: "20px",
-  },
-  content: {
-    flexGrow: 1,
-  },
-  iconButton: {
-    marginLeft: "auto",
-  },
-});
-
 export const Reports = () => {
-  const classes = useStyles();
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -90,52 +44,45 @@ export const Reports = () => {
   }, []);
 
   if (loading) {
-    return <CircularProgress className={classes.loading} />;
+    return <Spinner className="h-6 w-6" />;
   }
 
+  console.log(reports);
+
   return (
-    <div className={classes.root}>
-      <List className={classes.reportList}>
-        {reports && reports.length === 0 ? (
-          <Typography className={classes.noReports}>
-            No reports available.
-          </Typography>
-        ) : (
-          reports.map((report) => (
-            <Box
-              key={report._id}
-              sx={{ cursor: "pointer" }}
-              onClick={() => {
-                if (report.postId) {
-                  navigate(`/post/${report.postId?._id}`);
-                }
-              }}
-            >
-              <Paper className={classes.reportCard} elevation={3}>
-                <Avatar
-                  className={classes.avatar}
-                  src={report.author?.avatar_url}
-                >
-                  <PersonIcon />
-                </Avatar>
-                <CardContent className={classes.content}>
-                  <Typography variant="h6">
-                    Message: {report.message}
-                  </Typography>
-                  <Typography variant="body2">
-                    <PersonIcon fontSize="small" /> Author:{" "}
-                    {report.author.username}
-                  </Typography>
-                  <Typography variant="body2">
-                    <PostIcon fontSize="small" /> Post name:{" "}
-                    {report.postId?.name}
-                  </Typography>
-                </CardContent>
-              </Paper>
-            </Box>
-          ))
-        )}
-      </List>
-    </div>
+    <section className="p-4">
+      <div className="mx-auto max-w-screen-lg">
+        <Typography variant="h4">Reports</Typography>
+        <CardBody className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8">
+          {reports &&
+            reports.map(
+              (report, index) =>
+                report.postId && (
+                  <Card
+                    key={index}
+                    onClick={() => navigate(`/post/${report.postId._id}`)}
+                    className="border border-gray-300 overflow-hidden shadow-sm h-full cursor-pointer hover:shadow-lg hover:shadow-gray-400 transition-shadow duration-300"
+                  >
+                    <CardBody>
+                      <img
+                        className="rounded-md mb-2 h-24 md:h-32 w-full object-cover rounded-xl"
+                        alt={`${report.postId && report.postId.name}`}
+                        src={`${report.postId && report.postId.images[0]}`}
+                      />
+                      <Typography
+                        variant="h5"
+                        color="blue-gray"
+                        className="mb-2"
+                      >
+                        {report.postId && report.postId.name}
+                      </Typography>
+                      <Typography>{report.message}</Typography>
+                    </CardBody>
+                  </Card>
+                )
+            )}
+        </CardBody>
+      </div>
+    </section>
   );
 };

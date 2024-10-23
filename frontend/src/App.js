@@ -6,7 +6,6 @@ import { SignIn } from "./pages/Auth";
 import { SignUp } from "./pages/Auth";
 import { Profile } from "./pages/Profile";
 import { Guardian } from "./pages/Guardian";
-import { Events } from "./pages/Events";
 import { Chat } from "./pages/Chat";
 import { CreatePost } from "./pages/Discussion";
 import { Discussion } from "./pages/Discussion";
@@ -34,7 +33,6 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/home/create" element={<CreatePost />} />
         <Route path="/guardians" element={<Guardian />} />
-        <Route path="/events" element={<Events />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/chat/:chatId" element={<Chat />} />
         <Route path="/profile/:id" element={<Profile />} />

@@ -1,4 +1,4 @@
-import { Button, IconButton } from "@material-tailwind/react";
+import { IconButton } from "@material-tailwind/react";
 import SingleChat from "./SingleChat";
 import { ChatState } from "../../../context/ChatProvider";
 import { useNavigate } from "react-router-dom";

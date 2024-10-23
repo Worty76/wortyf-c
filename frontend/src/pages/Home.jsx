@@ -1,20 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Discussions } from "./Discussion";
-import { makeStyles } from "@mui/styles";
 import axios from "axios";
 import { useSocket } from "../context/SocketProvider";
 import { ChatState } from "../context/ChatProvider";
 import { useNavigate } from "react-router-dom";
 
-const useStyles = makeStyles({
-  root: {
-    padding: "5%",
-  },
-});
-
 export const Home = () => {
   const { socket } = useSocket();
-  const classes = useStyles();
   const [posts, setPosts] = useState([]);
   const [pageNumbers, setPageNumbers] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -135,18 +127,16 @@ export const Home = () => {
   });
 
   return (
-    <div className={classes.root}>
-      <Discussions
-        posts={posts}
-        setPosts={setPosts}
-        loading={loading}
-        handlePageChange={handlePageChange}
-        pageNumbers={pageNumbers}
-        currentPage={currentPage}
-        setPageNumbers={setPageNumbers}
-        setCurrentPage={setCurrentPage}
-        pages={pageNumbers}
-      />
-    </div>
+    <Discussions
+      posts={posts}
+      setPosts={setPosts}
+      loading={loading}
+      handlePageChange={handlePageChange}
+      pageNumbers={pageNumbers}
+      currentPage={currentPage}
+      setPageNumbers={setPageNumbers}
+      setCurrentPage={setCurrentPage}
+      pages={pageNumbers}
+    />
   );
 };

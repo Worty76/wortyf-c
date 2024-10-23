@@ -30,7 +30,8 @@ function Information({
             >
               Bio
             </Typography>
-            {auth.isAuthenticated().user._id === user._id ? (
+            {auth.isAuthenticated() &&
+            auth.isAuthenticated().user._id === user._id ? (
               <Input
                 name="bio"
                 size="lg"
@@ -53,7 +54,8 @@ function Information({
             >
               Username
             </Typography>
-            {auth.isAuthenticated().user._id === user._id ? (
+            {auth.isAuthenticated() &&
+            auth.isAuthenticated().user._id === user._id ? (
               <Input
                 name="username"
                 size="lg"
@@ -74,7 +76,8 @@ function Information({
             >
               Gender
             </Typography>
-            {auth.isAuthenticated().user._id === user._id ? (
+            {auth.isAuthenticated() &&
+            auth.isAuthenticated().user._id === user._id ? (
               <Select
                 name="gender"
                 size="lg"
@@ -106,7 +109,8 @@ function Information({
             >
               Location
             </Typography>
-            {auth.isAuthenticated().user._id === user._id ? (
+            {auth.isAuthenticated() &&
+            auth.isAuthenticated().user._id === user._id ? (
               <Input
                 size="lg"
                 name="from"
@@ -128,7 +132,8 @@ function Information({
             >
               Phone Number
             </Typography>
-            {auth.isAuthenticated().user._id === user._id ? (
+            {auth.isAuthenticated() &&
+            auth.isAuthenticated().user._id === user._id ? (
               <Input
                 size="lg"
                 name="phone"
@@ -144,7 +149,8 @@ function Information({
         </div>
         <div className="flex justify-between">
           <div></div>
-          {auth.isAuthenticated().user._id === user._id ? (
+          {auth.isAuthenticated() &&
+          auth.isAuthenticated().user._id === user._id ? (
             <Button color="green" onClick={handleSave}>
               Update
             </Button>

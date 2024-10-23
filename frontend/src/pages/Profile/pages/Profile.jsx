@@ -30,10 +30,12 @@ export const Profile = () => {
   const [user, setUser] = useState({});
   const [usersPosts, setUsersPosts] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
+  // eslint-disable-next-line
   const [image, setImage] = useState(null);
   const [ratings, setRatings] = useState([]);
   const [uploading, setUploading] = useState(false);
   const { setSelectedChat, chats, setChats } = ChatState();
+  // eslint-disable-next-line
   const [avgRatings, setAvgRatings] = useState(0);
   const [updatedFields, setUpdatedFields] = useState({
     bio: "",
@@ -194,6 +196,7 @@ export const Profile = () => {
                 id={post._id}
                 name={post.name}
                 date={post.createdAt}
+                price={post.price}
                 authorName={post.author.username}
                 imgs={post.images}
                 profileImg={post.author.avatar_url}
@@ -232,16 +235,20 @@ export const Profile = () => {
           <CardBody>
             <div className="flex lg:gap-0 gap-6 flex-wrap justify-between items-center">
               <div className="flex items-center gap-3">
-                <Avatar src={user.avatar_url} alt="avatar" variant="rounded" />
+                <Avatar
+                  src={user && user.avatar_url}
+                  alt="avatar"
+                  variant="rounded"
+                />
                 <div>
                   <Typography color="blue-gray" variant="h6">
-                    {user.username}
+                    {user && user.username}
                   </Typography>
                   <Typography
                     variant="small"
                     className="font-normal text-gray-600"
                   >
-                    {user.email}
+                    {user && user.email}
                   </Typography>
                 </div>
               </div>
@@ -256,7 +263,8 @@ export const Profile = () => {
                   />
                   {uploading ? (
                     <Spinner className="h-8 w-8" />
-                  ) : user && user._id === auth.isAuthenticated().user._id ? (
+                  ) : auth.isAuthenticated() &&
+                    auth.isAuthenticated().user._id === user._id ? (
                     <label htmlFor="icon-button-file">
                       <Button
                         variant="text"
@@ -278,7 +286,13 @@ export const Profile = () => {
                       variant="text"
                       size="sm"
                       className="border-gray-300 flex items-center gap-2"
-                      onClick={accessChat}
+                      onClick={() => {
+                        if (auth.isAuthenticated()) {
+                          accessChat();
+                        } else {
+                          navigate(`/sign-in`);
+                        }
+                      }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -304,7 +318,7 @@ export const Profile = () => {
               variant="small"
               className="font-normal text-gray-600 mt-6"
             >
-              {user.bio}
+              {user && user.bio}
             </Typography>
             <div className="flex gap-4">
               <Typography variant="small" className="font-normal mt-6">

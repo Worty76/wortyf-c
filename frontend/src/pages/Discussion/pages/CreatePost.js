@@ -4,7 +4,6 @@ import { create } from "../api/DiscussionsApi";
 import auth from "../../../helpers/Auth";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import TextEditor from "../components/TextEditor";
 import {
   Input,
   Button,
@@ -29,7 +28,6 @@ export const CreatePost = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState({});
-  const editorRef = useRef(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 

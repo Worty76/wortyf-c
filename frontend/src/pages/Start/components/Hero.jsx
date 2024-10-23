@@ -3,6 +3,7 @@ import React from "react";
 import { Button, Typography } from "@material-tailwind/react";
 
 export default function Hero() {
+  // eslint-disable-next-line
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
 

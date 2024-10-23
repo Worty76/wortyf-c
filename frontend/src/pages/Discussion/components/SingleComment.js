@@ -1,9 +1,7 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
-import BestAnswer from "../../../components/customIcons/Mark";
+import { useEffect, useState } from "react";
 import {
   Typography,
-  Carousel,
   Textarea,
   Button,
   IconButton,
@@ -22,10 +20,6 @@ import {
   updateComment,
 } from "../api/DiscussionApi";
 import auth from "../../../helpers/Auth";
-import { Link } from "react-router-dom";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Markup } from "interweave";
-import TextEditor from "./TextEditor";
 import moment from "moment";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 
@@ -39,17 +33,7 @@ export default function SingleComment({
   const [replies, setReplies] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const [openEditing, setOpenEditing] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const editorRef = useRef(null);
-  const open = Boolean(anchorEl);
 
-  const handleOpenOptions = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseOptions = () => {
-    setAnchorEl(null);
-  };
   const [text, setText] = useState("");
 
   const [commentEditing, setCommentEditing] = useState({

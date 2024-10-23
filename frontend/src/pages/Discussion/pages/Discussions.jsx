@@ -1,13 +1,9 @@
-// eslint-disable-next-line
-import { SelectChangeEvent } from "@mui/material/Select";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import auth from "../../../helpers/Auth";
 import { useNavigate } from "react-router-dom";
 import { Topic } from "../components/Topic";
-import { Markup } from "interweave";
 import FilterOptions from "../components/FilterOptions";
-import { FilterListIcon } from "@mui/icons-material/FilterList";
 import { Post } from "../components/Post";
 import {
   ChevronRightIcon,
@@ -37,13 +33,6 @@ export const Discussions = ({
 
   const [topics, setTopics] = useState([]);
   const [openFilter, setOpenFilter] = useState(false);
-  const [active, setActive] = React.useState(1);
-
-  const getItemProps = (index) => ({
-    variant: active === index ? "filled" : "text",
-    color: "gray",
-    onClick: () => setActive(index),
-  });
 
   const next = () => {
     if (currentPage < pageNumbers) {
@@ -141,7 +130,7 @@ export const Discussions = ({
               />
             ))}
         </CardBody>
-
+        <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
         <div className="flex justify-between items-center gap-2 my-6">
           <Button
             className="text-white px-4 py-2 rounded-md flex items-center gap-2"
@@ -176,6 +165,7 @@ export const Discussions = ({
               id={post._id}
               name={post.name}
               date={post.createdAt}
+              price={post.price}
               authorName={post.author.username}
               imgs={post.images}
               profileImg={post.author.avatar_url}

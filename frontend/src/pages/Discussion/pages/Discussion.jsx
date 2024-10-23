@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-// import CssBaseline from "@material-ui/core/CssBaseline";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Typography,
   Carousel,
@@ -12,6 +11,12 @@ import {
   MenuList,
   MenuItem,
   Input,
+  Chip,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  Avatar,
 } from "@material-tailwind/react";
 import axios from "axios";
 import {
@@ -31,6 +36,7 @@ import { ChatState } from "../../../context/ChatProvider";
 import { useSocket } from "../../../context/SocketProvider";
 import { HeartIcon, FlagIcon } from "@heroicons/react/24/solid";
 import moment from "moment";
+import { approve } from "../../Moderator/api/moderatorApi";
 
 export const Discussion = () => {
   const { socket } = useSocket();
@@ -41,8 +47,6 @@ export const Discussion = () => {
   const [user, setUser] = useState({});
   const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState(0);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
   const [openReportDialog, setOpenReportDialog] = useState(false);
   const timeoutRef = useRef(null);
   const [message, setMessage] = useState("");
@@ -74,14 +78,6 @@ export const Discussion = () => {
     timeoutRef.current = setTimeout(() => {
       onDeleteLike();
     }, 300);
-  };
-
-  const handleOpenOptions = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseOptions = () => {
-    setAnchorEl(null);
   };
 
   const handleOpenReportDialog = () => {
@@ -331,6 +327,44 @@ export const Discussion = () => {
     } catch (error) {}
   };
 
+  const handleApprovePost = (post) => {
+    let approvePost = new FormData();
+
+    approve(
+      { postId: post._id },
+      { t: JSON.parse(auth.isAuthenticated().token) },
+      approvePost
+    ).then((data) => {
+      if (data.stack) {
+      } else {
+        handleVariant("success");
+        navigate(`/moderator/approve`);
+      }
+    });
+
+    if (auth.isAuthenticated().user._id !== post.author._id) {
+      createNotification(
+        {
+          t: JSON.parse(auth.isAuthenticated().token),
+        },
+        {
+          recipientId: post.author._id,
+          postId: post._id,
+          redirectUrl: `/post/${post._id}`,
+          type: "approvedPost",
+        }
+      ).then((data) => {
+        if (data.stack) {
+          console.log(data);
+        }
+        console.log(data);
+        const notification = JSON.parse(data);
+
+        socket.emit("notification", notification);
+      });
+    }
+  };
+
   useEffect(() => {
     if (socket) {
       socket.on("message received", (newMessageReceived) => {
@@ -374,12 +408,14 @@ export const Discussion = () => {
                 {post && moment(new Date(post.createdAt)).fromNow()}
               </Typography>
             </div>
+            {!post.approved && <Chip color="amber" value="Is In Approval" />}
           </div>
           <div>
             {post &&
               auth.isAuthenticated() &&
               auth.isAuthenticated().user._id !== user._id &&
-              !post.sold && (
+              !post.sold &&
+              post.approved && (
                 <Button
                   variant="text"
                   size="sm"
@@ -403,6 +439,56 @@ export const Discussion = () => {
                   Chat
                 </Button>
               )}
+            {auth.isAuthenticated() &&
+              auth.isAuthenticated().user.role === "moderator" &&
+              !post.approved && (
+                <IconButton
+                  variant="text"
+                  color="green"
+                  onClick={() => handleApprovePost(post)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m4.5 12.75 6 6 9-13.5"
+                    />
+                  </svg>
+                </IconButton>
+              )}
+            {post && post.sold && (
+              <div className="flex flex-row gap-2">
+                <Chip color="green" value="SOLD" />
+                <Chip
+                  icon={
+                    <Avatar
+                      size="xs"
+                      variant="circular"
+                      className="h-full w-full -translate-x-0.5"
+                      alt={post.buyer.name}
+                      src={post.buyer.avatar_url}
+                    />
+                  }
+                  value={
+                    <Typography
+                      variant="small"
+                      color="white"
+                      className="font-medium capitalize leading-none"
+                    >
+                      {post.buyer.username}
+                    </Typography>
+                  }
+                  className="rounded-full py-1.5"
+                />
+              </div>
+            )}
             {auth.isAuthenticated() &&
               auth.isAuthenticated().user._id === user._id &&
               (openEditing ? (
@@ -581,7 +667,7 @@ export const Discussion = () => {
           </div>
 
           <div className="flex items-center gap-2 text-gray-700">
-            <IconButton variant="text">
+            <IconButton variant="text" onClick={handleOpenReportDialog}>
               <FlagIcon
                 strokeWidth={2}
                 className="h-6 w-6 my-4 text-gray-500 cursor-pointer"
@@ -589,6 +675,36 @@ export const Discussion = () => {
             </IconButton>
             Report
           </div>
+          {openReportDialog && (
+            <Dialog open={openReportDialog} handler={handleCloseReportDialog}>
+              <DialogHeader>Report This Topic</DialogHeader>
+              <DialogBody>
+                <p className="text-gray-700">
+                  Please describe why you want to report this topic:
+                </p>
+                <Input
+                  autoFocus
+                  label="Reason"
+                  onChange={(e) => setMessage(e.target.value)}
+                  type="text"
+                  fullWidth
+                />
+              </DialogBody>
+              <DialogFooter>
+                <Button
+                  color="red"
+                  variant="text"
+                  onClick={handleCloseReportDialog}
+                  className="mr-2"
+                >
+                  Cancel
+                </Button>
+                <Button color="green" onClick={report}>
+                  Submit Report
+                </Button>
+              </DialogFooter>
+            </Dialog>
+          )}
         </div>
 
         {openEditing ? (
@@ -598,12 +714,17 @@ export const Discussion = () => {
             onChange={handleChangeEditing("name")}
           />
         ) : (
-          <Typography
-            variant="h2"
-            className="my-4 xs:my-1 sm:my-2 md:my-2 font-black text-4xl leading-snug text-blue-gray-900"
-          >
-            {post && post.name}
-          </Typography>
+          <>
+            <Typography
+              variant="h2"
+              className="my-4 xs:my-1 sm:my-2 md:my-2 font-black text-4xl leading-snug text-blue-gray-900"
+            >
+              {post && post.name}
+            </Typography>
+            <Typography className="font-bold text-red-500">
+              {post && post.price}
+            </Typography>
+          </>
         )}
 
         {openEditing ? (

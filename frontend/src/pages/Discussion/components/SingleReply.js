@@ -11,8 +11,6 @@ import {
 import auth from "../../../helpers/Auth";
 import React, { useState } from "react";
 import { deleteReply, updateReply } from "../api/DiscussionApi";
-import { Link } from "react-router-dom";
-import { Markup } from "interweave";
 import moment from "moment";
 
 export default function SingleReply({
@@ -25,16 +23,6 @@ export default function SingleReply({
   const [commentEditing, setCommentEditing] = useState({
     text: comment.text,
   });
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-
-  const handleOpenOptions = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseOptions = () => {
-    setAnchorEl(null);
-  };
 
   const handleOpenEditing = (text) => {
     setOpenEditing(!openEditing);

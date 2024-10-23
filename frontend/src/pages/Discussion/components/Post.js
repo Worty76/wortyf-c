@@ -2,7 +2,7 @@ import { Card, CardBody, Typography } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 
-export function Post({ id, name, date, imgs, authorName, profileImg }) {
+export function Post({ id, name, price, date, imgs, authorName, profileImg }) {
   const navigate = useNavigate();
   return (
     <Card
@@ -19,6 +19,13 @@ export function Post({ id, name, date, imgs, authorName, profileImg }) {
           </Typography>
           <Typography variant="small" color="gray" className="font-medium">
             {moment(new Date(date)).fromNow()}
+          </Typography>
+          <Typography
+            variant="small"
+            color="gray"
+            className="font-bold text-red-500"
+          >
+            {price}
           </Typography>
 
           {/* <div className="my-4 flex items-start justify-between items-center">
