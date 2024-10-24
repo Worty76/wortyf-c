@@ -410,7 +410,7 @@ export const Discussion = () => {
             </div>
             {!post.approved && <Chip color="amber" value="Is In Approval" />}
           </div>
-          <div>
+          <div className="flex flex-row items-center gap-2">
             {post &&
               auth.isAuthenticated() &&
               auth.isAuthenticated().user._id !== user._id &&

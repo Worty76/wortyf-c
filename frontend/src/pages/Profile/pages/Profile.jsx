@@ -161,6 +161,7 @@ export const Profile = () => {
     // eslint-disable-next-line
   }, [params.id]);
 
+  console.log(ratings);
   const data = [
     {
       label: "Ratings",
@@ -175,6 +176,8 @@ export const Profile = () => {
                 name={rating.author.username}
                 feedback={rating.comment}
                 date={rating.createdAt}
+                avatar_url={rating.author.avatar_url}
+                noOfStars={rating.noOfStars}
               />
             ))
           ) : (

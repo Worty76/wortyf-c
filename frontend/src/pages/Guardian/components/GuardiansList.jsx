@@ -1,7 +1,40 @@
 import React from "react";
 import { Avatar, Typography, Button, Rating } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
+import auth from "../../../helpers/Auth";
+import axios from "axios";
+import { ChatState } from "../../../context/ChatProvider";
 
 export const GuardiansList = ({ guardians }) => {
+  const navigate = useNavigate();
+
+  const { chats, setChats, setSelectedChat } = ChatState();
+
+  const accessChat = async (user) => {
+    const userId = user._id;
+    console.log(userId);
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${JSON.parse(auth.isAuthenticated().token)}`,
+        },
+      };
+
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API}/api/chat`,
+        { userId },
+        config
+      );
+      if (!chats.find((c) => c._id === data._id)) {
+        setChats([data, ...chats]);
+      }
+      setSelectedChat(data);
+      navigate(`/chat/${data._id}`);
+    } catch (error) {}
+  };
+
   return (
     <div className="mt-4 flex flex-col gap-6">
       {guardians.map((guardian, index) => (
@@ -17,7 +50,12 @@ export const GuardiansList = ({ guardians }) => {
               variant="rounded"
             />
             <div className="min-w-0 flex-1 flex flex-col gap-1">
-              <Typography color="blue-gray" variant="h6" className="truncate">
+              <Typography
+                color="blue-gray"
+                variant="h6"
+                className="truncate cursor-pointer"
+                onClick={() => navigate(`/profile/${guardian._id}`)}
+              >
                 {guardian.username}
               </Typography>
               <Typography
@@ -34,6 +72,7 @@ export const GuardiansList = ({ guardians }) => {
               variant="text"
               className="flex items-center gap-2"
               size="sm"
+              onClick={() => accessChat(guardian)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

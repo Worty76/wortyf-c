@@ -144,7 +144,7 @@ const getUser = async (req, res) => {
   );
   const ratings = await Rating.find({ userId: req.params.id }).populate(
     "author",
-    "email username createdAt"
+    "email username createdAt avatar_url"
   );
 
   const totalStars = ratings.reduce((acc, rating) => acc + rating.noOfStars, 0);
