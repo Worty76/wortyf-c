@@ -203,15 +203,22 @@ export default function SingleComment({
             variant="text"
             className="flex items-center gap-2 p-2"
             size="sm"
-            onClick={handleReply}
+            onClick={() => {
+              if (!auth.isAuthenticated()) {
+                navigate(`/sign-in`);
+              } else {
+                handleReply();
+              }
+            }}
           >
             <ArrowUturnLeftIcon strokeWidth={2} className="h-5 w-5" />
             <Typography variant="h6" className="text-xs">
               REPLY
             </Typography>
           </Button>
+          {console.log(comment)}
           {auth.isAuthenticated() &&
-            auth.isAuthenticated().user._id === authorId &&
+            auth.isAuthenticated().user._id === comment.author._id &&
             (openEditing ? (
               <IconButton variant="text" color="green" onClick={onSaveEditing}>
                 <svg

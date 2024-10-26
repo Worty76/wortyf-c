@@ -149,6 +149,7 @@ export const Tag = () => {
               key={key}
               id={post._id}
               name={post.name}
+              price={post.price}
               date={post.createdAt}
               authorName={post.author.username}
               imgs={post.images}
