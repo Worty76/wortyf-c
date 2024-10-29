@@ -123,12 +123,14 @@ const FilterOptions = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
         <div className="flex flex-col gap-2">
           <Input
+            name="searchTag"
             type="search"
             label="Search (e.g. fashion, phone)"
             className="w-full p-2 border rounded-md border-gray-300 "
             onChange={handleTag}
           />
           <Input
+            name="searchName"
             type="search"
             label="Search name (e.g. iphone16, laptop...)"
             className="w-full p-2 border rounded-md border-gray-300"
@@ -137,6 +139,7 @@ const FilterOptions = ({
         </div>
 
         <Button
+          id="find"
           className="text-white py-2 px-4 rounded-md w-full"
           onClick={handleSearch}
         >

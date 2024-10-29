@@ -279,6 +279,7 @@ export const SignUp = () => {
               </Typography>
             </label>
             <Input
+              name="password"
               size="lg"
               placeholder="********"
               onChange={handleChange("password")}
@@ -307,6 +308,7 @@ export const SignUp = () => {
               </Typography>
             </label>
             <Input
+              name="repassword"
               size="lg"
               placeholder="********"
               onChange={handleChange("passwordConfirmed")}
@@ -353,6 +355,7 @@ export const SignUp = () => {
             size="lg"
             className="mt-6"
             fullWidth
+            id="signup"
             onClick={onSignUp}
           >
             sign up

@@ -417,6 +417,7 @@ export const Discussion = () => {
               !post.sold &&
               post.approved && (
                 <Button
+                  id="chat"
                   variant="text"
                   size="sm"
                   className="flex items-center gap-2"
@@ -622,6 +623,7 @@ export const Discussion = () => {
               (Object.keys(likes).length > 0) ? (
               checkLiked(likes) ? (
                 <IconButton
+                  id="unlike"
                   variant="text"
                   onClick={debouncedOnDeleteLike}
                   className="hover:bg-[#feeceb]"
@@ -632,7 +634,11 @@ export const Discussion = () => {
                   />
                 </IconButton>
               ) : (
-                <IconButton variant="text" onClick={debouncedOnCreateLike}>
+                <IconButton
+                  id="like"
+                  variant="text"
+                  onClick={debouncedOnCreateLike}
+                >
                   <HeartIcon
                     strokeWidth={2}
                     className="h-6 w-6 my-4 text-gray-500 cursor-pointer"
@@ -643,7 +649,11 @@ export const Discussion = () => {
               ""
             )}
             {auth.isAuthenticated() && Object.keys(likes).length === 0 ? (
-              <IconButton variant="text" onClick={debouncedOnCreateLike}>
+              <IconButton
+                id="like"
+                variant="text"
+                onClick={debouncedOnCreateLike}
+              >
                 <HeartIcon
                   strokeWidth={2}
                   className="h-6 w-6 my-4 text-gray-500 cursor-pointer"
@@ -653,7 +663,11 @@ export const Discussion = () => {
               ""
             )}
             {!auth.isAuthenticated() ? (
-              <IconButton variant="text" onClick={() => navigate("/sign-in")}>
+              <IconButton
+                id="like"
+                variant="text"
+                onClick={() => navigate("/sign-in")}
+              >
                 <HeartIcon
                   strokeWidth={2}
                   className="h-6 w-6 my-4 text-gray-500 cursor-pointer"
@@ -758,6 +772,7 @@ export const Discussion = () => {
         <div className="relative w-full mt-6">
           <Typography variant="h6">Post your comment</Typography>
           <Textarea
+            id="comment"
             rows={4}
             label="Message"
             className="mb-2"
@@ -767,6 +782,7 @@ export const Discussion = () => {
             <div></div>
             <div>
               <Button
+                id="post-comment"
                 size="sm"
                 className="rounded-md"
                 onClick={onCreateComment}
