@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { Input, Button } from "@material-tailwind/react";
+import MultiRangeSlider from "./MultiRangeSlider/MultiRangeSlider";
 
 const FilterOptions = ({
   open,
@@ -137,14 +138,15 @@ const FilterOptions = ({
             onChange={handleName}
           />
         </div>
-
-        <Button
-          id="find"
-          className="text-white py-2 px-4 rounded-md w-full"
-          onClick={handleSearch}
-        >
-          Find
-        </Button>
+        <div className="flex flex-col gap-2">
+          <Button
+            id="find"
+            className="text-white py-2 px-4 rounded-md w-full"
+            onClick={handleSearch}
+          >
+            Find
+          </Button>
+        </div>
       </div>
     </div>
   );

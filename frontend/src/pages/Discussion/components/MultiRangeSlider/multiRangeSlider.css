@@ -1,0 +1,130 @@
+.container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.slider__labels {
+  display: flex;
+  justify-content: space-between;
+  width: 200px;
+  font-size: 14px;
+  color: #6c757d;
+  margin-bottom: 10px;
+}
+
+.slider {
+  position: relative;
+  width: 200px;
+  margin-top: 10px;
+  height: 5px;
+}
+
+.slider__track,
+.slider__range {
+  position: absolute;
+  height: 5px;
+  border-radius: 5px;
+}
+
+.slider__track {
+  background-color: #ced4da;
+  width: 100%;
+  z-index: 1;
+}
+
+.slider__range {
+  background-color: #ffa500;
+  z-index: 2;
+  height: 5px;
+}
+
+.thumb {
+  pointer-events: none;
+  position: absolute;
+  height: 0;
+  width: 200px;
+  outline: none;
+}
+
+.thumb--left {
+  z-index: 3;
+}
+
+.thumb--right {
+  z-index: 4;
+}
+
+.thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background-color: #ffa500;
+  border: 2px solid #ced4da;
+  border-radius: 50%;
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+  pointer-events: all;
+  position: relative;
+}
+
+.thumb::-moz-range-thumb {
+  background-color: #ffa500;
+  border: 2px solid #ced4da;
+  border-radius: 50%;
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+  pointer-events: all;
+  position: relative;
+}
+
+.slider__values {
+  display: flex;
+  justify-content: space-between;
+  width: 200px;
+  margin-top: 15px;
+}
+
+.slider__input {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #495057;
+}
+
+.value-input {
+  width: 80px;
+  text-align: center;
+  border: 1px solid #ced4da;
+  padding: 5px;
+  border-radius: 5px;
+  margin-right: 4px;
+}
+
+.slider__actions {
+  display: flex;
+  justify-content: space-between;
+  width: 200px;
+  margin-top: 20px;
+}
+
+.reset-button,
+.apply-button {
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+}
+
+.reset-button {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.apply-button {
+  background-color: #ffa500;
+  color: white;
+}
