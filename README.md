@@ -45,17 +45,29 @@ $ npm start
 
 ## DEMO
 
-1. Discussion
-   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/discussion.png"/>
+1. Auth
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/new-signin.png">
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/new-signup.png">
 
 2. Home
-   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/home.png">
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/new-home.png">
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/new-home2.png">
 
-3. Profile
-   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/profile.png">
+3. Post
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/new-post.png"/>
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/new-post2.png"/>
 
-4. Chat
-   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/chat.png">
+4. Tag
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/new-tag.png"/>
+
+5. Profile
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/new-profile.png">
+
+6. Chat
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/new-chat.png">
+
+7. Manage
+   <img src="https://github.com/Worty76/WortyF-C/blob/master/frontend/src/assets/images/new-manage.png">
 
 ## Documentation
 
