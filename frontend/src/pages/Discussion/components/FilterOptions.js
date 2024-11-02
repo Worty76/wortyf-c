@@ -13,6 +13,7 @@ const FilterOptions = ({
 }) => {
   const [filterOption, setFilterOption] = useState(null);
   const [sortedOption, setSortedOption] = useState(null);
+  const [range, setRange] = useState({});
   const [tag, setTag] = useState("");
   const [name, setName] = useState("");
   const navigate = useNavigate();
@@ -66,8 +67,20 @@ const FilterOptions = ({
           sortedBy[sortedOption] !== undefined
           ? `&name=${encodeURIComponent(name)}`
           : `name=${encodeURIComponent(name)}`
-        : ``
+        : ""
+    }${
+      range.min !== undefined && range.max !== undefined
+        ? `${
+            tag !== "" ||
+            filterBy[filterOption] !== undefined ||
+            sortedBy[sortedOption] !== undefined ||
+            name !== ""
+              ? "&"
+              : ""
+          }range=${encodeURIComponent(JSON.stringify(range))}`
+        : ""
     }`;
+
     navigate(`/home?${searchParams}`);
     await axios
       .get(`${process.env.REACT_APP_API}/api/post/home?${searchParams}`)
@@ -139,6 +152,7 @@ const FilterOptions = ({
           />
         </div>
         <div className="flex flex-col gap-2">
+          <MultiRangeSlider min={0} max={900000000} setRange={setRange} />
           <Button
             id="find"
             className="text-white py-2 px-4 rounded-md w-full"

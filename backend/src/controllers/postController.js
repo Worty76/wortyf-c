@@ -137,7 +137,7 @@ const createPost = async (req, res) => {
 
     const post = new Post({
       name: body.name,
-      price: body.price || null,
+      price: (body.price && parseInt(body.price.replace(/\./g, ""))) || null,
       content: body.content,
       author: {
         _id: user._id,
@@ -317,8 +317,9 @@ const getFilterOptions = (option) => {
 
 const filterPost = async (req, res) => {
   try {
-    const { filters, tag, sort, name, page = 1 } = req.query;
+    const { filters, tag, sort, name, page = 1, range } = req.query;
     const perPage = 12;
+    console.log(req.query);
 
     let query = { approved: true };
     let sortCriteria = { _id: -1 };
@@ -339,6 +340,18 @@ const filterPost = async (req, res) => {
 
     if (name) {
       query.name = { $regex: decodeURIComponent(name), $options: "i" };
+    }
+
+    if (range) {
+      const { min, max } = JSON.parse(decodeURIComponent(range));
+      const minPrice = min ? parseInt(min.replace(/\./g, "")) : null;
+      const maxPrice = max ? parseInt(max.replace(/\./g, "")) : null;
+
+      if (minPrice || maxPrice) {
+        query.price = {};
+        if (minPrice) query.price.$gte = minPrice;
+        if (maxPrice) query.price.$lte = maxPrice;
+      }
     }
 
     if (sort) {

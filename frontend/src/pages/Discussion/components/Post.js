@@ -25,7 +25,11 @@ export function Post({ id, name, price, date, imgs, authorName, profileImg }) {
             color="gray"
             className="font-bold text-red-500"
           >
-            {price}
+            {price &&
+              price.toLocaleString("it-IT", {
+                style: "currency",
+                currency: "VND",
+              })}
           </Typography>
 
           {/* <div className="my-4 flex items-start justify-between items-center">

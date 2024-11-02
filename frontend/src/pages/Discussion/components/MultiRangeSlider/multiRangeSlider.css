@@ -1,47 +1,42 @@
-.container {
-  height: 100vh;
+.multi-range-slider {
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
 }
 
-.slider__labels {
+.multi-range-slider__labels {
   display: flex;
   justify-content: space-between;
   width: 200px;
   font-size: 14px;
   color: #6c757d;
-  margin-bottom: 10px;
 }
 
-.slider {
+.multi-range-slider__slider {
   position: relative;
   width: 200px;
-  margin-top: 10px;
   height: 5px;
 }
 
-.slider__track,
-.slider__range {
+.multi-range-slider__track,
+.multi-range-slider__range {
   position: absolute;
   height: 5px;
   border-radius: 5px;
 }
 
-.slider__track {
+.multi-range-slider__track {
   background-color: #ced4da;
   width: 100%;
   z-index: 1;
 }
 
-.slider__range {
-  background-color: #ffa500;
+.multi-range-slider__range {
+  background-color: #4caf50;
   z-index: 2;
   height: 5px;
 }
 
-.thumb {
+.multi-range-slider__thumb {
   pointer-events: none;
   position: absolute;
   height: 0;
@@ -49,17 +44,17 @@
   outline: none;
 }
 
-.thumb--left {
+.multi-range-slider__thumb--left {
   z-index: 3;
 }
 
-.thumb--right {
+.multi-range-slider__thumb--right {
   z-index: 4;
 }
 
-.thumb::-webkit-slider-thumb {
+.multi-range-slider__thumb::-webkit-slider-thumb {
   -webkit-appearance: none;
-  background-color: #ffa500;
+  background-color: #4caf50;
   border: 2px solid #ced4da;
   border-radius: 50%;
   cursor: pointer;
@@ -69,8 +64,8 @@
   position: relative;
 }
 
-.thumb::-moz-range-thumb {
-  background-color: #ffa500;
+.multi-range-slider__thumb::-moz-range-thumb {
+  background-color: #4caf50;
   border: 2px solid #ced4da;
   border-radius: 50%;
   cursor: pointer;
@@ -80,21 +75,21 @@
   position: relative;
 }
 
-.slider__values {
+.multi-range-slider__values {
   display: flex;
   justify-content: space-between;
   width: 200px;
   margin-top: 15px;
 }
 
-.slider__input {
+.multi-range-slider__input {
   display: flex;
   align-items: center;
   font-size: 14px;
   color: #495057;
 }
 
-.value-input {
+.multi-range-slider__value-input {
   width: 80px;
   text-align: center;
   border: 1px solid #ced4da;
@@ -103,28 +98,9 @@
   margin-right: 4px;
 }
 
-.slider__actions {
+.multi-range-slider__actions {
   display: flex;
   justify-content: space-between;
   width: 200px;
   margin-top: 20px;
-}
-
-.reset-button,
-.apply-button {
-  padding: 8px 16px;
-  font-size: 14px;
-  cursor: pointer;
-  border: none;
-  border-radius: 5px;
-}
-
-.reset-button {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-
-.apply-button {
-  background-color: #ffa500;
-  color: white;
 }

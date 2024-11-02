@@ -9,7 +9,7 @@ const PostSchema = new Schema({
     maxlength: 100,
   },
   price: {
-    type: String,
+    type: Number,
   },
   content: {
     type: String,

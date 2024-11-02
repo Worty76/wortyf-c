@@ -736,7 +736,12 @@ export const Discussion = () => {
               {post && post.name}
             </Typography>
             <Typography className="font-bold text-red-500">
-              {post && post.price}
+              {post &&
+                post.price &&
+                post.price.toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                })}
             </Typography>
           </>
         )}
