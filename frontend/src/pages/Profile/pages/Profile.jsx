@@ -192,7 +192,10 @@ export const Profile = () => {
       icon: UserCircleIcon,
       desc:
         usersPosts && usersPosts.length > 0 ? (
-          <CardBody className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8">
+          <CardBody
+            id="postSection"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 mb-8"
+          >
             {usersPosts.map((post, key) => (
               <Post
                 key={key}
@@ -286,6 +289,7 @@ export const Profile = () => {
                     </label>
                   ) : (
                     <Button
+                      id="message"
                       variant="text"
                       size="sm"
                       className="border-gray-300 flex items-center gap-2"
@@ -318,6 +322,7 @@ export const Profile = () => {
               </div>
             </div>
             <Typography
+              id="bio"
               variant="small"
               className="font-normal text-gray-600 mt-6"
             >
@@ -345,7 +350,7 @@ export const Profile = () => {
           >
             {data.map(({ label, value, icon }) => (
               <Tab key={value} value={value}>
-                <div className="flex items-center gap-2">
+                <div id={label} className="flex items-center gap-2">
                   {React.createElement(icon, { className: "w-5 h-5" })}
                   {label}
                 </div>

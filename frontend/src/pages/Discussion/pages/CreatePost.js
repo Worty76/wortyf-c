@@ -235,6 +235,7 @@ export const CreatePost = () => {
             <div>
               <label className="block text-sm font-medium mb-1">Topics</label>
               <Select
+                id="selectTopic"
                 multiple
                 variant="outlined"
                 className="select select-bordered w-full"

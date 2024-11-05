@@ -65,8 +65,13 @@ const ProfileMenu = ({ isMenuOpen, setIsMenuOpen, closeMenu, user }) => {
   const navigate = useNavigate();
 
   return (
-    <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
-      <MenuHandler>
+    <Menu
+      id="user-profile"
+      open={isMenuOpen}
+      handler={setIsMenuOpen}
+      placement="bottom-end"
+    >
+      <MenuHandler id="user-profile">
         <Button
           variant="text"
           color="blue-gray"

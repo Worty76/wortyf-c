@@ -494,6 +494,7 @@ export const Discussion = () => {
               auth.isAuthenticated().user._id === user._id &&
               (openEditing ? (
                 <IconButton
+                  id="save-edit"
                   variant="text"
                   color="green"
                   onClick={onSaveEditing}
@@ -515,7 +516,7 @@ export const Discussion = () => {
                 </IconButton>
               ) : (
                 <Menu>
-                  <MenuHandler>
+                  <MenuHandler id="edit">
                     <IconButton variant="text">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -723,6 +724,7 @@ export const Discussion = () => {
 
         {openEditing ? (
           <Input
+            id="edit-post-name"
             label="Change your post name"
             value={valuesEditing.name}
             onChange={handleChangeEditing("name")}
@@ -748,6 +750,7 @@ export const Discussion = () => {
 
         {openEditing ? (
           <Textarea
+            id="edit-post-content"
             value={valuesEditing.content}
             onChange={handleChangeEditing("content")}
             rows={8}
@@ -790,7 +793,13 @@ export const Discussion = () => {
                 id="post-comment"
                 size="sm"
                 className="rounded-md"
-                onClick={onCreateComment}
+                onClick={() => {
+                  if (auth.isAuthenticated()) {
+                    onCreateComment();
+                  } else {
+                    navigate("/sign-in");
+                  }
+                }}
               >
                 Post Comment
               </Button>

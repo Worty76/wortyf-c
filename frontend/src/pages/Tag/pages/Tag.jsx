@@ -126,6 +126,7 @@ export const Tag = () => {
           <Button
             className="text-white rounded-md flex items-center gap-2"
             size="sm"
+            id="filter"
             onClick={handleFilter}
           >
             <AdjustmentsHorizontalIcon strokeWidth={2} className="h-6 w-6 " />
