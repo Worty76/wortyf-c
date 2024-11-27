@@ -2,8 +2,6 @@
 
 An eCommerce platform enabling users to buy, sell, and trade goods. The platform’s core functionalities, including listings, search, transactions, and user profiles, ensuring it meets both quality standards and user expectations.
 
-worty-f-c.vercel.app/
-
 ## Run Locally
 
 ### 1. Clone repo
